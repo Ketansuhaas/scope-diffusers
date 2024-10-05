@@ -3,6 +3,7 @@ from typing import Union, List, Optional, Dict, Any, Callable
 import torch
 from diffusers.utils import replace_example_docstring, deprecate
 from diffusers.image_processor import PipelineImageInput
+from ezcolorlog import root_logger as logger
 from diffusers.callbacks import MultiPipelineCallbacks, PipelineCallback
 from diffusers.pipelines.stable_diffusion.pipeline_output import (
     StableDiffusionPipelineOutput,
