@@ -132,12 +132,54 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             image_encoder=image_encoder,
             requires_safety_checker=requires_safety_checker,
         )
+    def attention_interpolate_embeddings(self, embeddings, times, t, tau=1.0):
+        """
+        Interpolate between the given embeddings using attention weights with exponential decay based on time proximity.
+        Supports multi-dimensional embeddings.
+        
+        Args:
+        embeddings (torch.Tensor): Tensor of shape (n, ...) where n is the number of embeddings and ... is the rest of the dimensions.
+        times (list or torch.Tensor): List or tensor of shape (n,), corresponding to the times at which the embeddings are positioned.
+        t (float): The time at which to interpolate the embedding.
+        tau (float): Temperature parameter to control the sharpness of the attention weights.
+        
+        Returns:
+        torch.Tensor: Interpolated embedding of shape (...), matching the embedding shape except for the first (time) dimension.
+        """
+        if t>= times[-1]:
+            return embeddings[-1]
+
+        # Convert times to tensor if it is a list
+        if isinstance(times, list):
+            times = torch.tensor(times, dtype=torch.float16, device=embeddings.device)
+        
+        # Calculate time differences between the embeddings and the target time t
+        time_diffs = times - t
+
+        tau_tensor = torch.tensor(tau, dtype=torch.float16, device=embeddings.device)
+
+        # Compute attention weights using exponential decay with tau
+        alphas = torch.exp(-torch.abs(time_diffs) / tau_tensor)
+        
+        # Normalize the attention weights (softmax over alphas to ensure they sum to 1)
+        attention_weights = alphas / alphas.sum()
+
+        # Reshape attention_weights to match the dimensions of embeddings for broadcasting
+        attention_weights = attention_weights.view(-1, *([1] * (embeddings.dim() - 1)))
+        attention_weights = attention_weights.to(embeddings.device)
+        
+        # Compute the weighted sum of the embeddings based on the attention weights
+        interpolated_embedding = torch.sum(attention_weights * embeddings, dim=0)
+    
+        return interpolated_embedding
+
 
     @torch.no_grad()
     @replace_example_docstring(EXAMPLE_DOC_STRING)
     def __call__(
         self,
-        prompt_schedule: Union[str, List[str]] = None,
+        prompt_schedule = None,
+        temperature: float = 1.0,
         height: Optional[int] = None,
         width: Optional[int] = None,
         num_inference_steps: int = 50,
@@ -312,29 +354,36 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
         # 3. Encode input prompt
         lora_scale = (
-            self.cross_attention_kwargs.get("scale", None)
-            if self.cross_attention_kwargs is not None
-            else None
+            self.cross_attention_kwargs.get("scale", None) if self.cross_attention_kwargs is not None else None
         )
 
-        # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        prompt = prompt_schedule[0][1]
-        prompt_embeds, negative_prompt_embeds = self.encode_prompt(
-            prompt,
-            device,
-            num_images_per_prompt,
-            self.do_classifier_free_guidance,
-            negative_prompt,
-            prompt_embeds=prompt_embeds,
-            negative_prompt_embeds=negative_prompt_embeds,
-            lora_scale=lora_scale,
-            clip_skip=self.clip_skip,
-        )
-        # For classifier free guidance, we need to do two forward passes.
-        # Here we concatenate the unconditional and text embeddings into a single batch
-        # to avoid doing two forward passes
-        if self.do_classifier_free_guidance:
-            prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+       #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        # set prompt stage timings
+        stage_times = [st for (st, _) in prompt_schedule]
+        prompt_embeddings = []
+        for _, prompt in prompt_schedule:         
+            prompt_embeds, negative_prompt_embeds = self.encode_prompt(
+                prompt,
+                device,
+                num_images_per_prompt,
+                self.do_classifier_free_guidance,
+                negative_prompt=None,
+                prompt_embeds=None,
+                negative_prompt_embeds=None,
+                lora_scale=lora_scale,
+                clip_skip=self.clip_skip,
+            )
+            # For classifier free guidance, we need to do two forward passes.
+            # Here we concatenate the unconditional and text embeddings into a single batch
+            # to avoid doing two forward passes
+            if self.do_classifier_free_guidance:
+                prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+
+            prompt_embeddings.append(prompt_embeds)
+        
+        prompt_embeddings = torch.stack(prompt_embeddings,dim=0)
+
+        prompt_embeds = self.attention_interpolate_embeddings(prompt_embeddings, stage_times, 0, temperature)
 
         # 5. Prepare latent variables
         num_channels_latents = self.unet.config.in_channels
@@ -349,7 +398,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             generator,
             latents,
         )
-        # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+       #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         if ip_adapter_image is not None or ip_adapter_image_embeds is not None:
             image_embeds = self.prepare_ip_adapter_image_embeds(
@@ -365,6 +414,8 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             self.scheduler, num_inference_steps, device, timesteps, sigmas
         )
 
+        prompt_embeds = self.attention_interpolate_embeddings(prompt_embeddings, stage_times, 0, temperature)
+
         # 6. Prepare extra step kwargs. TODO: Logic should ideally just be moved out of the pipeline
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
 
@@ -378,9 +429,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         # 6.2 Optionally get Guidance Scale Embedding
         timestep_cond = None
         if self.unet.config.time_cond_proj_dim is not None:
-            guidance_scale_tensor = torch.tensor(self.guidance_scale - 1).repeat(
-                batch_size * num_images_per_prompt
-            )
+            guidance_scale_tensor = torch.tensor(self.guidance_scale - 1).repeat(batch_size * num_images_per_prompt)
             timestep_cond = self.get_guidance_scale_embedding(
                 guidance_scale_tensor, embedding_dim=self.unet.config.time_cond_proj_dim
             ).to(device=device, dtype=latents.dtype)
@@ -388,44 +437,21 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         # 7. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         self._num_timesteps = len(timesteps)
-
+ 
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
-                # -------------------------------------------------------------------------------------------------------------------------------------
-                prompt = [pr for (step, pr, _) in prompt_schedule if step <= i][-1]
-                logger.info(f"timestep: {i}, prompt: {prompt}")
 
-                prompt_embeds, negative_prompt_embeds = self.encode_prompt(
-                    prompt,
-                    device,
-                    num_images_per_prompt,
-                    self.do_classifier_free_guidance,
-                    negative_prompt=None,
-                    prompt_embeds=None,
-                    negative_prompt_embeds=None,
-                    lora_scale=lora_scale,
-                    clip_skip=self.clip_skip,
-                )
-                # For classifier free guidance, we need to do two forward passes.
-                # Here we concatenate the unconditional and text embeddings into a single batch
-                # to avoid doing two forward passes
-                if self.do_classifier_free_guidance:
-                    prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+               #------------------------------------------------------------------------------------------------------------------------------------- 
+                prompt_embeds = self.attention_interpolate_embeddings(prompt_embeddings, stage_times, i, temperature)
 
-                # --------------------------ADDED ABOVE----------------------------------------------------------------------------------------------------------
+                #--------------------------ADDED ABOVE----------------------------------------------------------------------------------------------------------
 
                 if self.interrupt:
                     continue
 
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = (
-                    torch.cat([latents] * 2)
-                    if self.do_classifier_free_guidance
-                    else latents
-                )
-                latent_model_input = self.scheduler.scale_model_input(
-                    latent_model_input, t
-                )
+                latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
+                latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
                 # predict the noise residual
                 noise_pred = self.unet(
@@ -441,22 +467,14 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 # perform guidance
                 if self.do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
-                    noise_pred = noise_pred_uncond + self.guidance_scale * (
-                        noise_pred_text - noise_pred_uncond
-                    )
+                    noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
 
                 if self.do_classifier_free_guidance and self.guidance_rescale > 0.0:
                     # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
-                    noise_pred = rescale_noise_cfg(
-                        noise_pred,
-                        noise_pred_text,
-                        guidance_rescale=self.guidance_rescale,
-                    )
+                    noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
 
                 # compute the previous noisy sample x_t -> x_t-1
-                latents = self.scheduler.step(
-                    noise_pred, t, latents, **extra_step_kwargs, return_dict=False
-                )[0]
+                latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
 
                 if callback_on_step_end is not None:
                     callback_kwargs = {}
@@ -466,28 +484,20 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
                     latents = callback_outputs.pop("latents", latents)
                     prompt_embeds = callback_outputs.pop("prompt_embeds", prompt_embeds)
-                    negative_prompt_embeds = callback_outputs.pop(
-                        "negative_prompt_embeds", negative_prompt_embeds
-                    )
+                    negative_prompt_embeds = callback_outputs.pop("negative_prompt_embeds", negative_prompt_embeds)
 
                 # call the callback, if provided
-                if i == len(timesteps) - 1 or (
-                    (i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0
-                ):
+                if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
                     progress_bar.update()
                     if callback is not None and i % callback_steps == 0:
                         step_idx = i // getattr(self.scheduler, "order", 1)
                         callback(step_idx, t, latents)
 
         if not output_type == "latent":
-            image = self.vae.decode(
-                latents / self.vae.config.scaling_factor,
-                return_dict=False,
-                generator=generator,
-            )[0]
-            image, has_nsfw_concept = self.run_safety_checker(
-                image, device, prompt_embeds.dtype
-            )
+            image = self.vae.decode(latents / self.vae.config.scaling_factor, return_dict=False, generator=generator)[
+                0
+            ]
+            image, has_nsfw_concept = self.run_safety_checker(image, device, prompt_embeds.dtype)
         else:
             image = latents
             has_nsfw_concept = None
@@ -497,9 +507,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         else:
             do_denormalize = [not has_nsfw for has_nsfw in has_nsfw_concept]
 
-        image = self.image_processor.postprocess(
-            image, output_type=output_type, do_denormalize=do_denormalize
-        )
+        image = self.image_processor.postprocess(image, output_type=output_type, do_denormalize=do_denormalize)
 
         # Offload all models
         self.maybe_free_model_hooks()
@@ -507,6 +515,4 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         if not return_dict:
             return (image, has_nsfw_concept)
 
-        return StableDiffusionPipelineOutput(
-            images=image, nsfw_content_detected=has_nsfw_concept
-        )
+        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
