@@ -17,6 +17,7 @@ class SCoPE_Exp_Base:
 
     def run(self):
         raise NotImplementedError("Subclasses should implement this method")
+
 class SCoPE_Exp_Seed(SCoPE_Exp_Base):
     def __init__(self, config, exp_name, exp_id):
         super().__init__(config, exp_name, exp_id)
@@ -32,19 +33,25 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
 
         for seed_idx, seed in enumerate(seed_list):
             logger.info(f"Running experiment with seed: {seed}")
-            torch.manual_seed(seed)
-
             # Load the SCoPE Diffusion model
             pipe = sdp_scope.from_pretrained(
-                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
             )
             pipe = pipe.to(self.config["DEVICE"])
             image_scope_list = []
 
             for step_size in self.config["step_sizes"]:
                 logger.info(f"Running with step size: {step_size}")
-                prompt_schedule = self.config['prompt_schedule']
+                prompt_schedule_list = self.config['prompt_schedule']
+
+                prompt_schedule = []
+                 
+                for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
+                    prompt_schedule.append((stage_id*step_size,p))
+                
                 logger.info(f"Running SCoPE Diffusion on the prompt schedule: {prompt_schedule}")
+                torch.manual_seed(seed)
                 image = pipe(
                     prompt_schedule,
                     num_inference_steps=self.config["num_inference_steps"],
@@ -63,6 +70,7 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
             image = pipe(
                 prompt_schedule[-1][1],  # Only the final prompt for normal Stable Diffusion
                 num_inference_steps=self.config["num_inference_steps"],
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache',
                 callback=None,
                 callback_steps=1,
             ).images[0]
@@ -107,14 +115,21 @@ class SCoPE_Exp_Model(SCoPE_Exp_Base):
             self.config["MODEL_ID"] = model_id
             # Load the SCoPE Diffusion model
             pipe = sdp_scope.from_pretrained(
-                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
             )
             pipe = pipe.to(self.config["DEVICE"])
             image_scope_list = []
 
             for step_size in self.config["step_sizes"]:
                 logger.info(f"Running with step size: {step_size}")
-                prompt_schedule = self.config['prompt_schedule']
+                prompt_schedule_list = self.config['prompt_schedule']
+
+                prompt_schedule = []
+                 
+                for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
+                    prompt_schedule.append((stage_id*step_size,p))
+                
                 logger.info(f"Running SCoPE Diffusion on the prompt schedule: {prompt_schedule}")
                 torch.manual_seed(self.config["seed"])
                 image = pipe(
@@ -128,7 +143,8 @@ class SCoPE_Exp_Model(SCoPE_Exp_Base):
             logger.info("Running normal Stable Diffusion")
             # Load the normal Stable Diffusion model
             pipe = sdp.from_pretrained(
-                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
             )
             pipe = pipe.to(self.config["DEVICE"])
             torch.manual_seed(self.config["seed"])
@@ -180,15 +196,23 @@ class SCoPE_Exp_Temperature(SCoPE_Exp_Base):
 
             # Load the SCoPE Diffusion model
             pipe = sdp_scope.from_pretrained(
-                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
             )
             pipe = pipe.to(self.config["DEVICE"])
             image_scope_list = []
 
             for step_size in self.config["step_sizes"]:
                 logger.info(f"Running with step size: {step_size}")
-                prompt_schedule = self.config['prompt_schedule']
+                prompt_schedule_list = self.config['prompt_schedule']
+
+                prompt_schedule = []
+                 
+                for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
+                    prompt_schedule.append((stage_id*step_size,p))
+                
                 logger.info(f"Running SCoPE Diffusion on the prompt schedule: {prompt_schedule}")
+                torch.manual_seed(42)
                 image = pipe(
                     prompt_schedule,
                     temperature=temperature,
@@ -201,9 +225,11 @@ class SCoPE_Exp_Temperature(SCoPE_Exp_Base):
             logger.info("Running normal Stable Diffusion")
             # Load the normal Stable Diffusion model
             pipe = sdp.from_pretrained(
-                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
             )
             pipe = pipe.to(self.config["DEVICE"])
+            torch.manual_seed(42)
             image = pipe(
                 prompt_schedule[-1][1],  # Only the final prompt for normal Stable Diffusion
                 temperature=temperature,  # Add temperature variation
