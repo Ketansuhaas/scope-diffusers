@@ -29,7 +29,7 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
         num_steps = len(self.config["step_sizes"]) + 1  # +1 for the normal image
 
         # Create a figure that holds all results for all seeds with adjusted figure size
-        plt.figure(figsize=(5 * num_steps, 5 * num_seeds), dpi=150)  # Adjust size and DPI
+        plt.figure(figsize=(5 * num_steps, 5 * num_seeds), dpi=300)  # Adjust size and DPI
 
         for seed_idx, seed in enumerate(seed_list):
             logger.info(f"Running experiment with seed: {seed}")
@@ -92,8 +92,8 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
                 ax.set_title("Normal image", fontsize=12)
 
         # Set overall title for the figure and adjust layout for better spacing
-        plt.suptitle(f"Prompt: {prompt_schedule[-1][1]}", fontsize=16, y=0.95, wrap=True)
-        plt.subplots_adjust(wspace=0.1, hspace=0.1)  # Adjust the space between subplots
+        plt.suptitle(f"Prompt schedule: {prompt_schedule}", fontsize=16, wrap=True)
+        plt.subplots_adjust(top=0.6,wspace=0.1, hspace=0.1)  # Adjust the space between subplots
 
         # Save the figure with proper DPI and output path
         output_path = os.path.join(self.exp_dir, f"output_all_seeds.png")
