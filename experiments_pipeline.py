@@ -29,7 +29,7 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
         num_steps = len(self.config["step_sizes"]) + 1  # +1 for the normal image
 
         # Create a figure that holds all results for all seeds with adjusted figure size
-        plt.figure(figsize=(5 * num_steps, 5 * num_seeds), dpi=300)  # Adjust size and DPI
+        plt.figure(figsize=(5 * num_steps, 5 * num_seeds), dpi=500)  # Adjust size and DPI
 
         for seed_idx, seed in enumerate(seed_list):
             logger.info(f"Running experiment with seed: {seed}")

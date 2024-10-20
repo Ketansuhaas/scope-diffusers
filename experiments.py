@@ -49,9 +49,8 @@ if __name__ == "__main__":
             "DEVICE": "cuda",  # or "cpu"
             "seed_list": [42],#,43,44],#, 123, 999],
             "num_inference_steps": 200,
-            "step_sizes": [1,2,3,4,5,10],  # Example step sizes
+            "step_sizes": [1,2,3,4,5,6,7,8,9,10],  # Example step sizes
         }
-
         prompt_schedules = [
             [
                 "An armchair with a knit blanket draped over it, next to a fireplace.",
@@ -118,7 +117,7 @@ if __name__ == "__main__":
             ],
         ]
 
-        
+
         for exp_id, prompt_schedule_list in enumerate(prompt_schedules):
             config_seed["prompt_schedule"] = prompt_schedule_list
             exp_seed = SCoPE_Exp_Seed(config_seed, args.exp_name, str(exp_id))
