@@ -132,44 +132,50 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, t, tau=1.0):
-        """
-        Interpolate between the given embeddings using attention weights with exponential decay based on time proximity.
-        Supports multi-dimensional embeddings.
+    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0):
 
-        Args:
-        embeddings (torch.Tensor): Tensor of shape (n, ...) where n is the number of embeddings and ... is the rest of the dimensions.
-        times (list or torch.Tensor): List or tensor of shape (n,), corresponding to the times at which the embeddings are positioned.
-        t (float): The time at which to interpolate the embedding.
-        tau (float): Temperature parameter to control the sharpness of the attention weights.
-
-        Returns:
-        torch.Tensor: Interpolated embedding of shape (...), matching the embedding shape except for the first (time) dimension.
-        """
-        if t >= times[-1]:
+        device = embeddings.device
+        
+        if time_i >= times[-1]:
             return embeddings[-1]
+        
+        for time_id, time_check in enumerate(times):
+            if time_i>=time_check:
+                ti = time_id
+                break
 
-        # Convert times to tensor if it is a list
-        if isinstance(times, list):
-            times = torch.tensor(times, dtype=torch.float16, device=embeddings.device)
+        import numpy as np
+        def slerp(v0, v1, p):
+            v0 = v0.detach().cpu().numpy()
+            v1 = v1.detach().cpu().numpy()
 
-        # Calculate time differences between the embeddings and the target time t
-        time_diffs = times - t
+            def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
+                """helper function to spherically interpolate two arrays v1 v2"""
+                dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
+                if np.abs(dot) > DOT_THRESHOLD:
+                    print("linear")
+                    v2 = (1 - t) * v0 + t * v1
+                else:
+                    print("non-linear")
+                    theta_0 = np.arccos(dot)
+                    sin_theta_0 = np.sin(theta_0)
+                    theta_t = theta_0 * t
+                    sin_theta_t = np.sin(theta_t)
+                    s0 = np.sin(theta_0 - theta_t) / sin_theta_0
+                    s1 = sin_theta_t / sin_theta_0
+                    v2 = s0 * v0 + s1 * v1
+                return v2
 
-        tau_tensor = torch.tensor(tau, dtype=torch.float16, device=embeddings.device)
+            v3 = np.zeros_like(v0)
+            for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
+                v3[0, i, :] = interpolation(p, v0[0, i, :], v1[0, i, :])
+            
+            v3 = torch.tensor(v3)
 
-        # Compute attention weights using exponential decay with tau
-        alphas = torch.exp(-torch.abs(time_diffs) / tau_tensor)
+            return v3
 
-        # Normalize the attention weights (softmax over alphas to ensure they sum to 1)
-        attention_weights = alphas / alphas.sum()
-
-        # Reshape attention_weights to match the dimensions of embeddings for broadcasting
-        attention_weights = attention_weights.view(-1, *([1] * (embeddings.dim() - 1)))
-        attention_weights = attention_weights.to(embeddings.device)
-
-        # Compute the weighted sum of the embeddings based on the attention weights
-        interpolated_embedding = torch.sum(attention_weights * embeddings, dim=0)
+        p = (time_i-times[ti])/(times[ti+1]-times[ti])
+        interpolated_embedding = slerp(embeddings[ti],embeddings[ti+1],p).to(device)
 
         return interpolated_embedding
 
