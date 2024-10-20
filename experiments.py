@@ -53,70 +53,71 @@ if __name__ == "__main__":
         }
 
         prompt_schedules = [
-             [
+            [
                 "An armchair with a knit blanket draped over it, next to a fireplace.",
                 "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room.",
                 "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, and a steaming cup of tea on the table.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, and a steaming cup of tea on the table, illuminated by warm, soft light from the fireplace."
+                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, a steaming cup of tea on the table.",
+                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, a steaming cup of tea on the table, illuminated by warm, soft light from the fireplace."
             ],
             [
-                "A surreal landscape with giant mushrooms scattered across a rolling hill, a winding path leading through, and a distant castle on a hilltop.",  # Basic layout
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, and a distant fairy-tale castle on a hilltop.",  # Add mushroom color
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, and butterflies fluttering around.",  # Add butterflies
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, and a rainbow arching across the sky.",  # Add rainbow
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, a rainbow arching across the sky, and whimsical creatures peeking out from behind the mushrooms."  # Add creatures
+                "A surreal landscape with giant mushrooms scattered across a rolling hill, a winding path leading through, a distant castle on a hilltop.",
+                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop.",
+                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering around.",
+                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, a rainbow arching across the sky.",
+                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, a rainbow arching across the sky, whimsical creatures peeking out from behind the mushrooms."
             ],
             [
-                "A cosmic café floating in space, with planets visible through the large windows, and colorful chairs arranged around tables.",  # Basic layout
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, and a barista serving drinks behind the counter.",  # Add barista
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, and patrons enjoying their drinks while gazing at the stars.",  # Add patrons
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, and neon lights illuminating the café.",  # Add lights
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, neon lights illuminating the café, and spaceships flying by outside."  # Add spaceships
+                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables.",
+                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter.",
+                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks while gazing at the stars.",
+                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, neon lights illuminating the café.",
+                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, neon lights illuminating the café, spaceships flying by outside."
             ],
             [
-                "An enchanted library with towering shelves filled with books, a grand staircase, and a large stained-glass window.",  # Basic layout
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, and a large stained-glass window casting vibrant colors.",  # Add book details
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, and a cozy reading nook with plush chairs.",  # Add reading nook
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, and a cat lounging on the windowsill.",  # Add cat
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, a cat lounging on the windowsill, and soft candlelight illuminating the space."  # Add candlelight
+                "An enchanted library with towering shelves filled with books, a grand staircase, a large stained-glass window.",
+                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors.",
+                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs.",
+                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, a cat lounging on the windowsill.",
+                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, a cat lounging on the windowsill, soft candlelight illuminating the space."
             ],
             [
-                "A surreal dreamscape with floating islands, colorful clouds, and a giant moon hanging low in the sky.",  # Basic layout
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, and a giant glowing moon hanging low in the sky.",  # Add island details
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, and fantastical creatures flying between the islands.",  # Add creatures
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, and shimmering stars twinkling in the background.",  # Add stars
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, shimmering stars twinkling in the background, and soft music echoing through the air."  # Add music
+                "A surreal dreamscape with floating islands, colorful clouds, a giant moon hanging low in the sky.",
+                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky.",
+                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands.",
+                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, shimmering stars twinkling in the background.",
+                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, shimmering stars twinkling in the background, soft music echoing through the air."
             ],
             [
-                "A view of a large city square with a tall monument in the center and a road circling it.",  # Basic layout
-                "A view of a large city square with a tall stone monument in the center, a road circling it, and trees lining the perimeter.",  # Add trees
-                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, and benches scattered around.",  # Add benches
-                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, benches scattered around, and people walking by.",  # Add people
-                "A view of a large city square with a tall stone monument, a road circling it, trees, benches, people walking, and cars driving around the square."  # Add cars
+                "A view of a large city square with a tall monument in the center, a road circling it.",
+                "A view of a large city square with a tall stone monument in the center, a road circling it, trees lining the perimeter.",
+                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, benches scattered around.",
+                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, benches scattered around, people walking by.",
+                "A view of a large city square with a tall stone monument, a road circling it, trees, benches, people walking, cars driving around the square."
             ],
             [
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees and distant rocky cliffs.",  # Basic layout
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees and distant rocky cliffs, and patches of golden sand.",  # Add sand
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, and patches of golden sand.",  # Add reflections
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, patches of golden sand, and vibrant green vegetation nearby.",  # Add vegetation
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water and gently swaying, distant rocky cliffs, patches of golden sand, vibrant green vegetation nearby, and soft clouds drifting across the clear blue sky."  # Add clouds
+                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees, distant rocky cliffs.",
+                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees, distant rocky cliffs, patches of golden sand.",
+                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, patches of golden sand.",
+                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, patches of golden sand, vibrant green vegetation nearby.",
+                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, gently swaying, distant rocky cliffs, patches of golden sand, vibrant green vegetation nearby, soft clouds drifting across the clear blue sky."
             ],
             [
-                "A view of Venice from a boat on the river, with tall buildings on both sides and a bridge ahead.",  # Basic layout
-                "A view of Venice from a boat on the river, with tall red buildings on both sides, and a stone bridge ahead with people walking.",  # Add color and people
-                "A view of Venice from a boat on the green river, with tall red buildings on both sides, a stone bridge ahead with people walking, and soft lanterns lining the riverbank.",  # Add river color and lanterns
-                "A view of Venice from a boat on the green river, with tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, and colorful carnival decorations along the buildings.",  # Add carnival decorations
-                "A view of Venice from a boat on the green river, with tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, colorful carnival decorations along the buildings, and several boats drifting down the river toward the horizon."  # Add boats
+                "A view of Venice from a boat on the river, tall buildings on both sides, a bridge ahead.",
+                "A view of Venice from a boat on the river, tall red buildings on both sides, a stone bridge ahead with people walking.",
+                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank.",
+                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, colorful carnival decorations along the buildings.",
+                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, colorful carnival decorations along the buildings, several boats drifting down the river toward the horizon."
             ],
             [
-                "A bustling city square with tall modern buildings and a central fountain.",  # Basic layout
-                "A bustling city square with tall modern glass buildings, a central fountain, and trees lining the streets.",  # Add trees
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, and people sitting on benches.",  # Add benches and people
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, and shopfronts in the background.",  # Add shopfronts
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, shopfronts in the background, and sunlight reflecting off the windows."  # Add sunlight
+                "A bustling city square with tall modern buildings, a central fountain.",
+                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets.",
+                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches.",
+                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, shopfronts in the background.",
+                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, shopfronts in the background, sunlight reflecting off the windows."
             ],
         ]
+
         
         for exp_id, prompt_schedule_list in enumerate(prompt_schedules):
             config_seed["prompt_schedule"] = prompt_schedule_list

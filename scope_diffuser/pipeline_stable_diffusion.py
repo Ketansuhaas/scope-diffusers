@@ -153,10 +153,8 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 """helper function to spherically interpolate two arrays v1 v2"""
                 dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
                 if np.abs(dot) > DOT_THRESHOLD:
-                    print("linear")
                     v2 = (1 - t) * v0 + t * v1
                 else:
-                    print("non-linear")
                     theta_0 = np.arccos(dot)
                     sin_theta_0 = np.sin(theta_0)
                     theta_t = theta_0 * t
