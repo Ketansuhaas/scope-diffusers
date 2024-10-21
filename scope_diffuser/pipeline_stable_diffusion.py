@@ -170,7 +170,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 v3 = np.zeros_like(v0)
                 for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
                     v3[-1, i, :] = interpolation(p, v0[-1, i, :], v1[-1, i, :])
-                
+
                 v3 = torch.tensor(v3)
 
                 return v3
@@ -200,9 +200,11 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 # print(f"replaced in the final embeddings: {interpolated_embedding.shape}")
                 original_magnitude = torch.norm(embeddings[0][-1, i, :])
                 current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
-                # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
+                # if i==0:
+                    # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
                 # print(weights)
                 interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
+                # print('corrected: ',torch.norm(interpolated_embedding[-1,i,:]))
                 # exit()
 
         return interpolated_embedding.to(device)
@@ -417,6 +419,14 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             prompt_embeddings.append(prompt_embeds)
 
         prompt_embeddings = torch.stack(prompt_embeddings, dim=0)
+
+        # for token in range(77):
+        #     print("token ",token)
+        #     for pe in range(prompt_embeddings.shape[0]):
+        #         # print(prompt_embeddings[pe][-1][token])
+        #         print(torch.norm(prompt_embeddings[pe][-1][token]))
+        # exit()
+
 
         prompt_embeds = self.attention_interpolate_embeddings(
             prompt_embeddings, stage_times, 0, temperature

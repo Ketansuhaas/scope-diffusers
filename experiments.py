@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument(
         "--experiment",
         type=str,
-        choices=["seed", "model", "temperature"],
+        choices=["seed", "model", "temperature","overall"],
         required=True,
         help="Type of experiment to run: 'seed' or 'model'",
     )
@@ -27,7 +27,7 @@ def parse_args():
     parser.add_argument(
         "--exp_id",
         type=str,
-        required=True,
+        default=1,
         help="ID of the experiment",
     )
     parser.add_argument(
@@ -42,86 +42,33 @@ if __name__ == "__main__":
     args = parse_args()
 
     # Run the selected experiment
-    if args.experiment == "seed":
+    if args.experiment == "overall":
         # Custom config for seed experiment
-        config_seed = {
+        config_overall = {
             "MODEL_ID": "stabilityai/stable-diffusion-2-1",
             "DEVICE": "cuda",  # or "cpu"
-            "seed_list": [42],#,43,44],#, 123, 999],
+            "seed": 42,
             "num_inference_steps": 200,
-            "step_sizes": [1,2,3,4,5,6,7,8,9,10],  # Example step sizes
+            "step_sizes": [1,3,5,10],  # Example step sizes
+            "temperatures": [0.85,1,5,10]
         }
+
         prompt_schedules = [
-            [
-                "An armchair with a knit blanket draped over it, next to a fireplace.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, a steaming cup of tea on the table.",
-                "An armchair with a knit blanket draped over it, next to a fireplace, in a cozy living room, with a small wooden table beside it, a steaming cup of tea on the table, illuminated by warm, soft light from the fireplace."
-            ],
-            [
-                "A surreal landscape with giant mushrooms scattered across a rolling hill, a winding path leading through, a distant castle on a hilltop.",
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop.",
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering around.",
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, a rainbow arching across the sky.",
-                "A surreal landscape with giant purple mushrooms scattered across a rolling hill, a winding cobblestone path leading through, a distant fairy-tale castle on a hilltop, butterflies fluttering, a rainbow arching across the sky, whimsical creatures peeking out from behind the mushrooms."
-            ],
-            [
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables.",
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter.",
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks while gazing at the stars.",
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, neon lights illuminating the café.",
-                "A cosmic café floating in space, with planets visible through the large windows, colorful chairs arranged around tables, a barista serving drinks behind the counter, patrons enjoying their drinks, neon lights illuminating the café, spaceships flying by outside."
-            ],
-            [
-                "An enchanted library with towering shelves filled with books, a grand staircase, a large stained-glass window.",
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors.",
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs.",
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, a cat lounging on the windowsill.",
-                "An enchanted library with towering shelves filled with colorful books, a grand wooden staircase, a large stained-glass window casting vibrant colors, a cozy reading nook with plush chairs, a cat lounging on the windowsill, soft candlelight illuminating the space."
-            ],
-            [
-                "A surreal dreamscape with floating islands, colorful clouds, a giant moon hanging low in the sky.",
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky.",
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands.",
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, shimmering stars twinkling in the background.",
-                "A surreal dreamscape with floating islands covered in lush greenery, colorful clouds swirling around, a giant glowing moon hanging low in the sky, fantastical creatures flying between the islands, shimmering stars twinkling in the background, soft music echoing through the air."
-            ],
-            [
-                "A view of a large city square with a tall monument in the center, a road circling it.",
-                "A view of a large city square with a tall stone monument in the center, a road circling it, trees lining the perimeter.",
-                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, benches scattered around.",
-                "A view of a large city square with a tall stone monument, a road circling it, trees lining the perimeter, benches scattered around, people walking by.",
-                "A view of a large city square with a tall stone monument, a road circling it, trees, benches, people walking, cars driving around the square."
-            ],
-            [
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees, distant rocky cliffs.",
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees, distant rocky cliffs, patches of golden sand.",
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, patches of golden sand.",
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, distant rocky cliffs, patches of golden sand, vibrant green vegetation nearby.",
-                "A tranquil desert oasis at midday, with a still pool of water surrounded by palm trees reflecting in the water, gently swaying, distant rocky cliffs, patches of golden sand, vibrant green vegetation nearby, soft clouds drifting across the clear blue sky."
-            ],
-            [
-                "A view of Venice from a boat on the river, tall buildings on both sides, a bridge ahead.",
-                "A view of Venice from a boat on the river, tall red buildings on both sides, a stone bridge ahead with people walking.",
-                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank.",
-                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, colorful carnival decorations along the buildings.",
-                "A view of Venice from a boat on the green river, tall red buildings on both sides, a stone bridge ahead with people walking, soft lanterns lining the riverbank, colorful carnival decorations along the buildings, several boats drifting down the river toward the horizon."
-            ],
-            [
-                "A bustling city square with tall modern buildings, a central fountain.",
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets.",
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches.",
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, shopfronts in the background.",
-                "A bustling city square with tall modern glass buildings, a central fountain, trees lining the streets, people sitting on benches, shopfronts in the background, sunlight reflecting off the windows."
-            ],
+        [
+            "A red bicycle parked against a brightly painted wall.",
+            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground.",
+            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby.",
+            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby, blue sky overhead.",
+            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby, blue sky overhead, intricate patterns on the wall."
+        ]
         ]
 
-
         for exp_id, prompt_schedule_list in enumerate(prompt_schedules):
-            config_seed["prompt_schedule"] = prompt_schedule_list
-            exp_seed = SCoPE_Exp_Seed(config_seed, args.exp_name, str(exp_id))
+            config_overall["prompt_schedule"] = prompt_schedule_list
+            exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
+
+
 
     elif args.experiment == "model":
         # Custom config for model experiment

@@ -57,6 +57,7 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
                     num_inference_steps=self.config["num_inference_steps"],
                     callback=None,
                     callback_steps=1,
+                    temperature=self.config["temperature"],
                 ).images[0]
                 image_scope_list.append(np.array(image))
 
@@ -73,6 +74,7 @@ class SCoPE_Exp_Seed(SCoPE_Exp_Base):
                 cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache',
                 callback=None,
                 callback_steps=1,
+                temperature=self.config["temperature"],
             ).images[0]
             image_normal = np.array(image)
 
@@ -264,3 +266,90 @@ class SCoPE_Exp_Temperature(SCoPE_Exp_Base):
         plt.close()
 
         logger.info(f"Saved output for all temperatures to {output_path}")
+
+
+class SCoPE_Exp_overall(SCoPE_Exp_Base):
+    def __init__(self, config, exp_name, exp_id):
+        super().__init__(config, exp_name, exp_id)
+
+    def run(self):
+        # Manually define the list of seeds from config
+        seed = self.config['seed']
+        num_steps = len(self.config["step_sizes"]) + 1  # +1 for the normal image
+
+        # Create a figure that holds all results for all seeds with adjusted figure size
+        plt.figure(figsize=(5 * num_steps, 5 * len(self.config["temperatures"])), dpi=500)  # Adjust size and DPI
+
+        for temp_idx, temp in enumerate(self.config["temperatures"]):
+            logger.info(f"Running experiment with temperature: {temp}")
+            # Load the SCoPE Diffusion model
+            pipe = sdp_scope.from_pretrained(
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True,
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
+            )
+            pipe = pipe.to(self.config["DEVICE"])
+            image_scope_list = []
+
+            for step_size in self.config["step_sizes"]:
+                logger.info(f"Running with step size: {step_size}")
+                prompt_schedule_list = self.config['prompt_schedule']
+
+                prompt_schedule = []
+                 
+                for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
+                    prompt_schedule.append((stage_id*step_size,p))
+                
+                logger.info(f"Running SCoPE Diffusion on the prompt schedule: {prompt_schedule}")
+                torch.manual_seed(seed)
+                image = pipe(
+                    prompt_schedule,
+                    num_inference_steps=self.config["num_inference_steps"],
+                    callback=None,
+                    callback_steps=1,
+                    temperature=temp,
+                ).images[0]
+                image_scope_list.append(np.array(image))
+
+            logger.info("Running normal Stable Diffusion")
+            # Load the normal Stable Diffusion model
+            pipe = sdp.from_pretrained(
+                self.config["MODEL_ID"], torch_dtype=torch.float16, low_cpu_mem_usage=True
+            )
+            pipe = pipe.to(self.config["DEVICE"])
+            torch.manual_seed(seed)
+            image = pipe(
+                prompt_schedule[-1][1],  # Only the final prompt for normal Stable Diffusion
+                num_inference_steps=self.config["num_inference_steps"],
+                cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache',
+                callback=None,
+                callback_steps=1,
+                temperature=temp,
+            ).images[0]
+            image_normal = np.array(image)
+
+            # Plot results for this seed
+            for idx, image_scope in enumerate(image_scope_list):
+                ax = plt.subplot(len(self.config["temperatures"]), num_steps, temp_idx * num_steps + idx + 1)
+                ax.axis("off")
+                ax.imshow(image_scope)
+                if temp_idx == 0:  # Only display titles for the first row
+                    ax.set_title(f"Step size = {self.config['step_sizes'][idx]}", fontsize=12)
+
+            # Plot normal image for this seed
+            ax = plt.subplot(len(self.config["temperatures"]), num_steps, temp_idx * num_steps + num_steps)
+            ax.axis("off")
+            ax.imshow(image_normal)
+            if temp_idx == 0:  # Only display title for the normal image in the first row
+                ax.set_title("Normal image", fontsize=12)
+
+        # Set overall title for the figure and adjust layout for better spacing
+        plt.suptitle(f"Prompt schedule: {prompt_schedule}", fontsize=16, wrap=True)
+        plt.subplots_adjust()  # Adjust the space between subplots
+
+        # Save the figure with proper DPI and output path
+        output_path = os.path.join(self.exp_dir, f"output_all_seeds.png")
+        plt.savefig(output_path, bbox_inches='tight')
+        plt.close()
+
+        logger.info(f"Saved output for all seeds to {output_path}")
+
