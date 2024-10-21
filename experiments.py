@@ -49,18 +49,19 @@ if __name__ == "__main__":
             "DEVICE": "cuda",  # or "cpu"
             "seed": 42,
             "num_inference_steps": 200,
-            "step_sizes": [1,3,5,10],  # Example step sizes
-            "temperatures": [0.85,1,5,10]
+            "step_sizes": [1,2,3,4,5,6,7,8,9,10],  # Example step sizes
+            "temperatures": [0.85,1,3,5,10,100]
         }
 
         prompt_schedules = [
-        [
-            "A red bicycle parked against a brightly painted wall.",
-            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground.",
-            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby.",
-            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby, blue sky overhead.",
-            "A red bicycle parked against a brightly painted wall, sun casting shadows on the ground, vibrant flowers nearby, blue sky overhead, intricate patterns on the wall."
-        ]
+[
+    "A teapot steaming gently on a rustic kitchen table",
+    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window",
+    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers",
+    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers, with a vase of wildflowers in the corner",
+    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers, with a vase of wildflowers in the corner, an old wooden chair pulled back from the table"
+]
+
         ]
 
         for exp_id, prompt_schedule_list in enumerate(prompt_schedules):
