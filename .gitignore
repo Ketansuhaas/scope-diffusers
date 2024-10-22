@@ -2,3 +2,8 @@
 **/__pycache__/
 sdpcache/
 experiments/
+
+genai_prompts/nltk_data/*
+wandb/*
+genai_prompts/wandb/*
+genai_prompts/.env

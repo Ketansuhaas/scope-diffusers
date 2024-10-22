@@ -4,4 +4,6 @@ config = {
     "num_inference_steps": 200,
     "seed": 42,
     "step_sizes": [28, 10],
+    "wandb_log": True,
+    "wandb_project": "scope_vs_stable_diffusion",
 }
