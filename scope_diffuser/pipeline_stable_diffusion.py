@@ -132,50 +132,82 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0):
+    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="weighted-euclidean-approximation"):
 
         device = embeddings.device
         
         if time_i >= times[-1]:
             return embeddings[-1]
-        
-        for time_id, time_check in enumerate(times):
-            if time_i>=time_check:
-                ti = time_id
-                break
 
         import numpy as np
-        def slerp(v0, v1, p):
-            v0 = v0.detach().cpu().numpy()
-            v1 = v1.detach().cpu().numpy()
+ 
+        if method == 'consecutive-slerp':
+        
+            for time_id, time_check in enumerate(times):
+                if time_i>=time_check:
+                    ti = time_id
+                    break
+                
+            def slerp(v0, v1, p):
+                v0 = v0.detach().cpu().numpy()
+                v1 = v1.detach().cpu().numpy()
 
-            def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
-                """helper function to spherically interpolate two arrays v1 v2"""
-                dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
-                if np.abs(dot) > DOT_THRESHOLD:
-                    v2 = (1 - t) * v0 + t * v1
-                else:
-                    theta_0 = np.arccos(dot)
-                    sin_theta_0 = np.sin(theta_0)
-                    theta_t = theta_0 * t
-                    sin_theta_t = np.sin(theta_t)
-                    s0 = np.sin(theta_0 - theta_t) / sin_theta_0
-                    s1 = sin_theta_t / sin_theta_0
-                    v2 = s0 * v0 + s1 * v1
-                return v2
+                def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
+                    """helper function to spherically interpolate two arrays v1 v2"""
+                    dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
+                    if np.abs(dot) > DOT_THRESHOLD:
+                        v2 = (1 - t) * v0 + t * v1
+                    else:
+                        theta_0 = np.arccos(dot)
+                        sin_theta_0 = np.sin(theta_0)
+                        theta_t = theta_0 * t
+                        sin_theta_t = np.sin(theta_t)
+                        s0 = np.sin(theta_0 - theta_t) / sin_theta_0
+                        s1 = sin_theta_t / sin_theta_0
+                        v2 = s0 * v0 + s1 * v1
+                    return v2
 
-            v3 = np.zeros_like(v0)
-            for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
-                v3[0, i, :] = interpolation(p, v0[0, i, :], v1[0, i, :])
+                v3 = np.zeros_like(v0)
+                for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
+                    v3[-1, i, :] = interpolation(p, v0[-1, i, :], v1[-1, i, :])
+
+                v3 = torch.tensor(v3)
+
+                return v3
+
+            p = (time_i-times[ti])/(times[ti+1]-times[ti])
+            interpolated_embedding = slerp(embeddings[ti],embeddings[ti+1],p).to(device)
+
+        elif method == "weighted-euclidean-approximation":
+            # Calculate weights using the exponential function for all points
+            weights = torch.tensor([np.exp(-abs(t - time_i) / tau) for t in times], device=device)
             
-            v3 = torch.tensor(v3)
+            # Normalize weights
+            weights /= weights.sum()
+            weights = weights.unsqueeze(1)
+            # print("weights: ",weights.shape)
+            # Initialize the interpolated embedding with the same shape as input embeddings
+            interpolated_embedding = torch.zeros_like(embeddings[0])
+            # print("embeddings: ",embeddings.shape)
+            # Perform weighted sum token-wise across prompts
+            for i in range(embeddings[0].shape[1]):  # Iterate over the second dimension (77)
+                # print(f"token {i}")
+                token_feature_values = torch.stack([embeddings[k,-1, i, :] for k in range(embeddings.shape[0])])  # same token from all prompts
+                # print("all prompts: ",token_feature_values.shape)
+                interpolated_value = torch.sum(token_feature_values * weights,dim=0)
+                # print(f"interpolated token {interpolated_value.shape}")
+                interpolated_embedding[-1, i, :] = interpolated_value
+                # print(f"replaced in the final embeddings: {interpolated_embedding.shape}")
+                original_magnitude = torch.norm(embeddings[0][-1, i, :])
+                current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
+                # if i==0:
+                    # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
+                # print(weights)
+                interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
+                # print('corrected: ',torch.norm(interpolated_embedding[-1,i,:]))
+                # exit()
 
-            return v3
-
-        p = (time_i-times[ti])/(times[ti+1]-times[ti])
-        interpolated_embedding = slerp(embeddings[ti],embeddings[ti+1],p).to(device)
-
-        return interpolated_embedding
+        return interpolated_embedding.to(device)
 
     @torch.no_grad()
     @replace_example_docstring(EXAMPLE_DOC_STRING)
@@ -387,6 +419,14 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             prompt_embeddings.append(prompt_embeds)
 
         prompt_embeddings = torch.stack(prompt_embeddings, dim=0)
+
+        # for token in range(77):
+        #     print("token ",token)
+        #     for pe in range(prompt_embeddings.shape[0]):
+        #         # print(prompt_embeddings[pe][-1][token])
+        #         print(torch.norm(prompt_embeddings[pe][-1][token]))
+        # exit()
+
 
         prompt_embeds = self.attention_interpolate_embeddings(
             prompt_embeddings, stage_times, 0, temperature
