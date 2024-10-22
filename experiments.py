@@ -6,6 +6,7 @@ import numpy as np
 from ezcolorlog import root_logger as logger
 import os
 import argparse
+import json
 
 from experiments_pipeline import *
 
@@ -53,22 +54,33 @@ if __name__ == "__main__":
             "temperatures": [0.85,1,3,5,10,100]
         }
 
-        prompt_schedules = [
-[
-    "A teapot steaming gently on a rustic kitchen table",
-    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window",
-    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers",
-    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers, with a vase of wildflowers in the corner",
-    "A teapot steaming gently on a rustic kitchen table, sunlight filtering through a nearby window, surrounded by cups and saucers, with a vase of wildflowers in the corner, an old wooden chair pulled back from the table"
-]
+        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses.json', 'r') as file:
+            data = json.load(file)
 
-        ]
+        for exp_id in range(len(data)):
+            text = data[exp_id]['progressive_prompts']
+            import re
+            # Use regex to find the content inside the square brackets
+            match = re.search(r'\[([\s\S]*?)\]', text)
 
-        for exp_id, prompt_schedule_list in enumerate(prompt_schedules):
-            config_overall["prompt_schedule"] = prompt_schedule_list
+            if match:
+                # Extract the content
+                content = match.group(1)
+                
+                # Split the content into individual prompts
+                prompts = [prompt.strip().strip('"') for prompt in content.split('",')]
+                
+                # Remove any empty strings
+                prompts = [prompt for prompt in prompts if prompt]
+                
+                # Print the result
+                print(len(prompts))
+            else:
+                print("No matching content found.")
+
+            config_overall["prompt_schedule"] = prompts
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
-
 
 
     elif args.experiment == "model":
