@@ -49,12 +49,12 @@ if __name__ == "__main__":
             "MODEL_ID": "stabilityai/stable-diffusion-2-1",
             "DEVICE": "cuda",  # or "cpu"
             "seed": 42,
-            "num_inference_steps": 200,
-            "step_sizes": [1,2,3,4,5,6,7,8,9,10],  # Example step sizes
-            "temperatures": [0.85,1,3,5,10,100]
+            "num_inference_steps": 50,
+            "step_sizes": [1,2,3,4,5,6],  # Example step sizes
+            "temperatures": [0.85,1,3,5,10]
         }
 
-        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses.json', 'r') as file:
+        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_scene.json', 'r') as file:
             data = json.load(file)
 
         for exp_id in range(len(data)):
@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 print(len(prompts))
             else:
                 print("No matching content found.")
-
+                
             config_overall["prompt_schedule"] = prompts
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
