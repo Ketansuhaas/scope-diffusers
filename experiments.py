@@ -51,10 +51,10 @@ if __name__ == "__main__":
             "seed": 42,
             "num_inference_steps": 50,
             "step_sizes": [1,2,3,4,5],#[1,2,3,4,5,6],  
-            "temperatures": [0.05,0.1]
+            "temperatures": [1]#[0.05,0.1,0.3]   # doesn't matter for cslerp, and it is tau for emslerp
         }
 
-        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_scene.json', 'r') as file:
+        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_universal.json', 'r') as file:
             data = json.load(file)
 
         for exp_id in range(len(data)):
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                 print("No matching content found.")
 
             config_overall["prompt_schedule"] = prompts
-            exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(1))
+            exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
 
 

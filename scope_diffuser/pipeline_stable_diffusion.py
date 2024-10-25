@@ -8,6 +8,7 @@ from diffusers.pipelines.stable_diffusion.pipeline_output import (
     StableDiffusionPipelineOutput,
 )
 import inspect
+import torch.nn.functional as F
 
 EXAMPLE_DOC_STRING = """
     Examples:
@@ -132,7 +133,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="emslerp"):
+    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="cslerp"):
 
         device = embeddings.device
         
@@ -168,14 +169,59 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             return v3
 
         if method == 'cslerp':
-        
-            for time_id, time_check in enumerate(times):
-                if time_i>=time_check:
-                    ti = time_id
-                    break
-                
-            p = (time_i-times[ti])/(times[ti+1]-times[ti])
-            interpolated_embedding = slerp(embeddings[ti],embeddings[ti+1],p).to(device)
+            
+            # find cosine similarity of consecutive for all 77 tokens
+            cos_sims = np.zeros((77,4))
+
+            for idx in range(embeddings.shape[0]-1):
+                e1 = embeddings[idx].detach().cpu().numpy()
+                e2 = embeddings[idx+1].detach().cpu().numpy()
+                for i in range(e1.shape[1]):  # Iterate over the second dimension (77)
+                    dot = np.sum(e1[-1,i,:] * e2[-1,i,:] / (np.linalg.norm(e1[-1,i,:]) * np.linalg.norm(e2[-1,i,:])))
+                    cos_sims[i][idx] = dot  
+            # Initialize step_sizes
+            step_sizes = np.zeros_like(cos_sims)
+            # Compute the inverse of each element in cos_sims
+            inv_cos_sims = 1 / cos_sims
+            # Sum the inverses across each row
+            invsum = np.sum(inv_cos_sims, axis=1)
+            # Calculate step_sizes[i][j]
+            for i in range(cos_sims.shape[0]):
+                for j in range(cos_sims.shape[1]):
+                    step_sizes[i][j] = times[-1] / (invsum[i] * cos_sims[i][j])
+            # Calculate cumulative sum across rows
+            cumsum_step_sizes = np.cumsum(step_sizes, axis=1)
+            # Create a column of zeros
+            zero_column = np.zeros((step_sizes.shape[0], 1))
+            # Concatenate the zero column with the cumulative sum
+            times = np.hstack((zero_column, cumsum_step_sizes))
+            # all good till here
+
+            # check below
+            interpolated_embedding = torch.zeros_like(embeddings[0])
+            for token_id in range(77):
+                for time_id, time_check in enumerate(times[token_id]):
+                    if time_i>=time_check:
+                        ti = time_id
+                        break
+                p = (time_i-times[token_id][ti])/(times[token_id][ti+1]-times[token_id][ti])
+                def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
+                    v0 = v0.detach().cpu().numpy()
+                    v1 = v1.detach().cpu().numpy()
+                    """helper function to spherically interpolate two arrays v1 v2"""
+                    dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
+                    if np.abs(dot) > DOT_THRESHOLD:
+                        v2 = (1 - t) * v0 + t * v1
+                    else:
+                        theta_0 = np.arccos(dot)
+                        sin_theta_0 = np.sin(theta_0)
+                        theta_t = theta_0 * t
+                        sin_theta_t = np.sin(theta_t)
+                        s0 = np.sin(theta_0 - theta_t) / sin_theta_0
+                        s1 = sin_theta_t / sin_theta_0
+                        v2 = s0 * v0 + s1 * v1
+                    return v2
+                interpolated_embedding[-1,token_id,:] = torch.tensor(interpolation(p,embeddings[ti][-1,token_id,:],embeddings[ti+1][-1,token_id,:])).to(device)
 
         elif method == "weighted-euclidean-approximation":
             # Calculate weights using the exponential function for all points
