@@ -132,7 +132,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="weighted-euclidean-approximation"):
+    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="emslerp"):
 
         device = embeddings.device
         
@@ -140,41 +140,40 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             return embeddings[-1]
 
         import numpy as np
- 
-        if method == 'consecutive-slerp':
+        def slerp(v0, v1, p):
+            v0 = v0.detach().cpu().numpy()
+            v1 = v1.detach().cpu().numpy()
+
+            def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
+                """helper function to spherically interpolate two arrays v1 v2"""
+                dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
+                if np.abs(dot) > DOT_THRESHOLD:
+                    v2 = (1 - t) * v0 + t * v1
+                else:
+                    theta_0 = np.arccos(dot)
+                    sin_theta_0 = np.sin(theta_0)
+                    theta_t = theta_0 * t
+                    sin_theta_t = np.sin(theta_t)
+                    s0 = np.sin(theta_0 - theta_t) / sin_theta_0
+                    s1 = sin_theta_t / sin_theta_0
+                    v2 = s0 * v0 + s1 * v1
+                return v2
+
+            v3 = np.zeros_like(v0)
+            for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
+                v3[-1, i, :] = interpolation(p, v0[-1, i, :], v1[-1, i, :])
+
+            v3 = torch.tensor(v3)
+
+            return v3
+
+        if method == 'cslerp':
         
             for time_id, time_check in enumerate(times):
                 if time_i>=time_check:
                     ti = time_id
                     break
                 
-            def slerp(v0, v1, p):
-                v0 = v0.detach().cpu().numpy()
-                v1 = v1.detach().cpu().numpy()
-
-                def interpolation(t, v0, v1, DOT_THRESHOLD=0.9995):
-                    """helper function to spherically interpolate two arrays v1 v2"""
-                    dot = np.sum(v0 * v1 / (np.linalg.norm(v0) * np.linalg.norm(v1)))
-                    if np.abs(dot) > DOT_THRESHOLD:
-                        v2 = (1 - t) * v0 + t * v1
-                    else:
-                        theta_0 = np.arccos(dot)
-                        sin_theta_0 = np.sin(theta_0)
-                        theta_t = theta_0 * t
-                        sin_theta_t = np.sin(theta_t)
-                        s0 = np.sin(theta_0 - theta_t) / sin_theta_0
-                        s1 = sin_theta_t / sin_theta_0
-                        v2 = s0 * v0 + s1 * v1
-                    return v2
-
-                v3 = np.zeros_like(v0)
-                for i in range(v0.shape[1]):  # Iterate over the second dimension (77)
-                    v3[-1, i, :] = interpolation(p, v0[-1, i, :], v1[-1, i, :])
-
-                v3 = torch.tensor(v3)
-
-                return v3
-
             p = (time_i-times[ti])/(times[ti+1]-times[ti])
             interpolated_embedding = slerp(embeddings[ti],embeddings[ti+1],p).to(device)
 
@@ -206,6 +205,16 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
                 # print('corrected: ',torch.norm(interpolated_embedding[-1,i,:]))
                 # exit()
+
+        elif method == "emslerp":
+            p = (time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
+            p_decay = 1#(time_i/times[-1])**tau    #lesser stays close to p1 at a timestep
+
+            interpolated_embedding = embeddings[0]
+
+            for ei in range(1,embeddings.shape[0]):
+                interpolated_embedding = slerp(interpolated_embedding,embeddings[ei],p)
+                p *= p_decay
 
         return interpolated_embedding.to(device)
 

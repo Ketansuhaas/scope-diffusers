@@ -50,8 +50,8 @@ if __name__ == "__main__":
             "DEVICE": "cuda",  # or "cpu"
             "seed": 42,
             "num_inference_steps": 50,
-            "step_sizes": [1,2,3,4,5,6],  # Example step sizes
-            "temperatures": [0.85,1,3,5,10]
+            "step_sizes": [1,2,3,4,5],#[1,2,3,4,5,6],  
+            "temperatures": [0.05,0.1]
         }
 
         with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_scene.json', 'r') as file:
@@ -77,9 +77,9 @@ if __name__ == "__main__":
                 print(len(prompts))
             else:
                 print("No matching content found.")
-                
+
             config_overall["prompt_schedule"] = prompts
-            exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
+            exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(1))
             exp_seed.run()
 
 
