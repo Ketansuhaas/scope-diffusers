@@ -24,7 +24,6 @@ EXAMPLE_DOC_STRING = """
         ```
 """
 
-
 def rescale_noise_cfg(noise_cfg, noise_pred_text, guidance_rescale=0.0):
     """
     Rescale `noise_cfg` according to `guidance_rescale`. Based on findings of [Common Diffusion Noise Schedules and
@@ -133,7 +132,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="cslerp"):
+    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="nlerp"):
 
         device = embeddings.device
         
@@ -223,19 +222,37 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                     return v2
                 interpolated_embedding[-1,token_id,:] = torch.tensor(interpolation(p,embeddings[ti][-1,token_id,:],embeddings[ti+1][-1,token_id,:])).to(device)
 
-        elif method == "weighted-euclidean-approximation":
-            # Calculate weights using the exponential function for all points
-            weights = torch.tensor([np.exp(-abs(t - time_i) / tau) for t in times], device=device)
-            
-            # Normalize weights
-            weights /= weights.sum()
-            weights = weights.unsqueeze(1)
-            # print("weights: ",weights.shape)
+        elif method == "nlerp":
+
+            # adjust stepsizes based on consecutive euclidean distances
+            distances = np.zeros((77,4))
+            for idx in range(embeddings.shape[0]-1):
+                e1 = embeddings[idx].detach().cpu().numpy()
+                e2 = embeddings[idx+1].detach().cpu().numpy()
+                for i in range(e1.shape[1]):  # Iterate over the second dimension (77)
+                    euclidean_distance = np.linalg.norm(e1[-1,i,:] - e2[-1,i,:])                    
+                    distances[i][idx] = euclidean_distance
+            # Normalize each row by dividing by its sum
+            row_sums = distances.sum(axis=1, keepdims=True)
+            distances_normalized = distances / (row_sums+1e-5)
+            # Multiply all elements by times[-1]
+            distances = distances_normalized * times[-1]
+            distances = np.cumsum(distances, axis=1)
+            zero_column = np.zeros((distances.shape[0], 1))
+            # Concatenate the zero column with the cumulative sum
+            times = np.hstack((zero_column, distances))
+
+            #============ABOVE IS OPTIONAL============================================ (times[i]->times)
+
             # Initialize the interpolated embedding with the same shape as input embeddings
             interpolated_embedding = torch.zeros_like(embeddings[0])
-            # print("embeddings: ",embeddings.shape)
             # Perform weighted sum token-wise across prompts
             for i in range(embeddings[0].shape[1]):  # Iterate over the second dimension (77)
+                # Calculate weights using the exponential function for all points
+                weights = torch.tensor([np.exp(-abs(t - time_i)**2 / tau) for t in times[i]], device=device)
+                # Normalize weights
+                weights /= weights.sum()
+                weights = weights.unsqueeze(1)
                 # print(f"token {i}")
                 token_feature_values = torch.stack([embeddings[k,-1, i, :] for k in range(embeddings.shape[0])])  # same token from all prompts
                 # print("all prompts: ",token_feature_values.shape)
@@ -253,12 +270,21 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 # exit()
 
         elif method == "emslerp":
-            p = (time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
+            # p = (time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
+            # p_decay = 1#(time_i/times[-1])**tau    #lesser stays close to p1 at a timestep
+
+            # interpolated_embedding = embeddings[0]
+
+            # for ei in range(1,embeddings.shape[0]):
+            #     interpolated_embedding = slerp(interpolated_embedding,embeddings[ei],p)
+            #     p *= p_decay
+
+            p = 1-(time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
             p_decay = 1#(time_i/times[-1])**tau    #lesser stays close to p1 at a timestep
 
-            interpolated_embedding = embeddings[0]
+            interpolated_embedding = embeddings[-1]
 
-            for ei in range(1,embeddings.shape[0]):
+            for ei in range(embeddings.shape[0]-2,-1,-1):
                 interpolated_embedding = slerp(interpolated_embedding,embeddings[ei],p)
                 p *= p_decay
 
