@@ -224,6 +224,9 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
         elif method == "nlerp":
 
+            gamma = 2
+            tau = 100*(1 - (time_i/times[-1]))**gamma + 0.5 # tau (temperature) decreases across timesteps
+
             # adjust stepsizes based on consecutive euclidean distances
             distances = np.zeros((77,4))
             for idx in range(embeddings.shape[0]-1):
