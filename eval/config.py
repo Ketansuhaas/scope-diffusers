@@ -12,7 +12,7 @@ class Config:
     NUM_INFERENCE_STEPS: int = 50
     TEMPERATURE: float = 1.0
     MODEL_ID: str = "stabilityai/stable-diffusion-2-1-base"
-    STEP_SIZE: int = 3
+    STEP_SIZE: int = 2.5
     SEED: int = 42
 
     def create_exp_name(self) -> str:
