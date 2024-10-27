@@ -50,12 +50,13 @@ if __name__ == "__main__":
             "DEVICE": "cuda",  # or "cpu"
             "seed": 42,
             "num_inference_steps": 50,
-            "step_sizes": [1,2,3], 
+            "step_sizes": [1,2,3], #trying to remove step size
             "temperatures": [1]   # doesn't matter for cslerp, and it is tau for emslerp
         }
 
         with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_universal_new.json', 'r') as file:
             data = json.load(file)
+
 
         for exp_id in range(len(data)):
             text = data[exp_id]['progressive_prompts']
@@ -77,10 +78,19 @@ if __name__ == "__main__":
                 print(len(prompts))
             else:
                 print("No matching content found.")
-                
+            # prompts = [
+            #     "A little girl on the street holding pocket watches for sale",
+            #     "A little girl on a quiet street holding worn pocket watches for sale, some old buildings in the background",
+            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path",
+            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path, scattered leaves on the ground",
+            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path, scattered leaves on the ground, dim evening light"
+            # ]
+
+
             config_overall["prompt_schedule"] = prompts
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
+            
 
 
     elif args.experiment == "model":
