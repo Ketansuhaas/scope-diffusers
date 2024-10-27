@@ -51,7 +51,7 @@ if __name__ == "__main__":
             "seed": 42,
             "num_inference_steps": 50,
             "step_sizes": [0.5,1,1.5,2,2.5,3,4], 
-            "temperatures": [0.5,1,5,10]#[1]#[0.5,1]#[0.05,0.1,0.3]   # doesn't matter for cslerp, and it is tau for emslerp
+            "temperatures": [0.5,1,3,5]#[1]#[0.5,1]#[0.05,0.1,0.3]   # doesn't matter for cslerp, and it is tau for emslerp
         }
 
         with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_universal.json', 'r') as file:
