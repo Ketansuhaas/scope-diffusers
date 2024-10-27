@@ -297,6 +297,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
     @replace_example_docstring(EXAMPLE_DOC_STRING)
     def __call__(
         self,
+        interpolation_technique=None,
         prompt_schedule=None,
         temperature: float = 1.0,
         height: Optional[int] = None,
@@ -513,7 +514,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
 
         prompt_embeds = self.attention_interpolate_embeddings(
-            prompt_embeddings, stage_times, 0, temperature
+            prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
         )
 
         # 5. Prepare latent variables
@@ -546,7 +547,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         )
 
         prompt_embeds = self.attention_interpolate_embeddings(
-            prompt_embeddings, stage_times, 0, temperature
+            prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
         )
 
         # 6. Prepare extra step kwargs. TODO: Logic should ideally just be moved out of the pipeline
@@ -578,7 +579,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
                 # -------------------------------------------------------------------------------------------------------------------------------------
                 prompt_embeds = self.attention_interpolate_embeddings(
-                    prompt_embeddings, stage_times, i, temperature
+                    prompt_embeddings, stage_times, i, temperature, method = interpolation_technique
                 )
 
                 # --------------------------ADDED ABOVE----------------------------------------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 sdpcache/
 experiments/
 
-genai_prompts/nltk_data/*
+eval/genai_prompts/nltk_data/*
 wandb/*
-genai_prompts/wandb/*
-genai_prompts/.env
+eval/genai_prompts/wandb/*
+eval/genai_prompts/.env

@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 # Set up a custom download directory for NLTK data
-nltk_data_dir = './nltk_data'
+nltk_data_dir = 'eval/genai_prompts/nltk_data'
 if not os.path.exists(nltk_data_dir):
     os.makedirs(nltk_data_dir)
 
@@ -38,6 +38,10 @@ class GenAIDataset:
     def get_human_ratings(self, index):
         # Retrieve human ratings for each model at a specific index
         return self.dataset['train']['HumanRatings'][index]
+
+    def get_tags(self, index):
+        # Retrieve tags for each prompt at a specific index
+        return self.dataset['train']['Tags'][index]
 
     def analyze_prompt(self, prompt):
         # Tokenize using NLTK to count the actual number of words
@@ -80,6 +84,7 @@ class GenAIDataset:
         num_verbs = []
         num_adverbs = []
         human_ratings = []
+        tags = []
 
         # Iterate over dataset to gather data
         for i in range(len(self.dataset['train']) if not num_samples else num_samples):
@@ -101,6 +106,10 @@ class GenAIDataset:
             ratings = self.get_human_ratings(i)
             human_ratings.append(ratings)
 
+            # get tags
+            tag = self.get_tags(i)
+            tags.append(tag)
+
         # Create DataFrame
         df = pd.DataFrame({
             'Index': indices,                 # Include the dataset index
@@ -112,7 +121,8 @@ class GenAIDataset:
             'Num_Nouns': num_nouns,           # Count of nouns
             'Num_Verbs': num_verbs,           # Count of verbs
             'Num_Adverbs': num_adverbs,       # Count of adverbs
-            'Human_Ratings': human_ratings    # Human evaluation scores
+            'Human_Ratings': human_ratings,    # Human evaluation scores
+            'Tags': tags                      # Tags associated with each prompt
         })
 
         return df
