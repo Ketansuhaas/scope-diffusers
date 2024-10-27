@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Config:
-    SYSTEM_PROMPT: str = "V1"
+    SYSTEM_PROMPT: str = "V2"
     FILTER_TAGS: dict = field(default_factory=lambda: {'advanced': [], 'basic': ["Scene"]})
     NUM_FILTER: int = 10
     FILTER_BY: str = 'Num_Tokens'
@@ -12,7 +12,7 @@ class Config:
     NUM_INFERENCE_STEPS: int = 50
     TEMPERATURE: float = 1.0
     MODEL_ID: str = "stabilityai/stable-diffusion-2-1-base"
-    STEP_SIZE: int = 2.5
+    STEP_SIZE: int = 3
     SEED: int = 42
 
     def create_exp_name(self) -> str:
