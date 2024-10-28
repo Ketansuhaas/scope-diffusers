@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble",
+    "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble, standing on green grass",
+    "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble, standing on green grass, with a clear blue sky",
+    "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble, standing on green grass, with a clear blue sky, surrounded by blooming flowers",
+    "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble, standing on green grass, with a clear blue sky, surrounded by blooming flowers, with a distant tennis court in the background"
+]
+```

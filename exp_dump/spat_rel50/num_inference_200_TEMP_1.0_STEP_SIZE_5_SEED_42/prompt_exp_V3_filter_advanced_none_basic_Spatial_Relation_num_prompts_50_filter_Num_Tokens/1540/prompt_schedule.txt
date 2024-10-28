@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two sets of boxes on the floor, paper box on left, plastic box on right",
+    "Two sets of boxes on the floor, paper box on left, plastic box on right, paper boxes neatly arranged",
+    "Two sets of boxes on the floor, paper box on left, plastic box on right, paper boxes neatly arranged, plastic boxes scattered",
+    "Two sets of boxes on the floor, paper box on left, plastic box on right, paper boxes neatly arranged, plastic boxes scattered, tiled floor",
+    "Two sets of boxes on the floor, paper box on left, plastic box on right, paper boxes neatly arranged, plastic boxes scattered, tiled floor, sunlight streaming through window"
+]
+```

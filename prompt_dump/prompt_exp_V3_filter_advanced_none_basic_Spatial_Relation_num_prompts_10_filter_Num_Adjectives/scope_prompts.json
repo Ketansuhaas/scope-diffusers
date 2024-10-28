@@ -1,0 +1,62 @@
+[
+    {
+        "1484": {
+            "initial_prompt": "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A little brown-haired boy playing a computer game while another boy sits next to him looking anxious\",\n    \"A little brown-haired boy playing a computer game while another boy sits next to him looking anxious, a cluttered desk\",\n    \"A little brown-haired boy playing a computer game while another boy sits next to him looking anxious, a cluttered desk, colorful gaming posters\",\n    \"A little brown-haired boy playing a computer game while another boy sits next to him looking anxious, a cluttered desk, colorful gaming posters, dim room lighting\",\n    \"A little brown-haired boy playing a computer game while another boy sits next to him looking anxious, a cluttered desk, colorful gaming posters, dim room lighting, an open window casting a soft glow\"\n]\n```"
+        }
+    },
+    {
+        "1318": {
+            "initial_prompt": "A little boy sits on a large red storage box and holds up a smaller green one.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A little boy sits on a large red storage box and holds up a smaller green one\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, bright sunlit room\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, bright sunlit room, colorful toys scattered around\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, bright sunlit room, colorful toys scattered around, walls adorned with whimsical art\"\n]\n```"
+        }
+    },
+    {
+        "1463": {
+            "initial_prompt": "Red chillies with all green chillies on the left side and all yellow chillies with no green chillies on the right side.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Red chillies with all green chillies on the left side and all yellow chillies on the right side\",\n    \"Red chillies with all green chillies on the left side and all yellow chillies on the right side, placed on a wooden table\",\n    \"Red chillies with all green chillies on the left side and all yellow chillies on the right side, placed on a wooden table, natural sunlight streaming through a nearby window\",\n    \"Red chillies with all green chillies on the left side and all yellow chillies on the right side, placed on a wooden table, natural sunlight streaming through a nearby window, casting distinct shadows\",\n    \"Red chillies with all green chillies on the left side and all yellow chillies on the right side, placed on a wooden table, natural sunlight streaming through a nearby window, casting distinct shadows, a bowl in the background\"\n]\n```"
+        }
+    },
+    {
+        "1582": {
+            "initial_prompt": "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A duo of laptops rests on the desk\",\n    \"A duo of laptops rests on the desk, wooden surface\",\n    \"A duo of laptops rests on the desk, wooden surface, one open to a bustling social media feed\",\n    \"A duo of laptops rests on the desk, wooden surface, one open to a bustling social media feed, the other displays a serene nature wallpaper\",\n    \"A duo of laptops rests on the desk, wooden surface, one open to a bustling social media feed, the other displays a serene nature wallpaper, a cup of coffee beside them\"\n]\n```"
+        }
+    },
+    {
+        "1461": {
+            "initial_prompt": "A yellow felt box has no metallic blue spheres on the left side and has blue metallic spheres on the right side.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A yellow felt box with no metallic blue spheres on the left side, and blue metallic spheres on the right side\",\n    \"A yellow felt box with no metallic blue spheres on the left side, blue metallic spheres on the right side, soft texture\",\n    \"A yellow felt box with no metallic blue spheres on the left side, blue metallic spheres on the right side, soft texture, simple geometric design\",\n    \"A yellow felt box with no metallic blue spheres on the left side, blue metallic spheres on the right side, soft texture, simple geometric design, subtle fabric shine\",\n    \"A yellow felt box with no metallic blue spheres on the left side, blue metallic spheres on the right side, soft texture, simple geometric design, subtle fabric shine, orderly arrangement of spheres\"\n]\n```"
+        }
+    },
+    {
+        "1044": {
+            "initial_prompt": "A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp\",\n    \"A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp, polished hardwood floor\",\n    \"A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp, polished hardwood floor, cozy room corner\",\n    \"A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp, polished hardwood floor, cozy room corner, faint floral wallpaper\",\n    \"A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp, polished hardwood floor, cozy room corner, faint floral wallpaper, soft shadows cast by the lamp\"\n]\n```"
+        }
+    },
+    {
+        "358": {
+            "initial_prompt": "Two birds are chasing each other in the air, with the one flying higher having a long tail and the other bird having a short tail.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two birds are chasing each other in the air, one flying higher with a long tail\",\n    \"Two birds are chasing each other in the air, one flying higher with a long tail, fluffy clouds\",\n    \"Two birds are chasing each other in the air, one flying higher with a long tail, fluffy clouds, bright blue sky\",\n    \"Two birds are chasing each other in the air, one flying higher with a long tail, fluffy clouds, bright blue sky, bird below has a short tail\",\n    \"Two birds are chasing each other in the air, one flying higher with a long tail, fluffy clouds, bright blue sky, bird below has a short tail, sunlight glinting off wings\"\n]\n```"
+        }
+    },
+    {
+        "365": {
+            "initial_prompt": "In the pond, two ducks swim near each other: the larger one has a bright green head, while the smaller one is all brown.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the pond, two ducks swim near each other\",\n    \"In the pond, two ducks swim near each other, the larger one has a bright green head\",\n    \"In the pond, two ducks swim near each other, the larger one has a bright green head, the smaller one is all brown\",\n    \"In the pond, two ducks swim near each other, the larger one has a bright green head, the smaller one is all brown, still water reflecting their image\",\n    \"In the pond, two ducks swim near each other, the larger one has a bright green head, the smaller one is all brown, still water reflecting their image, tall reeds surrounding the pond\"\n]\n```"
+        }
+    },
+    {
+        "801": {
+            "initial_prompt": "A person in a bright yellow raincoat stands next to another in a sleek black trench coat.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, amidst a bustling city street\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, amidst a bustling city street, surrounded by tall glass buildings\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, amidst a bustling city street, surrounded by tall glass buildings, with colorful umbrellas dotting the crowd\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, amidst a bustling city street, surrounded by tall glass buildings, with colorful umbrellas dotting the crowd, reflections of neon signs on wet pavement\"\n]\n```"
+        }
+    },
+    {
+        "976": {
+            "initial_prompt": "A tomato vine with several tomatoes on it, all yellow except the largest which is red.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A tomato vine with several tomatoes on it, all yellow except the largest which is red\",\n    \"A tomato vine with several tomatoes on it, all yellow except the largest which is red, lush green leaves\",\n    \"A tomato vine with several tomatoes on it, all yellow except the largest which is red, lush green leaves, wooden stakes supporting the vine\",\n    \"A tomato vine with several tomatoes on it, all yellow except the largest which is red, lush green leaves, wooden stakes supporting the vine, sunlight filtering through\",\n    \"A tomato vine with several tomatoes on it, all yellow except the largest which is red, lush green leaves, wooden stakes supporting the vine, sunlight filtering through, a garden in the background\"\n]\n```"
+        }
+    }
+]

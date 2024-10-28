@@ -7,6 +7,8 @@ from ezcolorlog import root_logger as logger
 import os
 import argparse
 import json
+from get_preprocessed_prompts import get_preprocessed_prompt_lists
+
 
 from experiments_pipeline import *
 
@@ -16,7 +18,7 @@ def parse_args():
         "--experiment",
         type=str,
         choices=["seed", "model", "temperature","overall"],
-        required=True,
+        default="overall",
         help="Type of experiment to run: 'seed' or 'model'",
     )
     parser.add_argument(
@@ -54,44 +56,13 @@ if __name__ == "__main__":
             "temperatures": [1]   # doesn't matter for cslerp, and it is tau for emslerp
         }
 
-        with open('/projectnb/vkolagrp/ketanss/scope-diffusers/genai_prompts/scope_prompts_responses_universal_new.json', 'r') as file:
-            data = json.load(file)
+        prompts = get_preprocessed_prompt_lists(param='num_nouns', count=100, ascending=True)
 
-
-        for exp_id in range(len(data)):
-            text = data[exp_id]['progressive_prompts']
-            import re
-            # Use regex to find the content inside the square brackets
-            match = re.search(r'\[([\s\S]*?)\]', text)
-
-            if match:
-                # Extract the content
-                content = match.group(1)
-                
-                # Split the content into individual prompts
-                prompts = [prompt.strip().strip('"') for prompt in content.split('",')]
-                
-                # Remove any empty strings
-                prompts = [prompt for prompt in prompts if prompt]
-                
-                # Print the result
-                print(len(prompts))
-            else:
-                print("No matching content found.")
-            # prompts = [
-            #     "A little girl on the street holding pocket watches for sale",
-            #     "A little girl on a quiet street holding worn pocket watches for sale, some old buildings in the background",
-            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path",
-            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path, scattered leaves on the ground",
-            #     "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path, scattered leaves on the ground, dim evening light"
-            # ]
-
-
-            config_overall["prompt_schedule"] = prompts
+        for exp_id in range(len(prompts)):
+            config_overall["prompt_schedule"] = prompts[exp_id]
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
-            
-
+        
 
     elif args.experiment == "model":
         # Custom config for model experiment

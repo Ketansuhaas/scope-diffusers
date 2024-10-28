@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "At the bakery, two cakes are on display",
+    "At the bakery, two cakes are on display, one towering with layers",
+    "At the bakery, two cakes are on display, one towering with layers, intricate frosting designs",
+    "At the bakery, two cakes are on display, one towering with layers, intricate frosting designs, the other a simple sheet cake",
+    "At the bakery, two cakes are on display, one towering with layers, intricate frosting designs, the other a simple sheet cake adorned with fresh fruit"
+]
+```

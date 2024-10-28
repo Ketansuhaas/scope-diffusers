@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper",
+    "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered workspace",
+    "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered workspace, scattered papers",
+    "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered workspace, scattered papers, softly lit by a desk lamp",
+    "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered workspace, scattered papers, softly lit by a desk lamp, a cozy room with bookshelves lining the walls"
+]
+```

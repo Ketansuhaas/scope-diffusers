@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two birds are chasing each other in the air",
+    "Two birds are chasing each other in the air, one flying higher with a long tail",
+    "Two birds are chasing each other in the air, one flying higher with a long tail, the lower bird with a short tail",
+    "Two birds are chasing each other in the air, one flying higher with a long tail, the lower bird with a short tail, clear blue sky as a backdrop",
+    "Two birds are chasing each other in the air, one flying higher with a long tail, the lower bird with a short tail, clear blue sky as a backdrop, fluffy white clouds scattered across"
+]
+```

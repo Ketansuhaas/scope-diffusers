@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A group of children play around an oak tree, more children in the tree than under it",
+    "A group of children play around an oak tree, more children in the tree than under it, sprawling roots",
+    "A group of children play around an oak tree, more children in the tree than under it, sprawling roots, scattered autumn leaves",
+    "A group of children play around an oak tree, more children in the tree than under it, sprawling roots, scattered autumn leaves, sun-dappled branches",
+    "A group of children play around an oak tree, more children in the tree than under it, sprawling roots, scattered autumn leaves, sun-dappled branches, distant park path"
+]
+```

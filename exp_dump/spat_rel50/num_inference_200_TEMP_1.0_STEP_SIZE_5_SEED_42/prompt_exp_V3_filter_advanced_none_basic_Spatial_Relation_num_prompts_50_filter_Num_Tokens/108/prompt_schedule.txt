@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In a gym, there are two people: the one closer to the table is resting, while the one further away from the table is lifting weights",
+    "In a gym, there are two people: the one closer to the table is resting, while the one further away from the table is lifting weights, exercise equipment scattered around",
+    "In a gym, there are two people: the one closer to the table is resting, while the one further away from the table is lifting weights, exercise equipment scattered around, large mirrors on the walls",
+    "In a gym, there are two people: the one closer to the table is resting, while the one further away from the table is lifting weights, exercise equipment scattered around, large mirrors on the walls, bright fluorescent lighting",
+    "In a gym, there are two people: the one closer to the table is resting, while the one further away from the table is lifting weights, exercise equipment scattered around, large mirrors on the walls, bright fluorescent lighting, motivational posters hanging"
+]
+```

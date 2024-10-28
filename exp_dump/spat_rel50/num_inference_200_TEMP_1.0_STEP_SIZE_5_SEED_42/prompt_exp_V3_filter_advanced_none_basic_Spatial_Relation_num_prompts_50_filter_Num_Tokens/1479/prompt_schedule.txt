@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A trainer and three dogs are standing in the playground",
+    "A trainer and three dogs are standing in the playground, tired dog closest",
+    "A trainer and three dogs are standing in the playground, tired dog closest, lush green grass",
+    "A trainer and three dogs are standing in the playground, tired dog closest, lush green grass, bright blue sky",
+    "A trainer and three dogs are standing in the playground, tired dog closest, lush green grass, bright blue sky, trees in the distance"
+]
+```

@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline",
+    "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline, towering skyscrapers",
+    "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline, towering skyscrapers, sunset casting a warm glow",
+    "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline, towering skyscrapers, sunset casting a warm glow, city lights beginning to twinkle",
+    "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline, towering skyscrapers, sunset casting a warm glow, city lights beginning to twinkle, distant bridge arching over a river"
+]
+```

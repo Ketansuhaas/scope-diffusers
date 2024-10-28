@@ -1,0 +1,11 @@
+Sure! Here's a Python list of prompts following your guidelines:
+
+```python
+prompts = [
+    "Some balls are on the table and on the floor, more balls on the table",
+    "Some balls are on the table and on the floor, more balls on the table, wooden surface",
+    "Some balls are on the table and on the floor, more balls on the table, wooden surface, dim lighting",
+    "Some balls are on the table and on the floor, more balls on the table, wooden surface, dim lighting, scattered papers",
+    "Some balls are on the table and on the floor, more balls on the table, wooden surface, dim lighting, scattered papers, an open window revealing a moonlit garden"
+]
+```

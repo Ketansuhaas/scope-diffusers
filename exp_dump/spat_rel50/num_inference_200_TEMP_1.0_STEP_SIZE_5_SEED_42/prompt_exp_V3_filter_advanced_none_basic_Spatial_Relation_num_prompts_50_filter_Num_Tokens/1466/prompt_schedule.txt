@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two dragons fly towards the castle",
+    "Two dragons fly towards the castle, surrounded by a sprawling forest",
+    "Two dragons fly towards the castle, surrounded by a sprawling forest, under a clear blue sky",
+    "Two dragons fly towards the castle, surrounded by a sprawling forest, under a clear blue sky, the dragon with a backpack and no hat on the left of the dragon without a backpack and with a hat",
+    "Two dragons fly towards the castle, surrounded by a sprawling forest, under a clear blue sky, the dragon with a backpack and no hat on the left of the dragon without a backpack and with a hat, castle towers looming in the distance"
+]
+```

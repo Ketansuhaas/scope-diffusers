@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Four fountain pens laid out on a table",
+    "Four fountain pens laid out on a table, two pens in the center have caps",
+    "Four fountain pens laid out on a table, two pens in the center have caps, others are uncapped",
+    "Four fountain pens laid out on a table, two pens in the center have caps, others are uncapped, polished wood surface",
+    "Four fountain pens laid out on a table, two pens in the center have caps, others are uncapped, polished wood surface, soft ambient light"
+]
+```

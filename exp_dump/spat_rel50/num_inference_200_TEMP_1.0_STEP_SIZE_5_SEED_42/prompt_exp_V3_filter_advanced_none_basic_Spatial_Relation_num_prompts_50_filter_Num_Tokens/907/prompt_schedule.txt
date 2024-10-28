@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Three ceramic mugs sit on the kitchen counter",
+    "Three ceramic mugs sit on the kitchen counter, one with a floral pattern",
+    "Three ceramic mugs sit on the kitchen counter, one with a floral pattern, neat tiled surface",
+    "Three ceramic mugs sit on the kitchen counter, one with a floral pattern, neat tiled surface, warm sunlight streaming in",
+    "Three ceramic mugs sit on the kitchen counter, one with a floral pattern, neat tiled surface, warm sunlight streaming in, casting soft shadows"
+]
+```

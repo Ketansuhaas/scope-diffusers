@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two dragons fly towards the castle",
+    "Two dragons fly towards the castle, distant spires rise over the horizon",
+    "Two dragons fly towards the castle, distant spires rise over the horizon, lush forests flank their path",
+    "Two dragons fly towards the castle, distant spires rise over the horizon, lush forests flank their path, the sky painted a vibrant sunset",
+    "Two dragons fly towards the castle, distant spires rise over the horizon, lush forests flank their path, the sky painted a vibrant sunset, wisps of clouds entwined around the dragons' wings"
+]
+```

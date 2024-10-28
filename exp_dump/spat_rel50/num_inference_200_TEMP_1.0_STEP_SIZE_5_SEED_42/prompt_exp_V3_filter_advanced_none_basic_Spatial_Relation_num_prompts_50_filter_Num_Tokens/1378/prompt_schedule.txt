@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In a classroom, students look at a math problem on the board in confusion, the teacher stands to the side",
+    "In a classroom, students look at a math problem on the board in confusion, teacher stands to the side, desks filled with books",
+    "In a classroom, students look at a math problem on the board in confusion, teacher stands to the side, desks filled with books, walls adorned with educational posters",
+    "In a classroom, students look at a math problem on the board in confusion, teacher stands to the side, desks filled with books, walls adorned with educational posters, bright overhead lights",
+    "In a classroom, students look at a math problem on the board in confusion, teacher stands to the side, desks filled with books, walls adorned with educational posters, bright overhead lights, windows letting in natural light"
+]
+```

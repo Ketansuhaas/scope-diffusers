@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In the pond, two ducks swim near each other",
+    "In the pond, two ducks swim near each other, tall reeds surrounding",
+    "In the pond, two ducks swim near each other, tall reeds surrounding, lily pads floating gently",
+    "In the pond, two ducks swim near each other, tall reeds surrounding, lily pads floating gently, water reflecting the soft light of the setting sun",
+    "In the pond, two ducks swim near each other, tall reeds surrounding, lily pads floating gently, water reflecting the soft light of the setting sun, trees casting long shadows on the water's surface"
+]
+```

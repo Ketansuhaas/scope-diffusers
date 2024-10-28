@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In a mysterious forest, a green tree shimmering with a silvery glow contrasts a dim red tree",
+    "In a mysterious forest, tall trees, a green tree shimmering with a silvery glow contrasts a dim red tree",
+    "In a mysterious forest, tall trees, lush undergrowth, a green tree shimmering with a silvery glow contrasts a dim red tree",
+    "In a mysterious forest, tall trees, lush undergrowth, rays of sunlight, a green tree shimmering with a silvery glow contrasts a dim red tree",
+    "In a mysterious forest, tall trees, lush undergrowth, rays of sunlight filtering through the canopy, a green tree shimmering with a silvery glow contrasts a dim red tree"
+]
+```

@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "On the beach, two surfboards lie in the sand",
+    "On the beach, two surfboards lie in the sand, gentle ocean waves",
+    "On the beach, two surfboards lie in the sand, gentle ocean waves, sunlit sky",
+    "On the beach, two surfboards lie in the sand, gentle ocean waves, sunlit sky, scattered seashells",
+    "On the beach, two surfboards lie in the sand, gentle ocean waves, sunlit sky, scattered seashells, beachgoers in the distance"
+]
+```

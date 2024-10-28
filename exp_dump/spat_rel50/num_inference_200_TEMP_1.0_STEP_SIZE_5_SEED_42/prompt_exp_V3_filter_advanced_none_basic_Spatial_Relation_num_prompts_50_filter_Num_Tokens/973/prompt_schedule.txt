@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In the sunlit bathroom, three fluffy towels hang in a row",
+    "In the sunlit bathroom, three fluffy towels hang in a row, a large mirror reflecting light",
+    "In the sunlit bathroom, three fluffy towels hang in a row, a large mirror reflecting light, white tiled walls",
+    "In the sunlit bathroom, three fluffy towels hang in a row, a large mirror reflecting light, white tiled walls, a pristine porcelain sink below",
+    "In the sunlit bathroom, three fluffy towels hang in a row, a large mirror reflecting light, white tiled walls, a pristine porcelain sink below, pink, green, and purple colors visible"
+]
+```

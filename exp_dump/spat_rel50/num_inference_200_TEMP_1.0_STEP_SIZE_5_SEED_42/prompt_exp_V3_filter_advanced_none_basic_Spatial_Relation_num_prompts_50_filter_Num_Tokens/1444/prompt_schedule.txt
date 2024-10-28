@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two lamps in an office",
+    "Two lamps in an office, one emits red light",
+    "Two lamps in an office, one emits red light, one emits yellow light",
+    "Two lamps in an office, one emits red light, one emits yellow light, red light lamp not to the left",
+    "Two lamps in an office, one emits red light, one emits yellow light, red light lamp not to the left, orderly arrangement"
+]
+```

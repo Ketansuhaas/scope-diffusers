@@ -302,7 +302,8 @@ class SCoPE_Exp_overall(SCoPE_Exp_Base):
                 logger.info(f"Running SCoPE Diffusion on the prompt schedule: {prompt_schedule}")
                 torch.manual_seed(seed)
                 image = pipe(
-                    prompt_schedule,
+                    interpolation_technique = "nlerp",
+                    prompt_schedule = prompt_schedule,
                     num_inference_steps=self.config["num_inference_steps"],
                     callback=None,
                     callback_steps=1,

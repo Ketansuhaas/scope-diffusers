@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "On the bookshelf, two novels stand side by side",
+    "On the bookshelf, two novels stand side by side, one a thick fantasy epic",
+    "On the bookshelf, two novels stand side by side, one a thick fantasy epic, the other a slim romance novel",
+    "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel",
+    "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers"
+]
+```

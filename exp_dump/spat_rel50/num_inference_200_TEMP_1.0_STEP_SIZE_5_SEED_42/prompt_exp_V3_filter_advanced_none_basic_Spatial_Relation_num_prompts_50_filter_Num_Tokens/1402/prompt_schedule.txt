@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Some balls are on the table and on the floor, and the balls on the table have a greater variety of colors than those on the floor",
+    "Some balls are on the table and on the floor, and the balls on the table have a greater variety of colors than those on the floor, wooden table",
+    "Some balls are on the table and on the floor, and the balls on the table have a greater variety of colors than those on the floor, wooden table, scattered positioning",
+    "Some balls are on the table and on the floor, and the balls on the table have a greater variety of colors than those on the floor, wooden table, scattered positioning, plain tiled floor",
+    "Some balls are on the table and on the floor, and the balls on the table have a greater variety of colors than those on the floor, wooden table, scattered positioning, plain tiled floor, sunlight streaming through a nearby window"
+]
+```

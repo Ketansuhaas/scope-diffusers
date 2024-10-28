@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In the night market, two vendors are setting up their stalls, the left vendor has more goods",
+    "In the night market, two vendors are setting up their stalls, the left vendor has more goods, colorful lanterns",
+    "In the night market, two vendors are setting up their stalls, the left vendor has more goods, colorful lanterns, bustling crowd",
+    "In the night market, two vendors are setting up their stalls, the left vendor has more goods, colorful lanterns, bustling crowd, vibrant banners",
+    "In the night market, two vendors are setting up their stalls, the left vendor has more goods, colorful lanterns, bustling crowd, vibrant banners, narrow cobblestone paths"
+]
+```

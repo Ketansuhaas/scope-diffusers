@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "In a cage, there is a cute hamster and a hamster wheel",
+    "In a cage, there is a cute hamster and a hamster wheel, the hamster is nibbling on a carrot",
+    "In a cage, there is a cute hamster and a hamster wheel, the hamster is nibbling on a carrot, wood shavings cover the floor",
+    "In a cage, there is a cute hamster and a hamster wheel, the hamster is nibbling on a carrot, wood shavings cover the floor, a small water bottle is attached to the bars",
+    "In a cage, there is a cute hamster and a hamster wheel, the hamster is nibbling on a carrot, wood shavings cover the floor, a small water bottle is attached to the bars, a tiny chew toy lies nearby"
+]
+```

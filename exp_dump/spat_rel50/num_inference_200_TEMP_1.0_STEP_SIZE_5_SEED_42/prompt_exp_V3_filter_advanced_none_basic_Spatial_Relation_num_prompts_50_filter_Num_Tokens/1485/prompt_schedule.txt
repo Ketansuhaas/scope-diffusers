@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A cartoon puppy with sunglasses is singing into a microphone while another cartoon puppy with a hat scores on a scoreboard",
+    "A cartoon puppy with sunglasses is singing into a microphone while another cartoon puppy with a hat scores on a scoreboard, colorful balloons",
+    "A cartoon puppy with sunglasses is singing into a microphone while another cartoon puppy with a hat scores on a scoreboard, colorful balloons, star-shaped confetti",
+    "A cartoon puppy with sunglasses is singing into a microphone while another cartoon puppy with a hat scores on a scoreboard, colorful balloons, star-shaped confetti, bright stage lights",
+    "A cartoon puppy with sunglasses is singing into a microphone while another cartoon puppy with a hat scores on a scoreboard, colorful balloons, star-shaped confetti, bright stage lights, cheering cartoon audience"
+]
+```

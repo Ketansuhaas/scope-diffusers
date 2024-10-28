@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "An ancient library hidden beneath the earth",
+    "An ancient library hidden beneath the earth, 'Secrets of the Ages' inscribed on the archway",
+    "An ancient library hidden beneath the earth, 'Secrets of the Ages' inscribed on the archway, shelves lined with dusty tomes",
+    "An ancient library hidden beneath the earth, 'Secrets of the Ages' inscribed on the archway, shelves lined with dusty tomes, books floating around as if by magic",
+    "An ancient library hidden beneath the earth, 'Secrets of the Ages' inscribed on the archway, shelves lined with dusty tomes, books floating around as if by magic, soft glow illuminating the relics"
+]
+```

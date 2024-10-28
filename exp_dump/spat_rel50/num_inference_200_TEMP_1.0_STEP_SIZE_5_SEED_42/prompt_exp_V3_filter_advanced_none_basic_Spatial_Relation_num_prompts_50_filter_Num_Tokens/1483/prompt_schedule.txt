@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two frogs in tracksuits, competing in a high jump",
+    "Two frogs in tracksuits, competing in a high jump, one frog wears blue",
+    "Two frogs in tracksuits, competing in a high jump, one frog wears blue, the other in red",
+    "Two frogs in tracksuits, competing in a high jump, one frog wears blue, the other in red, blue frog jumps higher",
+    "Two frogs in tracksuits, competing in a high jump, one frog wears blue, the other in red, blue frog jumps higher, athletic field background"
+]
+```

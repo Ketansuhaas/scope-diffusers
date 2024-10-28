@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Three mugs are placed side by side; the two closest to the faucet each contain a toothbrush, while the one furthest away is empty",
+    "Three mugs are placed side by side; the two closest to the faucet each contain a toothbrush, while the one furthest away is empty, worn ceramic mugs",
+    "Three mugs are placed side by side; the two closest to the faucet each contain a toothbrush, while the one furthest away is empty, worn ceramic mugs, shiny chrome faucet",
+    "Three mugs are placed side by side; the two closest to the faucet each contain a toothbrush, while the one furthest away is empty, worn ceramic mugs, shiny chrome faucet, speckled countertop",
+    "Three mugs are placed side by side; the two closest to the faucet each contain a toothbrush, while the one furthest away is empty, worn ceramic mugs, shiny chrome faucet, speckled countertop, single droplet at faucet tip"
+]
+```

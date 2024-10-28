@@ -199,7 +199,7 @@ for prompt in prompts:
     fig.patch.set_facecolor('white')
 
     # Save the plot to a file
-    grid_image_filename = f"grid_image_{switch_info}.png"
+    grid_image_filename = "1v1.png" #f"grid_image_{switch_info}.png"
     plt.savefig(os.path.join(index_dir, grid_image_filename), bbox_inches='tight', pad_inches=0.1)
 
     # Close the plot to free up memory

@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is",
+    "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a dimly lit room",
+    "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a dimly lit room, a cluttered wooden desk",
+    "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a dimly lit room, a cluttered wooden desk, a glowing computer screen",
+    "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a dimly lit room, a cluttered wooden desk, a glowing computer screen, stacks of scattered papers"
+]
+```

@@ -1,0 +1,9 @@
+```python
+prompts = [
+    "Two cartoon mice fighting over a loaf of bread",
+    "Two cartoon mice fighting over a loaf of bread, with scattered mouldy loaves",
+    "Two cartoon mice fighting over a loaf of bread, with scattered mouldy loaves, in a cluttered kitchen",
+    "Two cartoon mice fighting over a loaf of bread, with scattered mouldy loaves, in a cluttered kitchen, sunlight filtering through a window",
+    "Two cartoon mice fighting over a loaf of bread, with scattered mouldy loaves, in a cluttered kitchen, sunlight filtering through a window, casting long shadows on the floor"
+]
+```

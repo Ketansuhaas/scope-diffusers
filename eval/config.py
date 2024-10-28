@@ -3,16 +3,16 @@ from dataclasses import dataclass, field
 @dataclass
 class Config:
     SYSTEM_PROMPT: str = "V3"
-    FILTER_TAGS: dict = field(default_factory=lambda: {'advanced': [], 'basic': ["Attribute"]})
-    NUM_FILTER: int = 20
-    FILTER_BY: str = 'Num_Adjectives'
+    FILTER_TAGS: dict = field(default_factory=lambda: {'advanced': [], 'basic': ["Spatial Relation"]})
+    NUM_FILTER: int = 50
+    FILTER_BY: str = 'Num_Tokens'
     PROVIDE_PROMPTS: bool = True
     GENAI_CSV_PATH: str = "eval/genai_prompts/genai_dataset.csv"
     INTERPOLATION_TECHNIQUE: str = "nlerp"
     NUM_INFERENCE_STEPS: int = 200   #50 or 200
     TEMPERATURE: float = 1.0 # no need to change
     MODEL_ID: str = "stabilityai/stable-diffusion-2-1-base"
-    STEP_SIZE: int = 10   # 1,2,3 or 4,8,12
+    STEP_SIZE: int = 5   # 1,2,3 or 4,8,12
     SEED: int = 42
 
     def create_exp_name(self) -> str:

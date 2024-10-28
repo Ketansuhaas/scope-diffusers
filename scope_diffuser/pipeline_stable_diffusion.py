@@ -274,7 +274,6 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 # print(interpolated_embedding[-1,i,:])
                 # print('corrected: ',torch.norm(interpolated_embedding[-1,i,:]))
     
-
         elif method == "emslerp":
             # p = (time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
             # p_decay = 1#(time_i/times[-1])**tau    #lesser stays close to p1 at a timestep
@@ -442,7 +441,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         height = height or self.unet.config.sample_size * self.vae_scale_factor
         width = width or self.unet.config.sample_size * self.vae_scale_factor
         # to deal with lora scaling and other possible forward hooks
-
+        
         # 1. Check inputs. Raise error if not correct
         self.check_inputs(
             prompt_schedule,
