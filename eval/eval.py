@@ -125,8 +125,8 @@ with open(scope_prompts_path, 'r') as f:
 # set pipes
 from scope_diffuser import SCoPEDiffusionPipeline as sdp_scope
 from diffusers import StableDiffusionPipeline as sdp
-scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
-normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
+scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
+normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"

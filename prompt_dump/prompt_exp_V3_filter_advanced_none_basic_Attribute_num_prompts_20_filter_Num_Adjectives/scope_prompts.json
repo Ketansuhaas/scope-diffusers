@@ -1,0 +1,122 @@
+[
+    {
+        "1484": {
+            "initial_prompt": "A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is\",\n    \"A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a bright computer screen\",\n    \"A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a bright computer screen, cluttered desk\",\n    \"A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a bright computer screen, cluttered desk, colorful posters on the walls\",\n    \"A little brown-haired boy is clicking on the keyboard to play a computer game, and a little boy next to him who is not brown-haired looks more anxious than he is, a bright computer screen, cluttered desk, colorful posters on the walls, a warm glow from table lamp illuminating their faces\"\n]\n```"
+        }
+    },
+    {
+        "1318": {
+            "initial_prompt": "A little boy sits on a large red storage box and holds up a smaller green one.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A little boy sits on a large red storage box and holds up a smaller green one\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, white wall\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, white wall, sunlight streaming in\",\n    \"A little boy sits on a large red storage box and holds up a smaller green one, wooden floor, white wall, sunlight streaming in, shadows on the wall\"\n]\n```"
+        }
+    },
+    {
+        "361": {
+            "initial_prompt": "At the beach, three seashells lie close together: the largest has a spiraled pattern, the medium one is smooth and white, and the smallest has stripes.",
+            "progressive_prompts": "```python\nprompts = [\n    \"At the beach, three seashells lie close together\",\n    \"At the beach, three seashells lie close together, sandy shore\",\n    \"At the beach, three seashells lie close together, sandy shore, gentle waves lapping\",\n    \"At the beach, three seashells lie close together, sandy shore, gentle waves lapping, sea foam bubbling\",\n    \"At the beach, three seashells lie close together, sandy shore, gentle waves lapping, sea foam bubbling, scattered driftwood pieces\"\n]\n```"
+        }
+    },
+    {
+        "1493": {
+            "initial_prompt": "A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning\",\n    \"A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning, mist-covered surroundings\",\n    \"A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning, mist-covered surroundings, damp grass underfoot\",\n    \"A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning, mist-covered surroundings, damp grass underfoot, pale muted light\",\n    \"A woman in reflective gear giving a high-five to a young woman in a bright red windbreaker on a foggy morning, mist-covered surroundings, damp grass underfoot, pale muted light, soft silhouettes of distant trees\"\n]\n```"
+        }
+    },
+    {
+        "1582": {
+            "initial_prompt": "A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper\",\n    \"A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered desk\",\n    \"A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered desk, scattered papers\",\n    \"A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered desk, scattered papers, flickering table lamp\",\n    \"A duo of laptops rests on the desk, the old one open to a bustling social media feed while the other displays a serene nature wallpaper, cluttered desk, scattered papers, flickering table lamp, coffee mug stained with rings\"\n]\n```"
+        }
+    },
+    {
+        "1463": {
+            "initial_prompt": "Red chillies with all green chillies on the left side and all yellow chillies with no green chillies on the right side.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Red chillies with all green chillies on the left\",\n    \"Red chillies with all green chillies on the left, yellow chillies on the right\",\n    \"Red chillies with all green chillies on the left, yellow chillies on the right, wooden table\",\n    \"Red chillies with all green chillies on the left, yellow chillies on the right, wooden table, rustic kitchen background\",\n    \"Red chillies with all green chillies on the left, yellow chillies on the right, wooden table, rustic kitchen background, sunlight casting soft shadows\"\n]\n```"
+        }
+    },
+    {
+        "1044": {
+            "initial_prompt": "A soft, fabric teddy bear sitting on a child's wooden chair, under the warm glow of a brass lamp.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A teddy bear sitting on a child's wooden chair\",\n    \"A teddy bear sitting on a child's wooden chair, soft fabric\",\n    \"A teddy bear sitting on a child's wooden chair, soft fabric, under a brass lamp\",\n    \"A teddy bear sitting on a child's wooden chair, soft fabric, under a brass lamp, warm glow\",\n    \"A teddy bear sitting on a child's wooden chair, soft fabric, under a brass lamp, warm glow, cozy room atmosphere\"\n]\n```"
+        }
+    },
+    {
+        "1339": {
+            "initial_prompt": "A male model and a female model are showcasing the jewelry on their hands, with the taller model's jewelry appearing more lavish than the other's.",
+            "progressive_prompts": "prompts = [\n    \"A male model and a female model showcasing jewelry on their hands\",\n    \"A male model and a female model showcasing jewelry on their hands, taller model's jewelry is more lavish\",\n    \"A male model and a female model showcasing jewelry on their hands, taller model's jewelry is more lavish, sparkling gemstones adorn their rings\",\n    \"A male model and a female model showcasing jewelry on their hands, taller model's jewelry is more lavish, sparkling gemstones adorn their rings, models standing against a softly lit backdrop\",\n    \"A male model and a female model showcasing jewelry on their hands, taller model's jewelry is more lavish, sparkling gemstones adorn their rings, models standing against a softly lit backdrop, subtle reflections glimmer on the jewelry\" \n]"
+        }
+    },
+    {
+        "365": {
+            "initial_prompt": "In the pond, two ducks swim near each other: the larger one has a bright green head, while the smaller one is all brown.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the pond, two ducks swim near each other\",\n    \"In the pond, two ducks swim near each other, surrounded by clear water\",\n    \"In the pond, two ducks swim near each other, surrounded by clear water, lily pads floating\",\n    \"In the pond, two ducks swim near each other, surrounded by clear water, lily pads floating, reflective surface\",\n    \"In the pond, two ducks swim near each other, surrounded by clear water, lily pads floating, reflective surface, tall reeds along the edge\"\n]\n```"
+        }
+    },
+    {
+        "358": {
+            "initial_prompt": "Two birds are chasing each other in the air, with the one flying higher having a long tail and the other bird having a short tail.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two birds chasing each other in the air\",\n    \"Two birds chasing each other in the air, one bird flying higher\",\n    \"Two birds chasing each other in the air, one bird flying higher, long tail visible\",\n    \"Two birds chasing each other in the air, one bird flying higher, long tail visible, short tail on the lower bird\",\n    \"Two birds chasing each other in the air, one bird flying higher, long tail visible, short tail on the lower bird, wide open sky\"\n]\n```"
+        }
+    },
+    {
+        "362": {
+            "initial_prompt": "Two kites are flying high in the sky, the dragon-shaped one flies higher and is more colorful than the geometric-patterned one.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two kites flying high in the sky\",\n    \"Two kites flying high in the sky, a dragon-shaped kite\",\n    \"Two kites flying high in the sky, a dragon-shaped kite, more colorful than the geometric-patterned one\",\n    \"Two kites flying high in the sky, a dragon-shaped kite, more colorful than the geometric-patterned one, white fluffy clouds\",\n    \"Two kites flying high in the sky, a dragon-shaped kite, more colorful than the geometric-patterned one, white fluffy clouds, a bright blue sky\"\n]\n```"
+        }
+    },
+    {
+        "923": {
+            "initial_prompt": "A little boy with a ping pong paddle looks more excited than a little girl without one.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A little boy with a ping pong paddle looks more excited than a little girl without one\",\n    \"A little boy with a ping pong paddle looks more excited than a little girl without one, a table between them\",\n    \"A little boy with a ping pong paddle looks more excited than a little girl without one, a table between them, a small green ping pong ball mid-air\",\n    \"A little boy with a ping pong paddle looks more excited than a little girl without one, a table between them, a small green ping pong ball mid-air, bright artificial lighting\",\n    \"A little boy with a ping pong paddle looks more excited than a little girl without one, a table between them, a small green ping pong ball mid-air, bright artificial lighting, a scoreboard showing a close score\"\n]\n```"
+        }
+    },
+    {
+        "364": {
+            "initial_prompt": "On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV.",
+            "progressive_prompts": "```python\nprompts = [\n    \"On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV\",\n    \"On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV, clear sky\",\n    \"On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV, clear sky, distant mountains\",\n    \"On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV, clear sky, distant mountains, open desert landscape\",\n    \"On the road, two cars drive parallel: the faster one is a sleek sports model, while the slower one is a large, family SUV, clear sky, distant mountains, open desert landscape, hot shimmering asphalt\"\n]\n```"
+        }
+    },
+    {
+        "810": {
+            "initial_prompt": "A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench\",\n    \"A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench, park setting\",\n    \"A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench, park setting, vibrant green trees\",\n    \"A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench, park setting, vibrant green trees, clear blue sky\",\n    \"A woman in a chic floral skirt and white blouse sharing a book with another woman wearing a professional grey pantsuit on a sunny bench, park setting, vibrant green trees, clear blue sky, sunlight filtering through leaves\"\n]\n```"
+        }
+    },
+    {
+        "953": {
+            "initial_prompt": "A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch\",\n    \"A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch, on a wooden desk\",\n    \"A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch, on a wooden desk, set beside a sleek monitor\",\n    \"A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch, on a wooden desk, set beside a sleek monitor, under soft ambient lighting\",\n    \"A mechanical keyboard with a clear protective pouch is newer than another without a clear pouch, on a wooden desk, set beside a sleek monitor, under soft ambient lighting, surrounded by scattered cables\"\n]\n```"
+        }
+    },
+    {
+        "801": {
+            "initial_prompt": "A person in a bright yellow raincoat stands next to another in a sleek black trench coat.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, cobblestone street\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, cobblestone street, historic lampposts\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, cobblestone street, historic lampposts, old brick buildings\",\n    \"A person in a bright yellow raincoat stands next to another in a sleek black trench coat, cobblestone street, historic lampposts, old brick buildings, overcast sky\"\n]\n```"
+        }
+    },
+    {
+        "976": {
+            "initial_prompt": "A tomato vine with several tomatoes on it, all yellow except the largest which is red.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A tomato vine with several tomatoes, all yellow except the largest which is red\",\n    \"A tomato vine with several tomatoes, all yellow except the largest which is red, lush green leaves\",\n    \"A tomato vine with several tomatoes, all yellow except the largest which is red, lush green leaves, wooden garden post\",\n    \"A tomato vine with several tomatoes, all yellow except the largest which is red, lush green leaves, wooden garden post, sunlit garden backdrop\",\n    \"A tomato vine with several tomatoes, all yellow except the largest which is red, lush green leaves, wooden garden post, sunlit garden backdrop, shadows casting intricate patterns\"\n]\n```"
+        }
+    },
+    {
+        "842": {
+            "initial_prompt": "Three beach houses are neatly lined up by the sea, arranged in a row from furthest to nearest: one is red, another one is green, and the last one is purple.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Three beach houses are neatly lined up by the sea\",\n    \"Three beach houses are neatly lined up by the sea, arranged in a row\",\n    \"Three beach houses are neatly lined up by the sea, arranged in a row, one is red\",\n    \"Three beach houses are neatly lined up by the sea, arranged in a row, one is red, another one is green\",\n    \"Three beach houses are neatly lined up by the sea, arranged in a row, one is red, another one is green, the last one is purple\"\n]\n```"
+        }
+    },
+    {
+        "1461": {
+            "initial_prompt": "A yellow felt box has no metallic blue spheres on the left side and has blue metallic spheres on the right side.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A yellow felt box with no metallic blue spheres on the left and blue metallic spheres on the right\",\n    \"A yellow felt box with no metallic blue spheres on the left and blue metallic spheres on the right, soft-textured surface\",\n    \"A yellow felt box with no metallic blue spheres on the left and blue metallic spheres on the right, soft-textured surface, glossy spheres\",\n    \"A yellow felt box with no metallic blue spheres on the left and blue metallic spheres on the right, soft-textured surface, glossy spheres, distinct boundary between sides\",\n    \"A yellow felt box with no metallic blue spheres on the left and blue metallic spheres on the right, soft-textured surface, glossy spheres, distinct boundary between sides, reflecting light on the spheres\"\n]\n```"
+        }
+    },
+    {
+        "165": {
+            "initial_prompt": "On display, a long, white dress contrasts sharply with a short, dark dress beside it.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A long, white dress on display contrasts with a short, dark dress beside it\",\n    \"A long, white dress on display contrasts with a short, dark dress beside it, situated in a boutique\",\n    \"A long, white dress on display contrasts with a short, dark dress beside it, situated in a boutique, bathed in soft lighting\",\n    \"A long, white dress on display contrasts with a short, dark dress beside it, situated in a boutique, bathed in soft lighting, on sleek mannequins\",\n    \"A long, white dress on display contrasts with a short, dark dress beside it, situated in a boutique, bathed in soft lighting, on sleek mannequins, surrounded by elegant decor\"\n]\n```"
+        }
+    }
+]

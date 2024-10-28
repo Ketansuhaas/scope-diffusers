@@ -224,8 +224,8 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
         elif method == "nlerp":
 
-            gamma = 2
-            tau = 10*(1 - (time_i/times[-1]))**gamma + 0.1 # tau (temperature) decreases across timesteps
+            # gamma = 2
+            tau = times[1]*(1 - (time_i/times[-1])) + 0.1 # tau (temperature) decreases across timesteps (standard deviation)
 
             # adjust stepsizes based on consecutive euclidean distances
             distances = np.zeros((77,4))
@@ -244,17 +244,21 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             zero_column = np.zeros((distances.shape[0], 1))
             # Concatenate the zero column with the cumulative sum
             times = np.hstack((zero_column, distances))
-
             #============ABOVE IS OPTIONAL============================================ (times[i]->times)
 
             # Initialize the interpolated embedding with the same shape as input embeddings
-            interpolated_embedding = torch.zeros_like(embeddings[0])
+            interpolated_embedding = embeddings[0].clone().detach()            
             # Perform weighted sum token-wise across prompts
-            for i in range(embeddings[0].shape[1]):  # Iterate over the second dimension (77)
+            for i in range(embeddings[0].shape[1]):  # Handle all weights zero due to similar tokens
+                if row_sums[i]==0:
+                    continue
                 # Calculate weights using the exponential function for all points
-                weights = torch.tensor([np.exp(-abs(t - time_i)**2 / tau) for t in times[i]], device=device)
+                # print("times: ",times[i])
+                weights = torch.tensor([np.exp(-((t - time_i)/ (tau))**2/2) for t in times[i]], device=device)
                 # Normalize weights
+                # print("weights before norm", weights)
                 weights /= weights.sum()
+                # print("weights after norm", weights)
                 weights = weights.unsqueeze(1)
                 # print(f"token {i}")
                 token_feature_values = torch.stack([embeddings[k,-1, i, :] for k in range(embeddings.shape[0])])  # same token from all prompts
@@ -265,12 +269,11 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
                 # print(f"replaced in the final embeddings: {interpolated_embedding.shape}")
                 original_magnitude = torch.norm(embeddings[0][-1, i, :])
                 current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
-                # if i==0:
-                    # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
-                # print(weights)
+                # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
                 interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
+                # print(interpolated_embedding[-1,i,:])
                 # print('corrected: ',torch.norm(interpolated_embedding[-1,i,:]))
-                # exit()
+    
 
         elif method == "emslerp":
             # p = (time_i/times[-1])**tau          #lesser stays close to p1 throughout timesteps
