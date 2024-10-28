@@ -172,6 +172,10 @@ for prompt in prompts:
     scope_image.save(os.path.join(index_dir, "scope_image.png"))
     normal_image.save(os.path.join(index_dir, "normal_image.png"))
 
+    # save prompt schedule to a text file
+    with open(os.path.join(index_dir, "prompt_schedule.txt"), 'w') as f:
+        f.write(progressive_prompts)
+        
     # Randomly switch left and right images
     if random.choice([True, False]):
         images = [normal_image, scope_image]  # Switch images
