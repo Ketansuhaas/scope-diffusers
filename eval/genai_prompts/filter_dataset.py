@@ -25,7 +25,7 @@ def filter_dataset(dataset, filter_tags: dict, num_filter: int, filter_by: str):
     df_filtered = df[df['Tags'].apply(match_basic_tags)]
 
     # Sorting the dataframe based on the filter_by criteria
-    if filter_by in ['Num_Tokens', 'Num_Words', 'Num_Sentences','Num_Adjectives']:
+    if filter_by in ['Num_Tokens', 'Num_Words', 'Num_Sentences','Num_Adjectives', 'Num_Nouns']:
         df_filtered = df_filtered.sort_values(by=filter_by, ascending=False)
     else:
         raise ValueError(f"Invalid filter_by value: {filter_by}")

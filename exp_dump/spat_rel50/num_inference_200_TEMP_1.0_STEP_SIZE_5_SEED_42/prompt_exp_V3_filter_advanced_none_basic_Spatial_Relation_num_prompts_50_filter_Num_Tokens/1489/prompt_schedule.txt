@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A packet of tissues has two cartoon characters on the packaging, the cartoon character in the red dress is on the left and the cartoon character without the red dress is on the right",
-    "A packet of tissues has two cartoon characters on the packaging, cartoon character in the red dress is on the left, colorful packaging with vibrant hues",
-    "A packet of tissues has two cartoon characters on the packaging, cartoon character in the red dress is on the left, colorful packaging with vibrant hues, character without red dress is wearing blue shoes",
-    "A packet of tissues has two cartoon characters on the packaging, cartoon character in the red dress is on the left, colorful packaging with vibrant hues, character without red dress is wearing blue shoes, left character has a playful expression",
-    "A packet of tissues has two cartoon characters on the packaging, cartoon character in the red dress is on the left, colorful packaging with vibrant hues, character without red dress is wearing blue shoes, left character has a playful expression, background features a subtle floral pattern"
-]
-```

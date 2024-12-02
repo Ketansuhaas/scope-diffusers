@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "Three books are stacked on top of each other, with the red one at the bottom, the yellow one in the middle, and the blue one on top",
-    "Three books are stacked on top of each other, with the red one at the bottom, the yellow one in the middle, and the blue one on top, positioned on a wooden table",
-    "Three books are stacked on top of each other, with the red one at the bottom, the yellow one in the middle, and the blue one on top, positioned on a wooden table, under a warm glow of a desk lamp",
-    "Three books are stacked on top of each other, with the red one at the bottom, the yellow one in the middle, and the blue one on top, positioned on a wooden table, under a warm glow of a desk lamp, near an open window with drifting curtains",
-    "Three books are stacked on top of each other, with the red one at the bottom, the yellow one in the middle, and the blue one on top, positioned on a wooden table, under a warm glow of a desk lamp, near an open window with drifting curtains, a nearby plant casting a shadow"
-]
-```

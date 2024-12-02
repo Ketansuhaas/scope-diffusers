@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "Red chillies with green and yellow chillies on sides",
-    "Red chillies with green and yellow chillies on sides, vibrant colors",
-    "Red chillies with green and yellow chillies on sides, vibrant colors, glossy texture",
-    "Red chillies with green and yellow chillies on sides, vibrant colors, glossy texture, wooden surface",
-    "Red chillies with green and yellow chillies on sides, vibrant colors, glossy texture, wooden surface, scattered arrangement"
-]
-```

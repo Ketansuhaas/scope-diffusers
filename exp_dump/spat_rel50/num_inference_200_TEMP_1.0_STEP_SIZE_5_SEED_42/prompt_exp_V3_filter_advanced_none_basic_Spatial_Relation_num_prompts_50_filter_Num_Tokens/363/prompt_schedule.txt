@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "On the bookshelf, the picture frame on the left, containing a black and white photograph",
-    "On the bookshelf, the picture frame on the left, containing a black and white photograph, wooden bookshelf",
-    "On the bookshelf, the picture frame on the left, containing a black and white photograph, wooden bookshelf, colorful painting on the right",
-    "On the bookshelf, the picture frame on the left, containing a black and white photograph, wooden bookshelf, colorful painting on the right, dust speckles",
-    "On the bookshelf, the picture frame on the left, containing a black and white photograph, wooden bookshelf, colorful painting on the right, dust speckles, dimly lit room"
-]
-```

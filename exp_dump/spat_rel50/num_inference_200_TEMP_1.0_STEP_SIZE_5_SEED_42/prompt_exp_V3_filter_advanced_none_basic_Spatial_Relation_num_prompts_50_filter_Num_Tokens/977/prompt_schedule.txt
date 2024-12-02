@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf",
-    "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf, serene pond",
-    "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf, serene pond, lush greenery surrounding the pond",
-    "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf, serene pond, lush greenery surrounding the pond, gentle ripples in the water",
-    "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf, serene pond, lush greenery surrounding the pond, gentle ripples in the water, sun casting soft reflections"
-]
-```

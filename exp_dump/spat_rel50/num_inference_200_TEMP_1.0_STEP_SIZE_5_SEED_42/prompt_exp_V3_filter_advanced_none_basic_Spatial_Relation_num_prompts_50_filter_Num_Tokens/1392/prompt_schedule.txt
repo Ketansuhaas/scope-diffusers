@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "Two trees in the monkey park at the zoo with more monkeys in the shorter tree than the taller tree",
-    "Two trees in the monkey park at the zoo with more monkeys in the shorter tree than the taller tree, branches reaching out",
-    "Two trees in the monkey park at the zoo with more monkeys in the shorter tree than the taller tree, branches reaching out, leafy canopy",
-    "Two trees in the monkey park at the zoo with more monkeys in the shorter tree than the taller tree, branches reaching out, leafy canopy, sunlight filtering through leaves",
-    "Two trees in the monkey park at the zoo with more monkeys in the shorter tree than the taller tree, branches reaching out, leafy canopy, sunlight filtering through leaves, monkeys swinging playfully"
-]
-```

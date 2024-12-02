@@ -1,0 +1,182 @@
+[
+    {
+        "1489": {
+            "initial_prompt": "A packet of tissues has two cartoon characters on the packaging, the cartoon character in the red dress is on the left and the cartoon character without the red dress is on the right.",
+            "progressive_prompts": "```python\n[\n    \"A packet of tissues with two cartoon characters on the packaging\",\n    \"A packet of tissues with two cartoon characters, one in a red dress on the left\",\n    \"A packet of tissues with two cartoon characters, red-dressed character on left, plain-dressed character on right\",\n    \"A packet of tissues featuring two cartoon characters, red dress character on the left, right character lacks red dress\",\n    \"A packet of tissues with two cartoon characters, left character in red dress, right character without red dress, detailed illustration\"\n]\n```"
+        }
+    },
+    {
+        "1392": {
+            "initial_prompt": "There are two trees in the monkey park at the zoo, and the number of monkeys in the shorter tree is more than the number of monkeys in the taller tree.",
+            "progressive_prompts": "```python\n[\n    \"There are two trees in the monkey park at the zoo\",\n    \"There are two trees in the monkey park at the zoo, the shorter tree has more monkeys\",\n    \"There are two trees in the monkey park at the zoo, the shorter tree has more monkeys, the taller tree has fewer monkeys\",\n    \"There are two trees in the monkey park at the zoo, the shorter tree has more monkeys, the taller tree has fewer monkeys, the park is surrounded by fences\",\n    \"There are two trees in the monkey park at the zoo, the shorter tree has more monkeys, the taller tree has fewer monkeys, the park is surrounded by fences, visitors watch from a distance\"\n]\n```"
+        }
+    },
+    {
+        "1540": {
+            "initial_prompt": "There are two sets of boxes on the floor, one on the left is a paper box and the other on the right is a plastic box, and the paper boxes are arranged more neatly than the plastic boxes.",
+            "progressive_prompts": "```python\n[\n    \"There are two sets of boxes on the floor, one on the left is a paper box, and the other on the right is a plastic box.\",\n    \"There are two sets of boxes on the floor, one on the left is a paper box, and the other on the right is a plastic box, the floor is wooden.\",\n    \"There are two sets of boxes on the floor, one on the left is a paper box, and the other on the right is a plastic box, the floor is wooden, the paper boxes are arranged more neatly.\",\n    \"There are two sets of boxes on the floor, one on the left is a paper box, and the other on the right is a plastic box, the floor is wooden, the paper boxes are arranged more neatly, there are five paper boxes.\",\n    \"There are two sets of boxes on the floor, one on the left is a paper box, and the other on the right is a plastic box, the floor is wooden, the paper boxes are arranged more neatly, there are five paper boxes, six plastic boxes.\"\n]\n```"
+        }
+    },
+    {
+        "1585": {
+            "initial_prompt": "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers.",
+            "progressive_prompts": "```python\n[\n    \"On the bookshelf, two novels stand side by side.\",\n    \"On the bookshelf, two novels stand side by side, one thick fantasy epic.\",\n    \"On the bookshelf, two novels stand side by side, one thick fantasy epic with a dragon cover.\",\n    \"On the bookshelf, two novels stand side by side, one thick fantasy epic with a dragon cover, the other slim romance novel.\",\n    \"On the bookshelf, two novels stand side by side, one thick fantasy epic with a dragon cover, the other slim romance novel adorned with flowers.\"\n]\n```"
+        }
+    },
+    {
+        "1388": {
+            "initial_prompt": "A monkey is stealing apples from a tourist's basket. The number of apples in the monkey's arms is less than the number of apples in the basket.",
+            "progressive_prompts": "```python\n[\n    \"A monkey is stealing apples from a tourist's basket\",\n    \"A monkey is stealing apples from a tourist's basket, standing beside a wooden picnic table, the apples are red\",\n    \"A monkey is stealing apples from a tourist's basket, standing beside a wooden picnic table, the apples are red, the monkey has a sly grin\",\n    \"A monkey is stealing apples from a tourist's basket, standing beside a wooden picnic table, the apples are red, the monkey has a sly grin, the tourist's basket is wicker\",\n    \"A monkey is stealing apples from a tourist's basket, standing beside a wooden picnic table, the apples are red, the monkey has a sly grin, the tourist's basket is wicker, the monkey's fur is a shade of brown similar to tree bark\"\n]\n```"
+        }
+    },
+    {
+        "1427": {
+            "initial_prompt": "In the night market, two vendors are setting up their stalls, and the vendor on the left has a wider range of goods than the vendor on the right.",
+            "progressive_prompts": "```python\n[\n    \"In the night market, two vendors are setting up their stalls.\",\n    \"In the night market, two vendors are setting up their stalls, the vendor on the left has a wider range of goods.\",\n    \"In the night market, two vendors are setting up their stalls, the vendor on the left has a wider range of goods, the stalls are brightly illuminated.\",\n    \"In the night market, two vendors are setting up their stalls, the vendor on the left has a wider range of goods, the stalls are brightly illuminated, colorful tarps cover the stalls.\",\n    \"In the night market, two vendors are setting up their stalls, the vendor on the left has a wider range of goods, the stalls are brightly illuminated, colorful tarps cover the stalls, a few early customers are browsing.\"\n]\n```"
+        }
+    },
+    {
+        "1559": {
+            "initial_prompt": "In the laundry room, there are three bins of clothes. The clothes in the bin on the washing machine are dirtier than those in the two bins on the ground.",
+            "progressive_prompts": "```python\n[\n    \"In the laundry room, there are three bins of clothes.\",\n    \"In the laundry room, there are three bins of clothes, the washing machine is nearby.\",\n    \"In the laundry room, three bins of clothes are present, the washing machine is nearby, one bin is on it.\",\n    \"In the laundry room, bins of clothes are scattered, the washing machine is in the corner, one bin is on it, others are on the ground.\",\n    \"In the laundry room, clothes-filled bins are scattered, the washing machine stands in the corner, a bin on it, clothes in it are notably dirtier, two other bins are on the floor.\"\n]\n```"
+        }
+    },
+    {
+        "811": {
+            "initial_prompt": "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk.",
+            "progressive_prompts": "```python\n[\n    \"A boy and a girl drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt, wearing denim shorts, and a girl in a pink sundress, with a bow in her hair, drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt, denim shorts, and sneakers, and a girl in a pink sundress, white sandals, with a bow in her hair, drawing vibrant shapes on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt, denim shorts, and sneakers, and a girl in a pink sundress, white sandals, with a bow in her hair, drawing vibrant shapes on the sidewalk with chalk, next to a park bench surrounded by lush green trees\"\n]\n```"
+        }
+    },
+    {
+        "1587": {
+            "initial_prompt": "In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape with intricate brushwork.",
+            "progressive_prompts": "```python\n[\n    \"In the art gallery, two paintings hang on the wall\",\n    \"In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color\",\n    \"In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape\",\n    \"In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape with intricate brushwork\",\n    \"In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape with intricate brushwork, the gallery brightly lit\"\n]\n```"
+        }
+    },
+    {
+        "1592": {
+            "initial_prompt": "At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit.",
+            "progressive_prompts": "```python\n[\n    \"At the bakery, two cakes are on display.\",\n    \"At the bakery, two cakes are on display, one towering with layers, the other a simple sheet cake.\",\n    \"At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit.\",\n    \"At the bakery, two cakes are on display, one cake towering with layers and intricate frosting designs on a glass stand, the other a simple sheet cake adorned with fresh fruit.\",\n    \"At the bakery, two cakes are on display, a cake towering with layers and intricate frosting designs on a glass stand near a rustic wooden counter, the other a simple sheet cake adorned with fresh fruit.\"\n]\n```"
+        }
+    },
+    {
+        "1376": {
+            "initial_prompt": "A group of children play around an oak tree, and the number of children in the tree outnumbers the number of children under the tree.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A group of children play around an oak tree\",\n    \"A group of children play around an oak tree, some children in its branches\",\n    \"A group of children play around an oak tree, some children in its branches, more children in the tree than under it\",\n    \"A group of children play around an oak tree, some children in its branches, more children in the tree than under it, the oak tree has thick sturdy branches\",\n    \"A group of children play around an oak tree, some children in its branches, more children in the tree than under it, the oak tree has thick sturdy branches, a few leaves scattered on the ground\"\n]\n```"
+        }
+    },
+    {
+        "1591": {
+            "initial_prompt": "In the toy store, two teddy bears sit on the shelf, one wearing a bow tie and holding a tiny book, the other adorned with a flower crown and clutching a miniature guitar.",
+            "progressive_prompts": "```python\n[\n    \"In the toy store, two teddy bears sit on the shelf\",\n    \"In the toy store, two teddy bears sit on the shelf, one wears a bow tie\",\n    \"In the toy store, two teddy bears sit on the shelf, one wears a bow tie, holds a tiny book, the other has a flower crown\",\n    \"In the toy store, two teddy bears sit on the shelf, one wears a bow tie, holds a tiny book, the other has a flower crown, clutches a miniature guitar\",\n    \"In the toy store, colorful shelves filled with toys flank the walls, two teddy bears sit on the shelf, one wears a bow tie, holds a tiny book, the other has a flower crown, clutches a miniature guitar\"\n]\n```"
+        }
+    },
+    {
+        "981": {
+            "initial_prompt": "Three magazines are neatly stacked on the glass coffee table, and an earth design is on the cover of the topmost magazine.",
+            "progressive_prompts": "```python\n[\n    \"Three magazines on a glass coffee table\",\n    \"Three magazines on a glass coffee table, neatly stacked\",\n    \"Three magazines on a glass coffee table, neatly stacked, topmost one shows an earth design\",\n    \"Three magazines on a glass coffee table, neatly stacked, topmost one shows an earth design, surface reflects light\",\n    \"Three magazines on a glass coffee table, neatly stacked, topmost one shows an earth design, surface reflects light, room features a modern decor\"\n]\n```"
+        }
+    },
+    {
+        "1466": {
+            "initial_prompt": "Two dragons fly towards the castle, a dragon with a backpack and no hat on the left of the dragon without a backpack and with a hat.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two dragons fly towards the castle\",\n    \"Two dragons fly towards the castle, the left dragon has a backpack\",\n    \"Two dragons fly towards the castle, the left dragon has a backpack, no hat\",\n    \"Two dragons fly towards the castle, the left dragon has a backpack, no hat, the right dragon has no backpack\",\n    \"Two dragons fly towards the castle, the left dragon has a backpack, no hat, the right dragon has no backpack, with a hat\"\n]\n```"
+        }
+    },
+    {
+        "816": {
+            "initial_prompt": "A woman in a wide-brimmed lavender sunhat and breezy cotton dress is on the right of another woman dressed in a crisp white tennis ensemble.",
+            "progressive_prompts": "```python\n[\n    \"A woman in a sunhat and dress stands next to another woman in tennis attire\",\n    \"A woman in a wide-brimmed lavender sunhat and dress stands next to another woman in crisp white tennis attire, standing in a grassy park\",\n    \"A woman in a wide-brimmed lavender sunhat and breezy cotton dress stands smiling next to another woman in a crisp white tennis ensemble, trees providing shade in a grassy park\",\n    \"A woman in a wide-brimmed lavender sunhat and breezy cotton dress stands smiling on the right of another woman in a crisp white tennis ensemble, a clear blue sky above trees providing shade in a grassy park\",\n    \"A woman in a wide-brimmed lavender sunhat and breezy cotton dress stands smiling on the right of another woman in a crisp white tennis ensemble, both near a wooden bench under a clear blue sky with trees providing shade in a grassy park\"\n]\n```"
+        }
+    },
+    {
+        "663": {
+            "initial_prompt": "A serene yoga studio, 'Peace & Harmony' inscribed on the wall, mats laid out in neat rows on the wooden floor.",
+            "progressive_prompts": "```python\n[\n    \"A serene yoga studio\",\n    \"A serene yoga studio, 'Peace & Harmony' inscribed on the wall\",\n    \"A serene yoga studio, 'Peace & Harmony' inscribed on the wall, mats laid out in neat rows on the wooden floor\",\n    \"A serene yoga studio, 'Peace & Harmony' inscribed on the wall, mats laid out in neat rows on the wooden floor, sunlight streaming through large windows\",\n    \"A serene yoga studio, 'Peace & Harmony' inscribed on the wall, mats laid out in neat rows on the wooden floor, sunlight streaming through large windows, soft cushions in the corners\"\n]\n```"
+        }
+    },
+    {
+        "977": {
+            "initial_prompt": "A frog with a baseball cap is crouching on a lotus leaf and another frog without a cap is crouching on a bigger lotus leaf.",
+            "progressive_prompts": "```python\n[\n    \"A frog on a lotus leaf, another frog on a bigger lotus leaf\",\n    \"A frog with a baseball cap on a lotus leaf, another frog on a bigger lotus leaf\",\n    \"A frog with a baseball cap crouching on a lotus leaf, surrounded by water, another frog on a bigger lotus leaf\",\n    \"A frog with a baseball cap crouching on a lotus leaf, surrounded by water, another frog without a cap crouching on a bigger lotus leaf\",\n    \"A frog with a baseball cap crouching on a lotus leaf, surrounded by water, green lily pads float nearby, another frog without a cap crouching on a bigger lotus leaf\"\n]\n```"
+        }
+    },
+    {
+        "1401": {
+            "initial_prompt": "Some balls are on the table and on the floor, and the number of balls on the table is more than the number of balls on the floor.",
+            "progressive_prompts": "```python\n[\n    \"Some balls are on the table and on the floor.\",\n    \"Some balls are on the table and on the floor, the table is wooden.\",\n    \"Some balls are on the table and on the floor, the table is wooden, the floor is tiled.\",\n    \"Some balls are on the table and on the floor, the table is wooden, the floor is tiled, the balls are colorful.\",\n    \"Some balls are on the table and on the floor, the table is wooden, the floor is tiled, the balls are colorful, the number of balls on the table is more than on the floor.\"\n]\n```"
+        }
+    },
+    {
+        "1485": {
+            "initial_prompt": "A cartoon puppy with sunglasses and no necklace is singing into a microphone while another cartoon puppy with a hat and no sunglasses scores on a scoreboard.",
+            "progressive_prompts": "```python\n[\n    \"A cartoon puppy singing into a microphone, another cartoon puppy scoring on a scoreboard\",\n    \"A cartoon puppy wearing sunglasses singing into a microphone, another cartoon puppy with a hat scoring on a scoreboard\",\n    \"A cartoon puppy wearing sunglasses singing into a microphone on a stage, another cartoon puppy with a hat scoring on a large, digital scoreboard\",\n    \"A cartoon puppy wearing sunglasses singing into a microphone on a stage under bright lights, another cartoon puppy with a hat scoring on a large, digital scoreboard\",\n    \"A cartoon puppy wearing sunglasses singing into a microphone on a stage under bright lights with a cheering crowd, another cartoon puppy with a hat scoring on a large, digital scoreboard\"\n]\n```"
+        }
+    },
+    {
+        "1378": {
+            "initial_prompt": "In a classroom, all the students look at a math problem on the board in confusion, but the teacher stands off to the side without explaining the problem.",
+            "progressive_prompts": "```python\n[\n    \"In a classroom, students look at a math problem on the board, the teacher stands off to the side.\",\n    \"In a brightly lit classroom, students at their desks look at a math problem on the board, the teacher stands off to the side.\",\n    \"In a brightly lit classroom with large windows, students at their desks look at a complex math problem on the board, the teacher stands off to the side.\",\n    \"In a brightly lit classroom with large windows and posters on the walls, students at their desks look puzzled at a complex math problem on the board, the teacher stands off to the side.\",\n    \"In a brightly lit classroom with large windows and educational posters on the walls, students at their desks look puzzled at a complex math problem on the green chalkboard with white chalk, the teacher stands off to the side with a neutral expression.\"\n]\n```"
+        }
+    },
+    {
+        "343": {
+            "initial_prompt": "Kids race their bikes down the hill as their friends cheer from the sidelines, and a kite flutters in the breeze above them.",
+            "progressive_prompts": "```python\n[\n    \"Kids race bikes downhill, friends cheer from sidelines, kite above\",\n    \"Kids race bikes downhill, friends cheer enthusiastically from sidelines, vibrant kite above\",\n    \"Kids race bikes downhill, friends cheer enthusiastically from grassy sidelines, vibrant colorful kite above\",\n    \"Kids race bikes downhill, friends cheer enthusiastically from grassy sidelines, trees rustle behind, vibrant colorful kite flutters above\",\n    \"Kids race bikes downhill, friends cheer enthusiastically from grassy sidelines, tall trees rustle behind, vibrant colorful kite flutters against clear sky above\"\n]\n```"
+        }
+    },
+    {
+        "1496": {
+            "initial_prompt": "A girl in a leather jacket tuning a guitar next to a girl in a band t-shirt holding a vinyl record.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A girl tuning a guitar next to a girl holding a vinyl record\",\n    \"A girl in a leather jacket tuning a guitar next to a girl holding a vinyl record\",\n    \"A girl in a leather jacket tuning a guitar next to a girl in a band t-shirt holding a vinyl record\",\n    \"In a cozy room, a girl in a leather jacket tuning a guitar next to a girl in a band t-shirt holding a vinyl record\",\n    \"In a cozy room with vintage posters on the walls, a girl in a leather jacket tuning a guitar next to a girl in a band t-shirt holding a vinyl record\"\n]\n```"
+        }
+    },
+    {
+        "74": {
+            "initial_prompt": "An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left.",
+            "progressive_prompts": "```python\n[\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left.\",\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left, against a clear blue sky.\",\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left, against a clear blue sky, casting a shadow on the ground.\",\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left, against a clear blue sky, casting a shadow on the ground, with fluffy white clouds in the distance.\",\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left, against a clear blue sky, casting a shadow on the ground, with fluffy white clouds in the distance, forest underbrush visible at the base of the tree.\"\n]\n```"
+        }
+    },
+    {
+        "1119": {
+            "initial_prompt": "A billboard under a clear blue sky, advertising 'Breathe Deep, Live Fully' with an image of mountain peaks.",
+            "progressive_prompts": "```python\n[\n    \"A billboard under a clear blue sky\",\n    \"A billboard under a clear blue sky, advertising 'Breathe Deep, Live Fully'\",\n    \"A billboard under a clear blue sky, advertising 'Breathe Deep, Live Fully', with an image\",\n    \"A billboard under a clear blue sky, advertising 'Breathe Deep, Live Fully', with an image of mountain peaks\",\n    \"A billboard under a clear blue sky, advertising 'Breathe Deep, Live Fully', with an image of snow-capped mountain peaks\"\n]\n```"
+        }
+    },
+    {
+        "1039": {
+            "initial_prompt": "A leather wallet, containing a brass key and a handful of copper coins, lying on a denim jacket.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A leather wallet on a denim jacket\",\n    \"A leather wallet, containing a brass key on a denim jacket\",\n    \"A leather wallet, containing a brass key, a handful of copper coins on a denim jacket\",\n    \"A leather wallet, dark brown, containing a brass key, a handful of copper coins on a blue denim jacket\",\n    \"A leather wallet, dark brown with a worn texture, containing a brass key, a handful of copper coins on a weathered blue denim jacket\"\n]\n```"
+        }
+    },
+    {
+        "809": {
+            "initial_prompt": "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline.",
+            "progressive_prompts": "```python\n[\n    \"A man and a woman capturing a selfie against a city skyline\",\n    \"A man in a white t-shirt and jeans, a woman in an orange dress, capturing a selfie against a city skyline\",\n    \"A man wearing a classic white t-shirt and blue jeans, a woman in a flowing orange dress, capturing a selfie against the tall city skyline\",\n    \"A man in a classic white t-shirt and blue jeans, a woman in a flowing orange dress, capturing a selfie against a bustling city skyline, high-rise buildings in view\",\n    \"A man in a classic white t-shirt and blue jeans, a woman in a flowing orange dress, capturing a selfie against a bustling city skyline, high-rise skyscrapers with glass facades, under a clear blue sky\"\n]\n```"
+        }
+    },
+    {
+        "1588": {
+            "initial_prompt": "At the coffee shop, two muffins sit on the display, one studded with chocolate chips, the other bursting with juicy blueberries.",
+            "progressive_prompts": "```python\n[\n    \"At the coffee shop, two muffins sit on the display.\",\n    \"At the coffee shop, two muffins sit on the display, one studded with chocolate chips, the other with blueberries.\",\n    \"At the coffee shop, two muffins sit on the display, one studded with chocolate chips, the other with blueberries, glass counter showcases.\",\n    \"At the coffee shop, two muffins sit on the display, one studded with chocolate chips, the other with blueberries, glass counter showcases, wooden shelves behind.\",\n    \"At the coffee shop, two muffins sit on the display, one studded with chocolate chips, the other with blueberries, glass counter showcases, wooden shelves behind, warm hanging lights overhead.\"\n]\n```"
+        }
+    },
+    {
+        "542": {
+            "initial_prompt": "An ancient oak tree hosting a library in its branches, with birds as librarians and squirrels as readers.",
+            "progressive_prompts": "```python\n[\n    \"An ancient oak tree hosting a library in its branches.\",\n    \"An ancient oak tree hosting a library in its branches, surrounded by a lush forest.\",\n    \"An ancient oak tree hosting a library in its branches, surrounded by a lush forest, with birds as librarians.\",\n    \"An ancient oak tree hosting a library in its branches, surrounded by a lush forest, with birds as librarians, squirrels reading.\",\n    \"An ancient oak tree hosting a library in its branches, surrounded by a lush forest, with birds as librarians, squirrels reading, sunlight filtering through leaves.\"\n]\n```"
+        }
+    },
+    {
+        "400": {
+            "initial_prompt": "A chocolate cupcake with vanilla frosting on a plate, beside a vanilla cupcake with chocolate frosting.",
+            "progressive_prompts": "```python\n[\n    \"A chocolate cupcake and a vanilla cupcake on a plate\",\n    \"A chocolate cupcake with vanilla frosting and a vanilla cupcake with chocolate frosting on a white plate\",\n    \"A chocolate cupcake with swirled vanilla frosting, a vanilla cupcake with smooth chocolate frosting, placed on a white ceramic plate\",\n    \"A chocolate cupcake with delicately swirled vanilla frosting, alongside a vanilla cupcake with shiny chocolate frosting, both placed on a glossy white ceramic plate\",\n    \"A chocolate cupcake adorned with delicately swirled vanilla frosting, next to a vanilla cupcake topped with richly shiny chocolate frosting, set on a glossy round white ceramic plate with a subtle pattern\"\n]\n```"
+        }
+    },
+    {
+        "1061": {
+            "initial_prompt": "A smooth, ceramic mug of coffee sits on the bedside table, next to a sleeping cat curled up in a linen blanket.",
+            "progressive_prompts": "```python\n[\n    \"A mug and a sleeping cat on a bedside table\",\n    \"A smooth mug of coffee and a cat on a bedside table, linen blanket\",\n    \"A smooth ceramic mug of coffee sits on a bedside table, cat in linen blanket\",\n    \"A smooth ceramic mug of coffee sits on the bedside table, next to a sleeping cat, curled up in a linen blanket\",\n    \"A smooth, ceramic mug of coffee sits on the bedside table, next to a sleeping cat curled up in a linen blanket\"\n]\n```"
+        }
+    }
+]

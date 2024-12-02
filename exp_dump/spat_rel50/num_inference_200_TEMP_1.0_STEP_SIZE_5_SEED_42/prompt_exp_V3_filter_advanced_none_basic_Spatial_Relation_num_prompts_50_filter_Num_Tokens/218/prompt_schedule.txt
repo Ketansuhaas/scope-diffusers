@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A modern home office setup, a computer monitor on the desk showing a digital calendar with 'Meeting at 3 PM' highlighted",
-    "A modern home office setup, a computer monitor on the desk showing a digital calendar with 'Meeting at 3 PM' highlighted, sleek white desk",
-    "A modern home office setup, a computer monitor on the desk showing a digital calendar with 'Meeting at 3 PM' highlighted, sleek white desk, ergonomic office chair",
-    "A modern home office setup, a computer monitor on the desk showing a digital calendar with 'Meeting at 3 PM' highlighted, sleek white desk, ergonomic office chair, large window with natural light",
-    "A modern home office setup, a computer monitor on the desk showing a digital calendar with 'Meeting at 3 PM' highlighted, sleek white desk, ergonomic office chair, large window with natural light, minimalist bookshelves in the background"
-]
-```

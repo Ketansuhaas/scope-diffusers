@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A boy and a girl drawing on the sidewalk with chalk",
-    "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk",
-    "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, sunlit pavement",
-    "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, sunlit pavement, colorful chalk sketches",
-    "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, sunlit pavement, colorful chalk sketches, shadows of nearby trees"
-]
-```

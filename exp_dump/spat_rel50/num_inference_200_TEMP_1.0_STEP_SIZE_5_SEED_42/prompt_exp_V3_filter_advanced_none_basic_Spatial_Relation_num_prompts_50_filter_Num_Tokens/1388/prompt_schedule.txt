@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A monkey is stealing apples from a tourist's basket",
-    "A monkey is stealing apples from a tourist's basket, green grassy park",
-    "A monkey is stealing apples from a tourist's basket, green grassy park, fewer apples in its arms than in the basket",
-    "A monkey is stealing apples from a tourist's basket, green grassy park, fewer apples in its arms than in the basket, tourists sitting nearby",
-    "A monkey is stealing apples from a tourist's basket, green grassy park, fewer apples in its arms than in the basket, tourists sitting nearby, the basket resting on a picnic blanket"
-]
-```

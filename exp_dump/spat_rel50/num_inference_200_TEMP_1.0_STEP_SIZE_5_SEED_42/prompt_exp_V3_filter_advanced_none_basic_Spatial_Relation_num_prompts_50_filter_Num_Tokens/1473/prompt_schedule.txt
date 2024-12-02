@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "Two frogs on a lotus leaf in a pond, one drinking in front of the other",
-    "Two frogs on a lotus leaf in a pond, one drinking in front of the other, vibrant pink flowers",
-    "Two frogs on a lotus leaf in a pond, one drinking in front of the other, vibrant pink flowers, emerald green lily pads",
-    "Two frogs on a lotus leaf in a pond, one drinking in front of the other, vibrant pink flowers, emerald green lily pads, clear blue sky",
-    "Two frogs on a lotus leaf in a pond, one drinking in front of the other, vibrant pink flowers, emerald green lily pads, clear blue sky, gentle ripples on the water surface"
-]
-```

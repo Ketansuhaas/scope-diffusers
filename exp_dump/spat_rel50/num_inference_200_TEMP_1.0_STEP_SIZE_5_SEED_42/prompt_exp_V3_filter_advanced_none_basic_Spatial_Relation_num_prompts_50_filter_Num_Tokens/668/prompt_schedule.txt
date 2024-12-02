@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A rustic wooden cabin in a snowy forest",
-    "A rustic wooden cabin in a snowy forest, snow-laden branches",
-    "A rustic wooden cabin in a snowy forest, snow-laden branches, uneven terrain",
-    "A rustic wooden cabin in a snowy forest, snow-laden branches, uneven terrain, address '459' carved into a sign",
-    "A rustic wooden cabin in a snowy forest, snow-laden branches, uneven terrain, address '459' carved into a sign, frost-covered door"
-]
-```

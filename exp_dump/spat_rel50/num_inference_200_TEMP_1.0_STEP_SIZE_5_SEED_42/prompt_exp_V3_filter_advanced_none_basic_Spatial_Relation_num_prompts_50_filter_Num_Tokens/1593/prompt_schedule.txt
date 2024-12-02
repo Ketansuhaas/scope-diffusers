@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "In the office, two coworkers chat by the water cooler",
-    "In the office, two coworkers chat by the water cooler, one dressed in a sharp suit and tie",
-    "In the office, two coworkers chat by the water cooler, one dressed in a sharp suit and tie, the other in casual attire with a colorful scarf",
-    "In the office, two coworkers chat by the water cooler, one dressed in a sharp suit and tie, the other in casual attire with a colorful scarf, modern cubicles in the background",
-    "In the office, two coworkers chat by the water cooler, one dressed in a sharp suit and tie, the other in casual attire with a colorful scarf, modern cubicles in the background, sleek glass partitions"
-]
-```

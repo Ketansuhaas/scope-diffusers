@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A dragon's lair deep within a volcano",
-    "A dragon's lair deep within a volcano, fiery glow illuminating the cavern",
-    "A dragon's lair deep within a volcano, fiery glow illuminating the cavern, shadows dancing across the walls",
-    "A dragon's lair deep within a volcano, fiery glow illuminating the cavern, shadows dancing across the walls, treasure piled high",
-    "A dragon's lair deep within a volcano, fiery glow illuminating the cavern, shadows dancing across the walls, treasure piled high, 'Beware of Fire' written in ember-like script"
-]
-```

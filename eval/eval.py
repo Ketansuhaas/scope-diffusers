@@ -12,7 +12,7 @@ from config import Config
 import pandas as pd
 from genai_prompts.dataset import GenAIDataset
 from genai_prompts.filter_dataset import filter_dataset
-from genai_prompts.scope_prompt_gen import get_progressive_prompts
+from genai_prompts.scope_prompt_gen import get_progressive_prompts, get_progressive_prompts_from_scratch
 import json
 import torch
 import re
@@ -116,33 +116,69 @@ if config.PROVIDE_PROMPTS:
 else:
     logger.info(f"Generating Prompts based on System Prompt: {config.SYSTEM_PROMPT}")
     dataset = None
-    scope_prompts_path= None
+    prompt_exp = exp_dir.split("/prompt_exp_")[-1]
+    prompt_exp = f"prompt_exp_{prompt_exp}"
+    scope_prompts_path= os.path.join(f"prompt_dump/{prompt_exp}", "scope_prompts.json")
+
+    if not os.path.exists(scope_prompts_path):
+
+        gen_prompts = []
+        for i in range(config.NUM_FILTER):
+            progressive_prompts = get_progressive_prompts_from_scratch(sys_prompt)
+            gen_prompts.append({
+                i: {
+                    "initial_prompt": f"Prompt {i}",
+                    "progressive_prompts": progressive_prompts
+                }
+            })
+            gen_prompts.append(progressive_prompts)
+        
+        # dump generated prompts to json
+        os.makedirs(os.path.dirname(scope_prompts_path), exist_ok=True)  # Create directory if it doesn't exist
+        # Save the results into a JSON file for future use
+        with open(scope_prompts_path, 'w') as f:
+            json.dump(gen_prompts, f, indent=4)
+
+        logger.info(f"Results saved in {scope_prompts_path}")
+    else:
+        pass
+
+        
 
 with open(scope_prompts_path, 'r') as f:
     prompts = json.load(f)
+    print(prompts)
+
+    # convert to list of dicts
+    prompts = [{k: v} for d in prompts for k, v in d.items()]
 
 
 # set pipes
 from scope_diffuser import SCoPEDiffusionPipeline as sdp_scope
 from diffusers import StableDiffusionPipeline as sdp
-scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
-normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
+scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
+normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 scope_sd_pipe.to(device)
 normal_sd_pipe.to(device)
 
-for prompt in prompts:
-
-    prompt_id = list(prompt.keys())[0]
-    initial_prompt = list(prompt.values())[0]['initial_prompt']
-    progressive_prompts = list(prompt.values())[0]['progressive_prompts']
-    match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
-    prompt_schedule_match = match.group(1)
-    prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
-    prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]  # Remove empty prompts
-
+for idx, prompt in enumerate(prompts):
+    if config.PROVIDE_PROMPTS:
+        prompt_id = list(prompt.keys())[0]
+        initial_prompt = list(prompt.values())[0]['initial_prompt']
+        progressive_prompts = list(prompt.values())[0]['progressive_prompts']
+        match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
+        prompt_schedule_match = match.group(1)
+        prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
+        prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]
+    else:
+        print(prompt)
+        prompt_id = idx
+        initial_prompt = prompt['initial_prompt']
+        progressive_prompts = prompt['progressive_prompts']
+        prompt_schedule_list = progressive_prompts
 
     prompt_schedule = []
     step_size = config.STEP_SIZE

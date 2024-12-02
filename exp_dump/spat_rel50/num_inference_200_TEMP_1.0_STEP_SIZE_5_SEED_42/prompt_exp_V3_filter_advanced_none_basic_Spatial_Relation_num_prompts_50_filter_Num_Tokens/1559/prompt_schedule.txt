@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "In the laundry room, there are three bins of clothes",
-    "In the laundry room, there are three bins of clothes, tiled floor",
-    "In the laundry room, there are three bins of clothes, tiled floor, one bin on the washing machine",
-    "In the laundry room, there are three bins of clothes, tiled floor, one bin on the washing machine, two bins on the ground",
-    "In the laundry room, there are three bins of clothes, tiled floor, one bin on the washing machine, two bins on the ground, the clothes in the bin on the washing machine are dirtier"
-]
-```

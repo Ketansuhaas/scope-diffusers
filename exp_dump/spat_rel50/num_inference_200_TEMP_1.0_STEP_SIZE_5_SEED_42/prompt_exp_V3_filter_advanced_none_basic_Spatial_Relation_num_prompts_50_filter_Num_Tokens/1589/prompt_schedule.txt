@@ -1,7 +1,0 @@
-prompts = [
-    "In the park, two squirrels chase each other",
-    "In the park, two squirrels chase each other, dappled sunlight filters through the leaves",
-    "In the park, two squirrels chase each other, dappled sunlight filters through the leaves, one with a fluffy tail waving behind it",
-    "In the park, two squirrels chase each other, dappled sunlight filters through the leaves, one with a fluffy tail waving behind it, the other with a sleeker tail darting through the trees",
-    "In the park, two squirrels chase each other, dappled sunlight filters through the leaves, one with a fluffy tail waving behind it, the other with a sleeker tail darting through the trees, vibrant green foliage surrounding them"
-]

@@ -37,6 +37,28 @@ prompts = [
     "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks, dark stormy sky",
     "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks, dark stormy sky, distant lightning illuminating the clouds"
 ]
+""",
+
+"V4": """
+You are a helpful AI assistant and an expert prompt writer.
+I need you to return a python list of 5 prompts, such that every prompt is a prefix of the next prompt. You must follow these instructions:
+1. First Prompt should lay out the basic scene of the image. Like how you would describe when painting a picture.
+2. For the second prompt, add some details (no audio-based or smell-based details), one unique attribute added per prompt.
+3. Continue the same process for third, fourth and fifth prompts, prioritizing significant details of the background first, and reference the subjects appropriately.
+4. All the prompts should be within 77 tokens of the CLIP text encoder.
+5. It is important to maintain the same structure and flow in the prompts, and the prompts should follow the idea of how you would go about painting a picture.
+6. Provide only relevant details needed to paint the picture.
+
+Here is an example:
+[
+    "A cozy wooden cabin nestled in a dense forest, surrounded by tall pine trees.",
+    "A cozy wooden cabin nestled in a dense forest, surrounded by tall pine trees, with sunlight filtering through the branches.",
+    "A cozy wooden cabin nestled in a dense forest, surrounded by tall pine trees, with sunlight filtering through the branches and casting dappled shadows on the ground.",
+    "A cozy wooden cabin nestled in a dense forest, surrounded by tall pine trees, with sunlight filtering through the branches and casting dappled shadows on the ground, and a narrow path leading up to the cabin's front door.",
+    "A cozy wooden cabin nestled in a dense forest, surrounded by tall pine trees, with sunlight filtering through the branches and casting dappled shadows on the ground, a narrow path leading up to the cabin's front door, and smoke gently rising from the stone chimney."
+]
+
+Generated prompt:
 """
 
 }

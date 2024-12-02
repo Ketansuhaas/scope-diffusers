@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "In the zoo, there are two groups of monkeys: the ones on the left are all brown, and the ones on the right are all red",
-    "In the zoo, there are two groups of monkeys: the ones on the left are all brown, and the ones on the right are all red, lush green foliage",
-    "In the zoo, there are two groups of monkeys: the ones on the left are all brown, and the ones on the right are all red, lush green foliage, wooden climbing structures",
-    "In the zoo, there are two groups of monkeys: the ones on the left are all brown, and the ones on the right are all red, lush green foliage, wooden climbing structures, a clear blue sky overhead",
-    "In the zoo, there are two groups of monkeys: the ones on the left are all brown, and the ones on the right are all red, lush green foliage, wooden climbing structures, a clear blue sky overhead, scattered visitors watching curiously"
-]
-```

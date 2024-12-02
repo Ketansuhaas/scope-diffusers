@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "A flower garden with green pots containing tulips and yellow pots empty",
-    "A flower garden with green pots containing tulips and yellow pots empty, lush greenery",
-    "A flower garden with green pots containing tulips and yellow pots empty, lush greenery, vibrant tulips",
-    "A flower garden with green pots containing tulips and yellow pots empty, lush greenery, vibrant tulips, varied pot placements",
-    "A flower garden with green pots containing tulips and yellow pots empty, lush greenery, vibrant tulips, varied pot placements, well-tended pathways"
-]
-```

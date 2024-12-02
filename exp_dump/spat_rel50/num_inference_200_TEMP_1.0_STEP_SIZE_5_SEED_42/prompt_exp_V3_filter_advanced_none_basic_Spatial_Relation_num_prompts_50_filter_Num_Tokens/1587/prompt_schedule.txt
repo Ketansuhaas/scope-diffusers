@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "In the art gallery, two paintings hang on the wall",
-    "In the art gallery, two paintings hang on the wall, white gallery lighting",
-    "In the art gallery, two paintings hang on the wall, white gallery lighting, vibrant abstract art with splashes of color",
-    "In the art gallery, two paintings hang on the wall, white gallery lighting, vibrant abstract art with splashes of color, detailed landscape with intricate brushwork",
-    "In the art gallery, two paintings hang on the wall, white gallery lighting, vibrant abstract art with splashes of color, detailed landscape with intricate brushwork, polished wooden floor reflecting light"
-]
-```

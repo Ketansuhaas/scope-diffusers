@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "In the toy store, two teddy bears sit on the shelf",
-    "In the toy store, two teddy bears sit on the shelf, surrounded by colorful boxes",
-    "In the toy store, two teddy bears sit on the shelf, surrounded by colorful boxes, one wearing a bow tie",
-    "In the toy store, two teddy bears sit on the shelf, surrounded by colorful boxes, one wearing a bow tie, holding a tiny book",
-    "In the toy store, two teddy bears sit on the shelf, surrounded by colorful boxes, one wearing a bow tie, holding a tiny book, the other adorned with a flower crown"
-]
-```

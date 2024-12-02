@@ -1,9 +1,0 @@
-```python
-prompts = [
-    "Under the bench, there are four pairs of sneakers",
-    "Under the bench, there are four pairs of sneakers, one pair is red",
-    "Under the bench, there are four pairs of sneakers, one pair is red, two pairs are green",
-    "Under the bench, there are four pairs of sneakers, one pair is red, two pairs are green, the last pair is white",
-    "Under the bench, there are four pairs of sneakers, one pair is red, two pairs are green, the last pair is white, the bench is made of dark wood"
-]
-```

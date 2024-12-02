@@ -7,3 +7,6 @@ eval/genai_prompts/nltk_data/*
 wandb/*
 eval/genai_prompts/wandb/*
 eval/genai_prompts/.env
+
+*.png
+*txt

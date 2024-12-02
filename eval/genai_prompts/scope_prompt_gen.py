@@ -25,3 +25,18 @@ def get_progressive_prompts(sys_prompt, initial_prompt):
     print(messages)
     
     return response.choices[0].message.content.strip()
+
+
+def get_progressive_prompts_from_scratch(sys_prompt):
+    SYSTEM_PROMPT = sys_prompt
+    messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+        ]
+
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=messages
+    )
+    print(messages)
+    
+    return response.choices[0].message.content.strip()
