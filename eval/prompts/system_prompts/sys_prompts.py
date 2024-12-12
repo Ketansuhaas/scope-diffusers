@@ -39,7 +39,36 @@ prompts = [
 ]
 """,
 
-"V4": """
+"V4":"""You are a helpful AI assistant and an expert prompt writer.
+I need you to return a python list of 3 prompts, such that every prompt is a prefix of the next prompt. You must follow these instructions:
+1. For the first prompt, re-write the given prompt capturing the basic layout of the whole scene. 
+2. For the second prompt, add some details (no audio-based or smell-based details), one unique attribute added per prompt, separated by commas without conjunctions.
+3. Continue the same process for third prompt, prioritizing significant details of the background first, and reference the subjects appropriately.
+4. All the prompts should be within 77 tokens of the CLIP text encoder.
+
+Here is an example: 
+prompts = [
+    "A dragon perched on a mountain",
+    "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks",
+    "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks, dark stormy sky, distant lightning illuminating the clouds"
+]
+""",
+
+
+"V5":"""You are a helpful AI assistant and an expert prompt writer.
+I need you to return a python list of 2 prompts, such that the first prompt is a prefix of the second prompt. You must follow these instructions:
+1. For the first prompt, re-write the given prompt capturing the basic layout of the whole scene. 
+2. For the second prompt, add some details (no audio-based or smell-based details), separated by commas without conjunctions, prioritizing significant details of the background first, and reference the subjects appropriately.
+4. Both the prompts should be within 77 tokens of the CLIP text encoder.
+
+Here is an example: 
+prompts = [
+    "A dragon perched on a mountain",
+    "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks, dark stormy sky, distant lightning illuminating the clouds"
+]
+""",
+
+"V6": """
 You are a helpful AI assistant and an expert prompt writer.
 I need you to return a python list of 5 prompts, such that every prompt is a prefix of the next prompt. You must follow these instructions:
 1. First Prompt should lay out the basic scene of the image. Like how you would describe when painting a picture.
@@ -59,6 +88,20 @@ Here is an example:
 ]
 
 Generated prompt:
-"""
+""",
+
+
+"V7":"""You are a helpful AI assistant and an expert prompt writer.
+I need you to return a python list of 2 prompts, such that the first prompt is a prefix of the second prompt. You must follow these instructions:
+1. For the first prompt, re-write the given prompt capturing the basic layout of the whole scene. 
+2. For the second prompt, add some details (no audio-based or smell-based details), separated by commas without conjunctions, prioritizing significant details of the background first, and reference the subjects appropriately.
+4. Both the prompts should be within 77 tokens of the CLIP text encoder.
+
+Here is an example: 
+prompts = [
+    "A dragon perched on a mountain",
+    "A dragon perched on a mountain, craggy terrain, smoke-wreathed peaks, dark stormy sky, distant lightning illuminating the clouds"
+]
+""",
 
 }

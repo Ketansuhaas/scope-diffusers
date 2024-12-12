@@ -2,9 +2,9 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Config:
-    SYSTEM_PROMPT: str = "V1"
-    FILTER_TAGS: dict = field(default_factory=lambda: {'advanced': [], 'basic': ["Spatial Relation"]})
-    NUM_FILTER: int = 30
+    SYSTEM_PROMPT: str = "V5"
+    FILTER_TAGS: dict = field(default_factory=lambda: {'advanced': [], 'basic': ["Part Relation"]})
+    NUM_FILTER: int = 10
     FILTER_BY: str = 'Num_Nouns'
     PROVIDE_PROMPTS: bool = True
     GENAI_CSV_PATH: str = "eval/genai_prompts/genai_dataset.csv"

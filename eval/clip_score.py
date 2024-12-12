@@ -6,8 +6,8 @@ import torch
 import clip
 
 # Define base folder path
-base_folder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump"
-experiment_subfolder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/nlerp_model_stabilityai-stable-diffusion-2-1-base/num_inference_50_TEMP_1.0_STEP_SIZE_5_SEED_42/prompt_exp_V1_filter_advanced_none_basic_Spatial_Relation_num_prompts_30_filter_Num_Nouns"
+base_folder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump"
+experiment_subfolder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/nlerp_model_stabilityai-stable-diffusion-2-1-base/num_inference_50_TEMP_1.0_STEP_SIZE_5_SEED_42/prompt_exp_V5_filter_advanced_none_basic_Part_Relation_num_prompts_10_filter_Num_Nouns"
 full_path = os.path.join(base_folder, experiment_subfolder)
 
 # Load CLIP model
@@ -88,14 +88,20 @@ for image_id in os.listdir(full_path):
         "scope_clip_score": scope_clip_score
     })
 
+
 # Output results
+scope_scores = []
+normal_scores = []
 for result in results:
     print(f"Image ID: {result['image_id']}")
     print(f"  CLIP Score for 'normal_image.png': {result['normal_clip_score']}")
     print(f"  CLIP Score for 'scope_image.png': {result['scope_clip_score']}")
-
+    normal_scores.append(result['normal_clip_score'])
+    scope_scores.append(result['scope_clip_score'])
 
 import numpy as np
+print(f"average CLIP Score (SCoPE): {np.mean(np.array(scope_scores))}")
+print(f"average CLIP Score (Normal): {np.mean(np.array(normal_scores))}")
 
 # Compute statistics
 # Compare performance and calculate average improvement

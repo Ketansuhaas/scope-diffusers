@@ -52,16 +52,24 @@ if __name__ == "__main__":
             "DEVICE": "cuda",  # or "cpu"
             "seed": 42,
             "num_inference_steps": 50,
-            "step_sizes": [1,2,3], #trying to remove step size
+            "step_sizes": [1,2,3,5,7], #trying to remove step size
             "temperatures": [1]   # doesn't matter for cslerp, and it is tau for emslerp
         }
 
         prompts = get_preprocessed_prompt_lists(param='num_nouns', count=100, ascending=True)
 
         for exp_id in range(len(prompts)):
-            config_overall["prompt_schedule"] = prompts[exp_id]
+            # config_overall["prompt_schedule"] = prompts[exp_id]
+
+            config_overall["prompt_schedule"] = [
+                'a cat in a park',
+                'a black cat in a flowery park, a man walking the cat'
+            ]
+    
+
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
+            exit()
         
 
     elif args.experiment == "model":

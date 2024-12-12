@@ -226,9 +226,9 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
             # gamma = 2
             tau = times[1]*(1 - (time_i/times[-1])) + 0.1 # tau (temperature) decreases across timesteps (standard deviation)
-
+            q = len(times)-1
             # adjust stepsizes based on consecutive euclidean distances
-            distances = np.zeros((77,4))
+            distances = np.zeros((77,q))
             for idx in range(embeddings.shape[0]-1):
                 e1 = embeddings[idx].detach().cpu().numpy()
                 e2 = embeddings[idx+1].detach().cpu().numpy()
