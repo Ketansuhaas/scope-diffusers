@@ -1,0 +1,62 @@
+[
+    {
+        "1489": {
+            "initial_prompt": "A packet of tissues has two cartoon characters on the packaging, the cartoon character in the red dress is on the left and the cartoon character without the red dress is on the right.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A packet of tissues with two cartoon characters, one in a red dress on the left, and one without on the right\",\n    \"A packet of tissues with two cartoon characters, one in a red dress on the left facing forward, and one without a red dress on the right with a blue hat, vivid colors, simplistic background design, glossy packaging, subtle shadows enhancing 3D appearance\"\n]\n```"
+        }
+    },
+    {
+        "1540": {
+            "initial_prompt": "There are two sets of boxes on the floor, one on the left is a paper box and the other on the right is a plastic box, and the paper boxes are arranged more neatly than the plastic boxes.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right\",\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right, paper boxes arranged neatly, plastic boxes scattered, smooth wooden floor, light coming from a window, cast shadows creating a pattern\"\n]\n```"
+        }
+    },
+    {
+        "1585": {
+            "initial_prompt": "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers.",
+            "progressive_prompts": "prompts = [\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers\",\n    \"On the bookshelf, two novels stand side by side, surrounded by other tomes, one a thick fantasy epic with a dragon on the cover, rich colors and intricate designs, the other a slim romance novel adorned with exquisite flower illustrations, delicate and pastel-hued\"\n]"
+        }
+    },
+    {
+        "1427": {
+            "initial_prompt": "In the night market, two vendors are setting up their stalls, and the vendor on the left has a wider range of goods than the vendor on the right.",
+            "progressive_prompts": "prompts = [\n    \"In the night market, two vendors are setting up their stalls\",\n    \"In the night market, two vendors are setting up their stalls, strings of colorful lights above, bustling atmosphere, a variety of goods displayed, vendor on the left with an expansive selection of items, vendor on the right with a more limited assortment\"\n]"
+        }
+    },
+    {
+        "1595": {
+            "initial_prompt": "Within the dragon's lair, two knights duel fiercely, one with red shoes wielding a sword wreathed in flames and the other one with black shoes wielding a shield adorned with celestial symbols.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Within the dragon's lair, two knights duel fiercely\",\n    \"Within the dragon's lair, two knights duel fiercely, rocky cavern walls, stalactites hanging from the ceiling, eerie flickering shadows from a dragon's breath, one with red shoes wielding a sword wreathed in flames, the other with black shoes wielding a shield adorned with celestial symbols\"\n]\n```"
+        }
+    },
+    {
+        "1559": {
+            "initial_prompt": "In the laundry room, there are three bins of clothes. The clothes in the bin on the washing machine are dirtier than those in the two bins on the ground.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the laundry room, there are three bins of clothes. The clothes in the bin on the washing machine are dirtier than those in the two bins on the ground.\",\n    \"In the laundry room, there are three bins of clothes, dull fluorescent lighting above, a tiled floor with traces of detergent, the bin atop the washing machine has significantly dirtier clothes, two other bins rest on the ground, walls lined with shelves of folded towels and detergent boxes\"\n]\n```"
+        }
+    },
+    {
+        "811": {
+            "initial_prompt": "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress drawing on the sidewalk with chalk, pastel-colored chalk pieces scattered around, colorful doodles covering the concrete, sunny afternoon, shadows cast on the ground, nearby green lawn\"\n]\n```"
+        }
+    },
+    {
+        "1376": {
+            "initial_prompt": "A group of children play around an oak tree, and the number of children in the tree outnumbers the number of children under the tree.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A group of children play around an oak tree, more children in the tree than under it\",\n    \"A group of children play around an oak tree, more children in the tree than under it, sprawling branches, vibrant green leaves, sunlight filtering through, dappled shadows on the ground, laughter echoing, a well-worn path nearby\"\n]\n```"
+        }
+    },
+    {
+        "1587": {
+            "initial_prompt": "In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape with intricate brushwork.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the art gallery, two paintings hang on the wall\",\n    \"In the art gallery, two paintings hang on the wall, a spacious modern interior, one painting is a vibrant abstract with splashes of color, bold hues, the second painting is a detailed landscape with intricate brushwork, delicate textures, muted tones\"\n]\n```"
+        }
+    },
+    {
+        "1592": {
+            "initial_prompt": "At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit.",
+            "progressive_prompts": "prompts = [\n    \"At the bakery, two cakes are on display\",\n    \"At the bakery, two cakes are on display, shelves filled with baked goods, the first cake towering with layers and intricate frosting designs, the second cake a simple sheet adorned with fresh fruit, large windows letting in natural light, checkered floor tiles\"\n]"
+        }
+    }
+]

@@ -34,7 +34,7 @@ def get_progressive_prompts_from_scratch(sys_prompt):
         ]
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=messages
     )
     print(messages)

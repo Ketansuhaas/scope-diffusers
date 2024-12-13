@@ -1,0 +1,62 @@
+[
+    {
+        "1489": {
+            "initial_prompt": "A packet of tissues has two cartoon characters on the packaging, the cartoon character in the red dress is on the left and the cartoon character without the red dress is on the right.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A packet of tissues has two cartoon characters on the packaging\",\n    \"A packet of tissues has two cartoon characters on the packaging, cartoon character in a red dress on the left\",\n    \"A packet of tissues has two cartoon characters on the packaging, cartoon character in a red dress on the left, cartoon character without the red dress on the right\",\n    \"A packet of tissues has two cartoon characters on the packaging, cartoon character in a red dress on the left, cartoon character without the red dress on the right, vibrant colorful background\",\n    \"A packet of tissues has two cartoon characters on the packaging, cartoon character in a red dress on the left, cartoon character without the red dress on the right, vibrant colorful background, branding text in bold letters\"\n]\n```"
+        }
+    },
+    {
+        "1392": {
+            "initial_prompt": "There are two trees in the monkey park at the zoo, and the number of monkeys in the shorter tree is more than the number of monkeys in the taller tree.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two trees in the monkey park at the zoo, the shorter tree has more monkeys\",\n    \"Two trees in the monkey park at the zoo, the shorter tree has more monkeys, lush green foliage\",\n    \"Two trees in the monkey park at the zoo, the shorter tree has more monkeys, lush green foliage, swing ropes between the trees\",\n    \"Two trees in the monkey park at the zoo, the shorter tree has more monkeys, lush green foliage, swing ropes between the trees, wooden platforms\",\n    \"Two trees in the monkey park at the zoo, the shorter tree has more monkeys, lush green foliage, swing ropes between the trees, wooden platforms, a small pond nearby\"\n]\n```"
+        }
+    },
+    {
+        "1540": {
+            "initial_prompt": "There are two sets of boxes on the floor, one on the left is a paper box and the other on the right is a plastic box, and the paper boxes are arranged more neatly than the plastic boxes.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right\",\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right, paper boxes neatly arranged\",\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right, paper boxes neatly arranged, plastic boxes scattered\",\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right, paper boxes neatly arranged, plastic boxes scattered, tile floor\",\n    \"Two sets of boxes on the floor, paper box on the left, plastic box on the right, paper boxes neatly arranged, plastic boxes scattered, tile floor, fluorescent light above\"\n]\n```"
+        }
+    },
+    {
+        "1585": {
+            "initial_prompt": "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers.",
+            "progressive_prompts": "```python\nprompts = [\n    \"On the bookshelf, two novels stand side by side\",\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover\",\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers\",\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers, the shelf is made of dark polished wood\",\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers, the shelf is made of dark polished wood, a small vase with daisies sits at the edge\"\n]\n```"
+        }
+    },
+    {
+        "1388": {
+            "initial_prompt": "A monkey is stealing apples from a tourist's basket. The number of apples in the monkey's arms is less than the number of apples in the basket.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A monkey is stealing apples from a tourist's basket\",\n    \"A monkey is stealing apples from a tourist's basket, grassy park setting\",\n    \"A monkey is stealing apples from a tourist's basket, grassy park setting, lush green trees\",\n    \"A monkey is stealing apples from a tourist's basket, grassy park setting, lush green trees, scattered tourists\",\n    \"A monkey is stealing apples from a tourist's basket, grassy park setting, lush green trees, scattered tourists, sunlight filtering through the foliage\"\n]\n```"
+        }
+    },
+    {
+        "1427": {
+            "initial_prompt": "In the night market, two vendors are setting up their stalls, and the vendor on the left has a wider range of goods than the vendor on the right.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the night market, two vendors are setting up their stalls\",\n    \"In the night market, two vendors are setting up their stalls, various tents lining the pathway\",\n    \"In the night market, two vendors are setting up their stalls, various tents lining the pathway, warm ambient lights\",\n    \"In the night market, two vendors are setting up their stalls, various tents lining the pathway, warm ambient lights, cobblestone ground\",\n    \"In the night market, two vendors are setting up their stalls, various tents lining the pathway, warm ambient lights, cobblestone ground, the vendor on the left has a wider range of goods\"\n]\n```"
+        }
+    },
+    {
+        "1559": {
+            "initial_prompt": "In the laundry room, there are three bins of clothes. The clothes in the bin on the washing machine are dirtier than those in the two bins on the ground.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the laundry room, there are three bins of clothes\",\n    \"In the laundry room, there are three bins of clothes, one bin on the washing machine\",\n    \"In the laundry room, there are three bins of clothes, one bin on the washing machine, two bins on the ground\",\n    \"In the laundry room, there are three bins of clothes, one bin on the washing machine, two bins on the ground, the clothes in the bin on the washing machine are dirtier\",\n    \"In the laundry room, there are three bins of clothes, one bin on the washing machine, two bins on the ground, the clothes in the bin on the washing machine are dirtier than those in the two bins on the ground\"\n]\n```"
+        }
+    },
+    {
+        "811": {
+            "initial_prompt": "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, a tree casting shade\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, a tree casting shade, colorful chalk pieces scattered around\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, a tree casting shade, colorful chalk pieces scattered around, whimsical drawings covering the concrete\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, a tree casting shade, colorful chalk pieces scattered around, whimsical drawings covering the concrete, a serene suburban street in the background\"\n]\n```"
+        }
+    },
+    {
+        "1587": {
+            "initial_prompt": "In the art gallery, two paintings hang on the wall, one a vibrant abstract with splashes of color, the other a detailed landscape with intricate brushwork.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the art gallery, two paintings hang on the wall\",\n    \"In the art gallery, two paintings hang on the wall, polished wooden floor\",\n    \"In the art gallery, two paintings hang on the wall, polished wooden floor, soft overhead lighting\",\n    \"In the art gallery, two paintings hang on the wall, polished wooden floor, soft overhead lighting, a vibrant abstract with splashes of color\",\n    \"In the art gallery, two paintings hang on the wall, polished wooden floor, soft overhead lighting, a vibrant abstract with splashes of color, a detailed landscape with intricate brushwork\"\n]\n```"
+        }
+    },
+    {
+        "1592": {
+            "initial_prompt": "At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit.",
+            "progressive_prompts": "```python\nprompts = [\n    \"At the bakery, two cakes are on display\",\n    \"At the bakery, two cakes are on display, walls lined with bread\",\n    \"At the bakery, two cakes are on display, walls lined with bread, shelves bearing pastries\",\n    \"At the bakery, two cakes are on display, walls lined with bread, shelves bearing pastries, sunlight streaming through windows\",\n    \"At the bakery, two cakes are on display, walls lined with bread, shelves bearing pastries, sunlight streaming through windows, a rustic wooden counter\"\n]\n```"
+        }
+    }
+]

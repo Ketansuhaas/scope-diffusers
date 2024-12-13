@@ -1,0 +1,62 @@
+[
+    {
+        "1489": {
+            "initial_prompt": "A packet of tissues has two cartoon characters on the packaging, the cartoon character in the red dress is on the left and the cartoon character without the red dress is on the right.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A packet of tissues with two cartoon characters on the packaging\",\n    \"A packet of tissues with two cartoon characters on the packaging, the one in a red dress is on the left with a cheerful smile, the one without a red dress is on the right with a playful pose, the background is a light pastel color, the brand logo is at the top\"\n]\n```"
+        }
+    },
+    {
+        "1585": {
+            "initial_prompt": "On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers.",
+            "progressive_prompts": "prompts = [\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic, the other a slim romance novel\",\n    \"On the bookshelf, two novels stand side by side, one a thick fantasy epic with a dragon on the cover, the other a slim romance novel adorned with flowers, wooden shelves filled with books, soft lighting casting a warm glow, a slight layer of dust on the shelf\"\n]"
+        }
+    },
+    {
+        "1592": {
+            "initial_prompt": "At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit.",
+            "progressive_prompts": "```python\nprompts = [\n    \"At the bakery, two cakes are on display, one towering with layers and intricate frosting designs, the other a simple sheet cake adorned with fresh fruit\",\n    \"At the bakery, two cakes are on display, a cozy interior with a warm glow, shelves filled with baked goods, one cake towering with layers and intricate frosting designs, intricate floral patterns and edible pearls, the other a simple sheet cake adorned with fresh fruit, vibrant berries and sliced kiwi\"\n]\n```"
+        }
+    },
+    {
+        "1591": {
+            "initial_prompt": "In the toy store, two teddy bears sit on the shelf, one wearing a bow tie and holding a tiny book, the other adorned with a flower crown and clutching a miniature guitar.",
+            "progressive_prompts": "```python\nprompts = [\n    \"In the toy store, two teddy bears sit on the shelf\",\n    \"In the toy store, two teddy bears sit on the shelf, brightly lit aisles, colorful toys scattered around, one bear wearing a bow tie holding a tiny book, the other adorned with a flower crown clutching a miniature guitar, reflection from the glass window\"\n]\n```"
+        }
+    },
+    {
+        "811": {
+            "initial_prompt": "A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk\",\n    \"A boy in a striped blue and white polo shirt and a girl in a pink sundress and white sandals drawing on the sidewalk with chalk, colorful doodles on gray pavement, sunlit afternoon, nearby park bench, lush green grass in the background\"\n]\n```"
+        }
+    },
+    {
+        "1595": {
+            "initial_prompt": "Within the dragon's lair, two knights duel fiercely, one with red shoes wielding a sword wreathed in flames and the other one with black shoes wielding a shield adorned with celestial symbols.",
+            "progressive_prompts": "```python\nprompts = [\n    \"Within the dragon's lair, two knights duel fiercely\",\n    \"Within the dragon's lair, two knights duel fiercely, stalactite-studded ceiling, flickering torchlight casting long shadows, one knight in red shoes wielding a sword wreathed in flames, the other in black shoes wielding a shield adorned with celestial symbols\"\n]\n```"
+        }
+    },
+    {
+        "809": {
+            "initial_prompt": "A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline.",
+            "progressive_prompts": "```python\nprompts = [\n    \"A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline\",\n    \"A man in a classic white t-shirt and jeans capturing a selfie with a woman in a flowing orange dress against a city skyline, skyscrapers glistening in the background, setting sun casting an orange hue, reflections on glass buildings, couple smiling warmly, skyline stretching far into the distance\"\n]\n```"
+        }
+    },
+    {
+        "1485": {
+            "initial_prompt": "A cartoon puppy with sunglasses and no necklace is singing into a microphone while another cartoon puppy with a hat and no sunglasses scores on a scoreboard.",
+            "progressive_prompts": "prompts = [\n    \"A cartoon puppy with sunglasses singing into a microphone while another cartoon puppy with a hat scores on a scoreboard\",\n    \"A cartoon puppy with sunglasses singing into a microphone, colorful stage lights, another cartoon puppy with a hat and no sunglasses focusing on a nearby scoreboard, large glowing numbers changing as the score updates\"\n]"
+        }
+    },
+    {
+        "74": {
+            "initial_prompt": "An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left.",
+            "progressive_prompts": "```python\nprompts = [\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left\",\n    \"An eagle with a silver band on its leg on the right, soaring past a towering pine tree on the left, dense forest backdrop, layered with shadows from the canopy, under a bright blue sky with scattered wispy clouds, sunlight glinting off the eagle's feathers\"\n]\n```"
+        }
+    },
+    {
+        "812": {
+            "initial_prompt": "A small dog in a cozy purple sweater chasing a cat wearing a stylish pink bow tie around the living room.",
+            "progressive_prompts": "prompts = [\n    \"A small dog in a cozy purple sweater chasing a cat wearing a stylish pink bow tie around the living room\",\n    \"A small dog in a cozy purple sweater chasing a cat wearing a stylish pink bow tie around the living room, plush carpet covering the floor, soft ambient lighting, bookshelves lining the walls, a large window with curtains slightly drawn, a couch with colorful cushions surrounding a coffee table, the dog excitedly bounding in curved arcs, the cat leaping gracefully with its tail high, plants in decorative pots, framed pictures on the walls\"\n]"
+        }
+    }
+]
