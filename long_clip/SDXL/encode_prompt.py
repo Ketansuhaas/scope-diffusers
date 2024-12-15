@@ -66,7 +66,7 @@ def kps(model):
 
 bigG_model, _, bigG_preprocess = open_clip.create_model_and_transforms(
     'ViT-bigG-14', 
-    pretrained='/projectnb/ivc-ml/xthomas/cs791/Long-CLIP/checkpoints/big/open_clip_pytorch_model.bin'
+    pretrained='/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache/open_clip_pytorch_model.bin'
 )
 bigG_model = kps(bigG_model)
 bigG_model.eval().cuda()
@@ -75,7 +75,7 @@ bigG_encoder = bigG_model.encode_text_full
 openclip_tokenizer = open_clip.get_tokenizer('ViT-bigG-14')
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-vitl_model, vitl_preprocess = longclip.load("/projectnb/ivc-ml/xthomas/cs791/Long-CLIP/checkpoints/long_clip_l/longclip-L.pt", device=device)
+vitl_model, vitl_preprocess = longclip.load("/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache/longclip-L.pt", device=device)
 vitl_model.eval()
 vitL_encoder = vitl_model.encode_text_full
 
@@ -173,6 +173,7 @@ with torch.no_grad():
 
                 # We are only ALWAYS interested in the pooled output of the final text encoder
                 pooled_prompt_embeds = bigG_model.encode_text(text_input_ids.to(device))
+                
                 if clip_skip is None:
                     prompt_embeds = prompt_embeds
                 else:

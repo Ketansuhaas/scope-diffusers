@@ -15,11 +15,16 @@ from transformers import (
 )
 
 # from SDXL_pipeline import get_image
-from SDXL_pipeline_backup import get_image
+from SDXL_pipeline_prompt_interpolation import get_image
 from SDXL_img2img import image2image
+import random
 
 base = DiffusionPipeline.from_pretrained(
-    "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
+    "stabilityai/stable-diffusion-xl-base-1.0", 
+    torch_dtype=torch.float16, 
+    variant="fp16", 
+    use_safetensors=True,
+    cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
 )
 base.to("cuda")
 
@@ -30,6 +35,7 @@ refiner = DiffusionPipeline.from_pretrained(
     torch_dtype=torch.float16,
     use_safetensors=True,
     variant="fp16",
+    cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
 )
 refiner.to("cuda")
 
@@ -37,11 +43,24 @@ refiner.to("cuda")
 n_steps = 40
 high_noise_frac = 0.8
 
-prompt = "A little girl on a quiet street holding worn pocket watches for sale, old buildings with faded signs in the background, cobblestone path, scattered leaves on the ground, dim evening light"
+
+def set_seed(seed: int):
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+set_seed(42)
+
+prompt_schedule = [
+    (0,'a photograph of a dog in a park'),
+    # (5,'a dog in a park'),
+    # (10,'a happy dog in a flowery park')
+]
 
 image = get_image(
     pipe=base,
-    prompt=prompt,
+    prompt_schedule = prompt_schedule,
+    # prompt=prompt,
     num_inference_steps=n_steps,
     denoising_end=high_noise_frac,
     output_type="latent",
@@ -52,7 +71,7 @@ image = get_image(
     
 image = image2image(
     pipe=refiner,
-    prompt=prompt,
+    prompt=prompt_schedule[-1][-1],
     num_inference_steps=n_steps,
     denoising_start=high_noise_frac,
     image=image,

@@ -50,133 +50,141 @@ def get_normal_sd_image(prompt, sd_pipe, config):
 
 config = Config()
 
-# print configuration values
-logger.info(f"System Prompt: {config.SYSTEM_PROMPT}")
+# # print configuration values
+# logger.info(f"System Prompt: {config.SYSTEM_PROMPT}")
 
-# create experiment directories based on configuration
-exp_dir = config.create_exp_name()
-logger.info(f"Experiment Directory: {exp_dir}")
-# rewrite the experiment directory
-os.makedirs(exp_dir, exist_ok=True)
+# # create experiment directories based on configuration
+# exp_dir = config.create_exp_name()
+# logger.info(f"Experiment Directory: {exp_dir}")
+# # rewrite the experiment directory
+# os.makedirs(exp_dir, exist_ok=True)
 
-sys_prompt = system_prompts[config.SYSTEM_PROMPT]
+# sys_prompt = system_prompts[config.SYSTEM_PROMPT]
 
-if config.PROVIDE_PROMPTS:
+# if config.PROVIDE_PROMPTS:
 
-    # Loading the dataset
-    if os.path.exists(config.GENAI_CSV_PATH):  # Corrected line
-        dataset = pd.read_csv(config.GENAI_CSV_PATH)
-        logger.info(f"Dataset loaded with columns: {dataset.columns}")
-    else:
-        dataset = GenAIDataset()  # Create an instance of the dataset if not loaded from a CSV
-        dataset = dataset.create_dataframe()  # Create a DataFrame from the dataset
-        logger.info(f"Dataset created with columns: {dataset.columns}")
+#     # Loading the dataset
+#     if os.path.exists(config.GENAI_CSV_PATH):  # Corrected line
+#         dataset = pd.read_csv(config.GENAI_CSV_PATH)
+#         logger.info(f"Dataset loaded with columns: {dataset.columns}")
+#     else:
+#         dataset = GenAIDataset()  # Create an instance of the dataset if not loaded from a CSV
+#         dataset = dataset.create_dataframe()  # Create a DataFrame from the dataset
+#         logger.info(f"Dataset created with columns: {dataset.columns}")
         
-        # Save the dataset to a CSV file
-        dataset.to_csv(config.GENAI_CSV_PATH)
-        logger.info(f"Dataset saved to {config.GENAI_CSV_PATH}")
+#         # Save the dataset to a CSV file
+#         dataset.to_csv(config.GENAI_CSV_PATH)
+#         logger.info(f"Dataset saved to {config.GENAI_CSV_PATH}")
 
-    logger.info(f"Filtering dataset with tags: {config.FILTER_TAGS}, before filtering: {len(dataset)} entries")
-    # Filter the dataset based on the configuration
-    dataset = filter_dataset(dataset, config.FILTER_TAGS, config.NUM_FILTER, config.FILTER_BY)
-    logger.info(f"Filtered dataset size: {len(dataset)} entries")
+#     logger.info(f"Filtering dataset with tags: {config.FILTER_TAGS}, before filtering: {len(dataset)} entries")
+#     # Filter the dataset based on the configuration
+#     dataset = filter_dataset(dataset, config.FILTER_TAGS, config.NUM_FILTER, config.FILTER_BY)
+#     logger.info(f"Filtered dataset size: {len(dataset)} entries")
 
-    prompt_exp = exp_dir.split("/prompt_exp_")[-1]
-    prompt_exp = f"prompt_exp_{prompt_exp}"
-    scope_prompts_path = os.path.join(f"prompt_dump/{prompt_exp}", "scope_prompts.json")
-    if os.path.exists(scope_prompts_path):
-        logger.info(f"Loading existing prompts from {scope_prompts_path}")
-    else:
-        # create scheduled prompts
-        logger.info(f"Generating Prompts for {len(dataset)} entries, using system prompt: {sys_prompt}")
-        # prompts = dataset['Prompt'].tolist()
-        logger.info(f"Generating Prompts for index: {dataset.index}")
+#     prompt_exp = exp_dir.split("/prompt_exp_")[-1]
+#     prompt_exp = f"prompt_exp_{prompt_exp}"
+#     scope_prompts_path = os.path.join(f"prompt_dump/{prompt_exp}", "scope_prompts.json")
+#     if os.path.exists(scope_prompts_path):
+#         logger.info(f"Loading existing prompts from {scope_prompts_path}")
+#     else:
+#         # create scheduled prompts
+#         logger.info(f"Generating Prompts for {len(dataset)} entries, using system prompt: {sys_prompt}")
+#         # prompts = dataset['Prompt'].tolist()
+#         logger.info(f"Generating Prompts for index: {dataset.index}")
 
-        json_format_responses = []
-        for index in dataset.index:
-            prompt = dataset['Prompt'][index]
-            progressive_prompts = get_progressive_prompts(
-                sys_prompt, prompt)
-            json_format_responses.append({
-            index: {
-                "initial_prompt": prompt,
-                "progressive_prompts": progressive_prompts
-            }
-        })
+#         json_format_responses = []
+#         for index in dataset.index:
+#             prompt = dataset['Prompt'][index]
+#             progressive_prompts = get_progressive_prompts(
+#                 sys_prompt, prompt)
+#             json_format_responses.append({
+#             index: {
+#                 "initial_prompt": prompt,
+#                 "progressive_prompts": progressive_prompts
+#             }
+#         })
 
-        os.makedirs(os.path.dirname(scope_prompts_path), exist_ok=True)  # Create directory if it doesn't exist
+#         os.makedirs(os.path.dirname(scope_prompts_path), exist_ok=True)  # Create directory if it doesn't exist
 
-        # Save the results into a JSON file for future use
-        with open(scope_prompts_path, 'w') as f:
-            json.dump(json_format_responses, f, indent=4)
+#         # Save the results into a JSON file for future use
+#         with open(scope_prompts_path, 'w') as f:
+#             json.dump(json_format_responses, f, indent=4)
 
-        logger.info(f"Results saved in {scope_prompts_path}")
+#         logger.info(f"Results saved in {scope_prompts_path}")
 
 
-else:
-    logger.info(f"Generating Prompts based on System Prompt: {config.SYSTEM_PROMPT}")
-    dataset = None
-    prompt_exp = exp_dir.split("/prompt_exp_")[-1]
-    prompt_exp = f"prompt_exp_{prompt_exp}"
-    scope_prompts_path= os.path.join(f"prompt_dump/{prompt_exp}", "scope_prompts.json")
+# else:
+#     logger.info(f"Generating Prompts based on System Prompt: {config.SYSTEM_PROMPT}")
+#     dataset = None
+#     prompt_exp = exp_dir.split("/prompt_exp_")[-1]
+#     prompt_exp = f"prompt_exp_{prompt_exp}"
+#     scope_prompts_path= os.path.join(f"prompt_dump/{prompt_exp}", "scope_prompts.json")
 
-    if not os.path.exists(scope_prompts_path):
+#     if not os.path.exists(scope_prompts_path):
 
-        gen_prompts = []
-        for i in range(config.NUM_FILTER):
-            progressive_prompts = get_progressive_prompts_from_scratch(sys_prompt)
-            gen_prompts.append({
-                i: {
-                    "initial_prompt": f"Prompt {i}",
-                    "progressive_prompts": progressive_prompts
-                }
-            })
-            gen_prompts.append(progressive_prompts)
+#         gen_prompts = []
+#         for i in range(config.NUM_FILTER):
+#             progressive_prompts = get_progressive_prompts_from_scratch(sys_prompt)
+#             gen_prompts.append({
+#                 i: {
+#                     "initial_prompt": f"Prompt {i}",
+#                     "progressive_prompts": progressive_prompts
+#                 }
+#             })
+#             gen_prompts.append(progressive_prompts)
         
-        # dump generated prompts to json
-        os.makedirs(os.path.dirname(scope_prompts_path), exist_ok=True)  # Create directory if it doesn't exist
-        # Save the results into a JSON file for future use
-        with open(scope_prompts_path, 'w') as f:
-            json.dump(gen_prompts, f, indent=4)
+#         # dump generated prompts to json
+#         os.makedirs(os.path.dirname(scope_prompts_path), exist_ok=True)  # Create directory if it doesn't exist
+#         # Save the results into a JSON file for future use
+#         with open(scope_prompts_path, 'w') as f:
+#             json.dump(gen_prompts, f, indent=4)
 
-        logger.info(f"Results saved in {scope_prompts_path}")
-    else:
-        pass
+#         logger.info(f"Results saved in {scope_prompts_path}")
+#     else:
+#         pass
 
-        
+scope_prompts_path = "/projectnb/vkolagrp/ketanss/scope-diffusers/prompt_dump/genai_full_dataset_iccv/scope_prompts_ICCV.json"
+exp_dir = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv"
 
 with open(scope_prompts_path, 'r') as f:
     prompts = json.load(f)
-    print(prompts)
+    # print(prompts)
     
 
     # convert to list of dicts
     prompts = [{k: v} for d in prompts for k, v in d.items()]
 
+# print(prompts)
 
 # set pipes
 from scope_diffuser import SCoPEDiffusionPipeline as sdp_scope
 from diffusers import StableDiffusionPipeline as sdp
-scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
-normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
+scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir='/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
+normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir='/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 scope_sd_pipe.to(device)
 normal_sd_pipe.to(device)
 
+import ast 
+
 for idx, prompt in enumerate(prompts):
 
-    for seed in range(10):
+    for seed in range(1):
         config.SEED = 42+seed
         if config.PROVIDE_PROMPTS:
             prompt_id = list(prompt.keys())[0]
             initial_prompt = list(prompt.values())[0]['initial_prompt']
             progressive_prompts = list(prompt.values())[0]['progressive_prompts']
-            match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
-            prompt_schedule_match = match.group(1)
-            prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
-            prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]
+            print('progressive')
+            prompt_schedule_list = ast.literal_eval(progressive_prompts)
+            # match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
+            # prompt_schedule_match = match.group(1)
+            # prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
+            # prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]
+            print(prompt_schedule_list)
+            # exit()
         else:
             print(prompt)
             prompt_id = idx
