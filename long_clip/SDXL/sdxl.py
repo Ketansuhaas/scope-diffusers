@@ -14,10 +14,16 @@ from transformers import (
     CLIPVisionModelWithProjection,
 )
 
-# from SDXL_pipeline import get_image
-from SDXL_pipeline_prompt_interpolation import get_image
 from SDXL_img2img import image2image
 import random
+#-------------------------------------------------------------------------------------------------------
+
+use_interpolation = True
+if use_interpolation:
+    from SDXL_pipeline_prompt_interpolation import get_image
+else:
+    from SDXL_pipeline_backup import get_image
+
 
 base = DiffusionPipeline.from_pretrained(
     "stabilityai/stable-diffusion-xl-base-1.0", 
@@ -53,14 +59,14 @@ set_seed(42)
 
 prompt_schedule = [
     (0,'a photograph of a dog in a park'),
-    # (5,'a dog in a park'),
-    # (10,'a happy dog in a flowery park')
+    (10,'a photograph of a playful dog jumping in a park'),
+    (20,'a photograph of a playful dog jumping and catching a frisbee in a flowery park')
 ]
 
 image = get_image(
     pipe=base,
-    prompt_schedule = prompt_schedule,
-    # prompt=prompt,
+    # prompt_schedule = prompt_schedule,
+    prompt=prompt_schedule[-1][-1],
     num_inference_steps=n_steps,
     denoising_end=high_noise_frac,
     output_type="latent",
