@@ -59,20 +59,26 @@ set_seed(42)
 
 prompt_schedule = [
     (0,'a photograph of a dog in a park'),
-    (10,'a photograph of a playful dog jumping in a park'),
+    # (10,'a photograph of a playful dog jumping in a park'),
     (20,'a photograph of a playful dog jumping and catching a frisbee in a flowery park')
 ]
 
-image = get_image(
-    pipe=base,
-    # prompt_schedule = prompt_schedule,
-    prompt=prompt_schedule[-1][-1],
-    num_inference_steps=n_steps,
-    denoising_end=high_noise_frac,
-    output_type="latent",
-).images
-
-# image.save("sdxl_latent.png")
+if use_interpolation:
+    image = get_image(
+        pipe=base,
+        prompt_schedule = prompt_schedule,
+        num_inference_steps=n_steps,
+        denoising_end=high_noise_frac,
+        output_type="latent",
+    ).images
+else:
+    image = get_image(
+        pipe=base,
+        prompt=prompt_schedule[-1][-1],
+        num_inference_steps=n_steps,
+        denoising_end=high_noise_frac,
+        output_type="latent",
+    ).images
     
     
 image = image2image(
