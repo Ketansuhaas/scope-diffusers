@@ -89,7 +89,7 @@ def attention_interpolate_embeddings(embeddings, times, time_i):
             # print(f"interpolated token {interpolated_value.shape}")
             interpolated_embedding[-1, i, :] = interpolated_value
             # print(f"replaced in the final embeddings: {interpolated_embedding.shape}")
-            original_magnitude = torch.norm(embeddings[0][-1, i, :])
+            original_magnitude = torch.norm(embeddings[-1][-1, i, :])
             current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
             # print(f"original norm {original_magnitude}, current norm {current_magnitude}")
             interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
@@ -216,6 +216,7 @@ with torch.no_grad():
         # set prompt stage timings
         stage_times = [st for (st, _) in prompt_schedule]
         prompt_embeddings = []
+        pooled_prompt_embeddings = []
         for _, prompt in prompt_schedule:
             (
                 prompt_embeds,
@@ -240,16 +241,17 @@ with torch.no_grad():
             )
 
             prompt_embeddings.append(prompt_embeds)
+            pooled_prompt_embeddings.append(pooled_prompt_embeds)
 
         prompt_embeddings = torch.stack(prompt_embeddings, dim=0)                    
+        pooled_prompt_embeddings = torch.stack(pooled_prompt_embeddings,dim=0)
+        pooled_prompt_embeddings = pooled_prompt_embeddings.unsqueeze(2)    
 
-        prompt_embeds = attention_interpolate_embeddings(              #interpolate positive prompts
-            prompt_embeddings, stage_times, 0
-        )
-        # print(prompt_embeds.shape)
-        # exit()
+        prompt_embeds = attention_interpolate_embeddings(prompt_embeddings, stage_times, 0)
 
-    
+        pooled_prompt_embeds = attention_interpolate_embeddings(pooled_prompt_embeddings,stage_times,0)
+        pooled_prompt_embeds = pooled_prompt_embeds.squeeze(1)
+
         # 4. Prepare timesteps
         timesteps, num_inference_steps = retrieve_timesteps(pipe.scheduler, num_inference_steps, device, timesteps)
 
@@ -270,7 +272,7 @@ with torch.no_grad():
         extra_step_kwargs = pipe.prepare_extra_step_kwargs(generator, eta)
 
         # 7. Prepare added time ids & embeddings
-        add_text_embeds = pooled_prompt_embeds
+
         if pipe.text_encoder_2 is None:
             text_encoder_projection_dim = int(pooled_prompt_embeds.shape[-1])
         else:
@@ -295,10 +297,8 @@ with torch.no_grad():
             negative_add_time_ids = add_time_ids
 
         if pipe.do_classifier_free_guidance:
-            add_text_embeds = torch.cat([negative_pooled_prompt_embeds, add_text_embeds], dim=0)
             add_time_ids = torch.cat([negative_add_time_ids, add_time_ids], dim=0)
 
-        add_text_embeds = add_text_embeds.to(device)
         add_time_ids = add_time_ids.to(device).repeat(batch_size * num_images_per_prompt, 1)
 
 
@@ -339,16 +339,19 @@ with torch.no_grad():
             for i, t in enumerate(timesteps):
 
                 #---------------------------------------------------------
-                prompt_embeds = attention_interpolate_embeddings(
-                    prompt_embeddings, stage_times, i
-                )
+                prompt_embeds = attention_interpolate_embeddings(prompt_embeddings, stage_times, i)
+                pooled_prompt_embeds = attention_interpolate_embeddings(pooled_prompt_embeddings,stage_times,i)
+                pooled_prompt_embeds = pooled_prompt_embeds.squeeze(1)
                 #---------------------------------------------------------
-
+                add_text_embeds = pooled_prompt_embeds
                 if pipe.do_classifier_free_guidance:
                     prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds], dim=0)
+                    add_text_embeds = torch.cat([negative_pooled_prompt_embeds, add_text_embeds], dim=0)
 
                 prompt_embeds = prompt_embeds.to(device)
+                add_text_embeds = add_text_embeds.to(device)
                 #---------------------------------------------------------------------------------------
+                
                 if pipe.interrupt:
                     continue
 
