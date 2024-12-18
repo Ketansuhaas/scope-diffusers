@@ -1,3 +1,5 @@
+
+
 import sys
 import os
 
@@ -143,8 +145,8 @@ config = Config()
 #     else:
 #         pass
 
-scope_prompts_path = "/projectnb/vkolagrp/ketanss/scope-diffusers/prompt_dump/genai_full_dataset_iccv/scope_prompts_ICCV.json"
-exp_dir = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv"
+scope_prompts_path = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/prompt_dump/genai_full_dataset_iccv/scope_prompts_ICCV.json"
+exp_dir = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/iccv"
 
 with open(scope_prompts_path, 'r') as f:
     prompts = json.load(f)
@@ -159,8 +161,8 @@ with open(scope_prompts_path, 'r') as f:
 # set pipes
 from scope_diffuser import SCoPEDiffusionPipeline as sdp_scope
 from diffusers import StableDiffusionPipeline as sdp
-scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir='/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
-normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True,cache_dir='/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache')
+scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
+normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -169,88 +171,92 @@ normal_sd_pipe.to(device)
 
 import ast 
 
+prompts = prompts[:300]
+
 for idx, prompt in enumerate(prompts):
 
     for seed in range(1):
-        config.SEED = 42+seed
-        if config.PROVIDE_PROMPTS:
-            prompt_id = list(prompt.keys())[0]
-            initial_prompt = list(prompt.values())[0]['initial_prompt']
-            progressive_prompts = list(prompt.values())[0]['progressive_prompts']
-            print('progressive')
-            prompt_schedule_list = ast.literal_eval(progressive_prompts)
-            # match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
-            # prompt_schedule_match = match.group(1)
-            # prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
-            # prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]
-            print(prompt_schedule_list)
-            # exit()
-        else:
-            print(prompt)
-            prompt_id = idx
-            initial_prompt = prompt['initial_prompt']
-            progressive_prompts = prompt['progressive_prompts']
-            prompt_schedule_list = progressive_prompts
+        for step_size in [1,2,3,4,5,6,7,8]:
+            config.SEED = 42+seed
+            config.STEP_SIZE = step_size
+            if config.PROVIDE_PROMPTS:
+                prompt_id = list(prompt.keys())[0]
+                initial_prompt = list(prompt.values())[0]['initial_prompt']
+                progressive_prompts = list(prompt.values())[0]['progressive_prompts']
+                print('progressive')
+                prompt_schedule_list = ast.literal_eval(progressive_prompts)
+                # match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
+                # prompt_schedule_match = match.group(1)
+                # prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
+                # prompt_schedule_list = [prompt for prompt in prompt_schedule_list if prompt]
+                print(prompt_schedule_list)
+                # exit()
+            else:
+                print(prompt)
+                prompt_id = idx
+                initial_prompt = prompt['initial_prompt']
+                progressive_prompts = prompt['progressive_prompts']
+                prompt_schedule_list = progressive_prompts
 
-        prompt_schedule = []
-        step_size = config.STEP_SIZE
-                    
-        for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
-            prompt_schedule.append((stage_id*step_size,p))
+            prompt_schedule = []
+            step_size = config.STEP_SIZE
+                        
+            for stage_id, p in enumerate(prompt_schedule_list):       # change step size in the prompt schedule
+                prompt_schedule.append((stage_id*step_size,p))
 
-        final_prompt = prompt_schedule_list[-1]  # Get the final prompt
+            final_prompt = prompt_schedule_list[-1]  # Get the final prompt
 
-        logger.info(f"\nPrompt ID: {prompt_id}")
-        logger.info(f"Initial Prompt: {initial_prompt}")
-        logger.info(f"Progressive Prompts: {progressive_prompts}")
-        logger.info(f"Final Prompt: {final_prompt}")
+            logger.info(f"\nPrompt ID: {prompt_id}")
+            logger.info(f"Initial Prompt: {initial_prompt}")
+            logger.info(f"Progressive Prompts: {progressive_prompts}")
+            logger.info(f"Final Prompt: {final_prompt}")
 
 
-        # running scope
-        scope_image = get_scope_image(prompt_schedule, scope_sd_pipe, config)
+            # running scope
+            scope_image = get_scope_image(prompt_schedule, scope_sd_pipe, config)
 
-        # running normal sd
-        normal_image = get_normal_sd_image(final_prompt, normal_sd_pipe, config)
+            # running normal sd
+            normal_image = get_normal_sd_image(final_prompt, normal_sd_pipe, config)
 
-        # save image inot each index folder for both scope and normal images
-        
-        # save image inot each index folder for both scope and normal images
-        index_dir = os.path.join(exp_dir, f"{prompt_id}seed{seed}")
-        os.makedirs(index_dir, exist_ok=True)
-
-        # save images seperately
-        scope_image.save(os.path.join(index_dir, "scope_image.png"))
-        normal_image.save(os.path.join(index_dir, "normal_image.png"))
-
-        # save prompt schedule to a text file
-        with open(os.path.join(index_dir, "prompt_schedule.txt"), 'w') as f:
-            f.write(progressive_prompts)
+            # save image inot each index folder for both scope and normal images
             
-        # Randomly switch left and right images
-        if random.choice([True, False]):
-            images = [normal_image, scope_image]  # Switch images
-            switch_info = "normal-left_scope-right"
-        else:
-            images = [scope_image, normal_image]  # Original order
-            switch_info = "scope-left_normal-right"
+            # save image inot each index folder for both scope and normal images
+            index_dir = os.path.join(exp_dir, f"{prompt_id}/seed_{seed}/step_size_{step_size}")
+            os.makedirs(index_dir, exist_ok=True)
 
-        # Create a figure with subplots
-        fig, axes = plt.subplots(1, 2, figsize=(12, 6))  # 1 row, 2 columns for side-by-side images
+            # save images seperately
+            scope_image.save(os.path.join(index_dir, "scope_image.png"))
+            normal_image.save(os.path.join(index_dir, "normal_image.png"))
 
-        # Add white space between subplots (adjust wspace to set the separation width)
-        fig.subplots_adjust(wspace=0.05)  # Adjust as needed for desired separation
+            # save prompt schedule to a text file
+            with open(os.path.join(index_dir, "prompt_schedule.txt"), 'w') as f:
+                f.write(progressive_prompts)
+                
+            # Randomly switch left and right images
+            if random.choice([True, False]):
+                images = [normal_image, scope_image]  # Switch images
+                switch_info = "normal-left_scope-right"
+            else:
+                images = [scope_image, normal_image]  # Original order
+                switch_info = "scope-left_normal-right"
 
-        # Display each image in its subplot
-        for ax, img, title in zip(axes, images, ["Image 1", "Image 2"]):
-            ax.imshow(img)
-            ax.axis("off")  # Remove axes for a clean look
+            # Create a figure with subplots
+            fig, axes = plt.subplots(1, 2, figsize=(12, 6))  # 1 row, 2 columns for side-by-side images
 
-        # Add a blank white background for the figure to fill in any gaps
-        fig.patch.set_facecolor('white')
+            # Add white space between subplots (adjust wspace to set the separation width)
+            fig.subplots_adjust(wspace=0.05)  # Adjust as needed for desired separation
 
-        # Save the plot to a file
-        grid_image_filename = "1v1.png" #f"grid_image_{switch_info}.png"
-        plt.savefig(os.path.join(index_dir, grid_image_filename), bbox_inches='tight', pad_inches=0.1)
+            # Display each image in its subplot
+            for ax, img, title in zip(axes, images, ["Image 1", "Image 2"]):
+                ax.imshow(img)
+                ax.axis("off")  # Remove axes for a clean look
 
-        # Close the plot to free up memory
-        plt.close(fig)
+            # Add a blank white background for the figure to fill in any gaps
+            fig.patch.set_facecolor('white')
+
+            # Save the plot to a file
+            grid_image_filename = "1v1.png" #f"grid_image_{switch_info}.png"
+            plt.savefig(os.path.join(index_dir, grid_image_filename), bbox_inches='tight', pad_inches=0.1)
+
+            # Close the plot to free up memory
+            plt.close(fig)
