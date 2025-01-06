@@ -56,7 +56,7 @@ set_seed(42)
 
 
 def get_scope_image(base, prompt_schedule):
-    
+    set_seed(42)
     image = get_image_scope(
         pipe=base,
         prompt_schedule = prompt_schedule,
@@ -77,7 +77,7 @@ def get_scope_image(base, prompt_schedule):
     return image
 
 def get_normal_image(base, prompt):
-    
+    set_seed(42)
     image = get_image(
         pipe=base,
         prompt = prompt,

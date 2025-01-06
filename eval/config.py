@@ -13,7 +13,8 @@ class Config:
     TEMPERATURE: float = 1.0 # no need to change
     MODEL_ID: str = "stabilityai/stable-diffusion-2-1-base"
     STEP_SIZE: int = 5   # 1,2,3,4,5,6,7 or 4,8,12
-    SEED: int = 42
+    SEED: int = 42,
+    STDEV: int = 5
 
     def create_exp_name(self) -> str:
         model_id = self.MODEL_ID.replace("/", "-")

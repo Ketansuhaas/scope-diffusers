@@ -132,7 +132,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             requires_safety_checker=requires_safety_checker,
         )
 
-    def attention_interpolate_embeddings(self, embeddings, times, time_i, tau=1.0, method="nlerp"):
+    def attention_interpolate_embeddings(self, stdev, embeddings, times, time_i, tau=1.0, method="nlerp"):
 
         device = embeddings.device
         
@@ -225,7 +225,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         elif method == "nlerp":
 
             # gamma = 2
-            tau = times[1]*(1 - (time_i/times[-1])) + 0.1 # tau (temperature) decreases across timesteps (standard deviation)
+            tau = stdev*(1 - (time_i/times[-1])) + 0.1 # tau (temperature) decreases across timesteps (standard deviation)
             q = len(times)-1
             # adjust stepsizes based on consecutive euclidean distances
             distances = np.zeros((77,q))
@@ -330,6 +330,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             ]
         ] = None,
         callback_on_step_end_tensor_inputs: List[str] = ["latents"],
+        stdev,
         **kwargs,
     ):
         r"""
@@ -516,7 +517,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
 
         prompt_embeds = self.attention_interpolate_embeddings(
-            prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
+            stdev, prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
         )
 
         # 5. Prepare latent variables
@@ -549,7 +550,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         )
 
         prompt_embeds = self.attention_interpolate_embeddings(
-            prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
+            stdev, prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
         )
 
         # 6. Prepare extra step kwargs. TODO: Logic should ideally just be moved out of the pipeline
@@ -581,9 +582,8 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
 
                 # -------------------------------------------------------------------------------------------------------------------------------------
                 prompt_embeds = self.attention_interpolate_embeddings(
-                    prompt_embeddings, stage_times, i, temperature, method = interpolation_technique
+                    stdev, prompt_embeddings, stage_times, i, temperature, method = interpolation_technique
                 )
-
                 # --------------------------ADDED ABOVE----------------------------------------------------------------------------------------------------------
 
                 if self.interrupt:

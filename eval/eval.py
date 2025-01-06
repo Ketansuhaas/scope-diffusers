@@ -32,6 +32,7 @@ def get_scope_image(prompt_schedule, scope_sd_pipe, config):
             callback=None,
             callback_steps=1,
             temperature=config.TEMPERATURE,
+            stdev = config.STDEV
     ).images[0]
 
     return image
