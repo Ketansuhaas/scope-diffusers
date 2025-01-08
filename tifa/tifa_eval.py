@@ -22,8 +22,8 @@ vqa_model = VQAModel("mplug-large")
     
 
 # Define base folder path
-base_folder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump"
-experiment_subfolder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv_5_stages"
+base_folder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump"
+experiment_subfolder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/iccv_5stages"
 full_path = os.path.join(base_folder, experiment_subfolder)
 
 # Regular expression pattern to extract Python-like lists
@@ -31,12 +31,13 @@ list_pattern = re.compile(r"\[\s*(?:\".*?\"(?:,|\s)*)+\s*\]", re.DOTALL)
 
 SEEDS = [0]
 STEPS = [1, 2, 3, 4, 5, 6, 7, 8]
+STD_DEV = [3, 5]
 results = []
 count = 0
 
 # Iterate over all subfolders (image IDs)
 # Iterate over all subfolders (image IDs)
-for image_id in range(10):
+for image_id in range(31):
     print(f"Processing image {image_id}...")
     count += 1
 
@@ -46,10 +47,11 @@ for image_id in range(10):
     best_path = None
     normal_tifa_score = None  # Initialize normal clip score
 
-    try:
-        for seed in SEEDS:
-            for step in STEPS:
-                image_folder = os.path.join(full_path, f"{image_id}/seed_{seed}/step_size_{step}")
+    # try:
+    for seed in SEEDS:
+        for step in STEPS:
+            for std_dev in STD_DEV:
+                image_folder = os.path.join(full_path, f"{image_id}/seed_{seed}/step_size_{step}_{std_dev}")
 
                 # Validate folder contents
                 prompt_schedule_path = os.path.join(image_folder, "prompt_schedule.txt")
@@ -84,30 +86,32 @@ for image_id in range(10):
                 scope_tifa_score = result_scope['tifa_score']
 
 
-                scope_tifa_scores[f"seed_{seed}_step_{step}"] = scope_tifa_score
+                scope_tifa_scores[f"seed_{seed}_step_{step}_std_dev_{std_dev}"] = scope_tifa_score
+                if normal_tifa_score is not None:
+                    print(f"Normal TIFA score: {normal_tifa_score}, Scope TIFA score: {scope_tifa_score} at step {step}, std_dev {std_dev} for image {image_id}")
                 if scope_tifa_score > best_scope_tifa_score:
                     best_scope_tifa_score = scope_tifa_score
                     best_step = step
                     best_path = image_folder
                     best_scope_tifa_dets = result_scope
-        
-        if best_step is not None:
-            print(f"Best scope TIFA score: {best_scope_tifa_score} at seed 0, step {best_step} for image {image_id}")
-            print(f"Path: {best_path}")
-            results.append({
-                "image_id": image_id,
-                "normal_tifa_score": normal_tifa_score,
-                "best_scope_tifa_score": best_scope_tifa_score,
-                "difference": best_scope_tifa_score - normal_tifa_score,
-                "best_path": best_path,
-                "scope_tifa_scores": scope_tifa_scores,
-                "best_step": best_step,
-                "best_scope_tifa_dets": best_scope_tifa_dets,
-                "normal_tifa_dets": result_normal
-            })
+    
+    if best_step is not None:
+        print(f"Best scope TIFA score: {best_scope_tifa_score} at seed 0, step {best_step} for image {image_id}")
+        print(f"Path: {best_path}")
+        results.append({
+            "image_id": image_id,
+            "normal_tifa_score": normal_tifa_score,
+            "best_scope_tifa_score": best_scope_tifa_score,
+            "difference": best_scope_tifa_score - normal_tifa_score,
+            "best_path": best_path,
+            "scope_tifa_scores": scope_tifa_scores,
+            "best_step": best_step,
+            "best_scope_tifa_dets": best_scope_tifa_dets,
+            "normal_tifa_dets": result_normal
+        })
 
-    except Exception as e:
-        print(f"Error processing {image_folder}: {e}")
+    # except Exception as e:
+    #     print(f"Error processing {image_folder}: {e}")
 
         
 
