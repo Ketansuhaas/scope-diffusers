@@ -1,7 +1,7 @@
 import os
 
 # Set ModelScope cache directory
-os.environ['MODELSCOPE_CACHE'] = '/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/temp'
+os.environ['MODELSCOPE_CACHE'] = '/projectnb/vkolagrp/ketanss/scope-diffusers/tifa/cache'
 
 from transformers import AutoProcessor, AutoModelForCausalLM, BlipForQuestionAnswering, ViltForQuestionAnswering
 import torch

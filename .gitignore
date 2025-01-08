@@ -13,3 +13,4 @@ exp_dump/*
 *txt
 temp/*
 tifa/.env
+tifa/cache

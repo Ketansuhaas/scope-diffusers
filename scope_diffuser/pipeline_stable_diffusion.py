@@ -330,7 +330,7 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
             ]
         ] = None,
         callback_on_step_end_tensor_inputs: List[str] = ["latents"],
-        stdev,
+        stdev = 5,
         **kwargs,
     ):
         r"""
