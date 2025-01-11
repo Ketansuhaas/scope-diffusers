@@ -7,8 +7,8 @@ import clip
 from collections import Counter
 
 # Define base folder path
-base_folder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump"
-experiment_subfolder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/iccv_5stages"
+base_folder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump"
+experiment_subfolder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv_5_stages"
 full_path = os.path.join(base_folder, experiment_subfolder)
 
 # Load CLIP model
@@ -27,7 +27,7 @@ STD_DEV = [3, 5]
 results = []
 
 # Iterate over all subfolders (image IDs)
-for image_id in range(300):
+for image_id in range(1600):
     print(f"Processing image {image_id}...")
     # if len(results) >= 30:  # Limit to 30 prompts
     #     break
@@ -41,7 +41,6 @@ for image_id in range(300):
 
     for seed in SEEDS:
         for step in STEPS:
-            best_scope_clip_score = 0
             for std_dev in STD_DEV:
                 
                 image_folder = os.path.join(full_path, f"{image_id}/seed_{seed}/step_size_{step}_{std_dev}")
@@ -102,7 +101,7 @@ for image_id in range(300):
 
     # Append results for valid image IDs
     if best_step is not None:
-        results.append({
+        results.append({ 
             "image_id": image_id,
             "normal_clip_score": normal_clip_score,
             "best_scope_clip_score": best_scope_clip_score,
@@ -112,12 +111,11 @@ for image_id in range(300):
             "best_step": best_step,
             "best_std_dev": best_std_dev
         })
+    # save results to a json file
+    import json
+    with open('clip_scores_iccv_5stages.json', 'w') as f:
+        json.dump(results, f, indent=4)
 
-
-# save results to a json file
-import json
-with open('clip_scores_iccv_5stages.json', 'w') as f:
-    json.dump(results, f, indent=4)
 
 
 # Step size comparison
@@ -146,7 +144,7 @@ for step, count in sorted(best_step_counter.items()):
         print(f"Step {step}: {count}")
 print(f"Most common best step: {most_common_best_step} with {max_occurrences} occurrences")
 
-exit()
+# exit()
 
 # Output results
 scope_scores = []
@@ -188,55 +186,55 @@ else:
     print("No results to compare performance.")
 
 
-# Step-wise accuracy performance comparisons
-step_wise_accuracy = {step: 0 for step in STEPS}
-total_images = len(results)
+# # Step-wise accuracy performance comparisons
+# step_wise_accuracy = {step: 0 for step in STEPS}
+# total_images = len(results)
 
-for result in results:
-    for key, value in result["scope_clip_scores"].items():
-        step = int(key.split("_")[-1])  # Extract step size
-        if value > result["normal_clip_score"]:
-            step_wise_accuracy[step] += 1
+# for result in results:
+#     for key, value in result["scope_clip_scores"].items():
+#         step = int(key.split("_")[-1])  # Extract step size
+#         if value > result["normal_clip_score"]:
+#             step_wise_accuracy[step] += 1
 
-# Convert to percentages
-step_wise_accuracy_percentage = {
-    step: (count / total_images) * 100 for step, count in step_wise_accuracy.items()
-}
+# # Convert to percentages
+# step_wise_accuracy_percentage = {
+#     step: (count / total_images) * 100 for step, count in step_wise_accuracy.items()
+# }
 
-# Print step-wise accuracies
-print("\n--- Step-wise Accuracy Comparisons ---")
-print("Step: Percentage of cases where SCoPE outperformed Normal:")
-for step, accuracy in sorted(step_wise_accuracy_percentage.items()):
-    print(f"Step {step}: {accuracy:.2f}%")
+# # Print step-wise accuracies
+# print("\n--- Step-wise Accuracy Comparisons ---")
+# print("Step: Percentage of cases where SCoPE outperformed Normal:")
+# for step, accuracy in sorted(step_wise_accuracy_percentage.items()):
+#     print(f"Step {step}: {accuracy:.2f}%")
 
 
 
-# Find top 5 images where scope_image improves the most
-if better_scope:
-    # Sort results by the improvement in descending order
-    results_with_improvement = [
-        {
-            "image_id": result["image_id"],
-            "improvement": result["scope_clip_score"] - result["normal_clip_score"],
-            "normal_image_path": os.path.join(full_path, result["image_id"], "normal_image.png"),
-            "scope_image_path": os.path.join(full_path, result["image_id"], "scope_image.png")
-        }
-        for result in results
-        if result["scope_clip_score"] > result["normal_clip_score"]
-    ]
-    results_with_improvement = sorted(results_with_improvement, key=lambda x: -x["improvement"])
+# # Find top 5 images where scope_image improves the most
+# if better_scope:
+#     # Sort results by the improvement in descending order
+#     results_with_improvement = [
+#         {
+#             "image_id": result["image_id"],
+#             "improvement": result["scope_clip_score"] - result["normal_clip_score"],
+#             "normal_image_path": os.path.join(full_path, result["image_id"], "normal_image.png"),
+#             "scope_image_path": os.path.join(full_path, result["image_id"], "scope_image.png")
+#         }
+#         for result in results
+#         if result["scope_clip_score"] > result["normal_clip_score"]
+#     ]
+#     results_with_improvement = sorted(results_with_improvement, key=lambda x: -x["improvement"])
 
-    # Get the top 5 results
-    top_5_results = results_with_improvement[:5]
+#     # Get the top 5 results
+#     top_5_results = results_with_improvement[:5]
 
-    # Print the paths and improvements for the top 5
-    print("\n--- Top 5 Images with Best Scope Improvement ---")
-    for i, result in enumerate(top_5_results, 1):
-        print(f"Rank {i}:")
-        print(f"  Image ID: {result['image_id']}")
-        print(f"  Improvement: {result['improvement']:.4f}")
-        print(f"  Normal Image Path: {result['normal_image_path']}")
-        print(f"  Scope Image Path: {result['scope_image_path']}")
-else:
-    print("\nNo images where scope_image performed better.")
+#     # Print the paths and improvements for the top 5
+#     print("\n--- Top 5 Images with Best Scope Improvement ---")
+#     for i, result in enumerate(top_5_results, 1):
+#         print(f"Rank {i}:")
+#         print(f"  Image ID: {result['image_id']}")
+#         print(f"  Improvement: {result['improvement']:.4f}")
+#         print(f"  Normal Image Path: {result['normal_image_path']}")
+#         print(f"  Scope Image Path: {result['scope_image_path']}")
+# else:
+#     print("\nNo images where scope_image performed better.")
 

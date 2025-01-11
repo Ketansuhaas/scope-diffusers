@@ -22,8 +22,8 @@ vqa_model = VQAModel("mplug-large")
     
 
 # Define base folder path
-base_folder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump"
-experiment_subfolder = "/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/iccv_5stages"
+base_folder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump"
+experiment_subfolder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv_5_stages"
 full_path = os.path.join(base_folder, experiment_subfolder)
 
 # Regular expression pattern to extract Python-like lists
@@ -37,7 +37,7 @@ count = 0
 
 # Iterate over all subfolders (image IDs)
 # Iterate over all subfolders (image IDs)
-for image_id in range(31):
+for image_id in range(10):
     print(f"Processing image {image_id}...")
     count += 1
 

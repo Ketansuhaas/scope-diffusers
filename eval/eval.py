@@ -172,7 +172,7 @@ normal_sd_pipe.to(device)
 
 import ast 
 
-prompts = prompts[:300]
+# prompts = prompts[:300]
 
 for idx, prompt in enumerate(prompts):
 
