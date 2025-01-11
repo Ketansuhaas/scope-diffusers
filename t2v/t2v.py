@@ -70,8 +70,8 @@ for image_id in range(1600):
                 # Load and preprocess images
                 try:
                     text = clip.tokenize([last_prompt], context_length=77, truncate=True).to(device)
-                    normal_clip_score = clip_flant5_score(images=[normal_image_path], texts=[text]).numpy()
-                    scope_clip_score = clip_flant5_score(images=[scope_image_path], texts=[text]).numpy()
+                    normal_clip_score = float(clip_flant5_score(images=[normal_image_path], texts=[text]).cpu().numpy()[0][0])
+                    scope_clip_score = float(clip_flant5_score(images=[scope_image_path], texts=[text]).cpu().numpy()[0][0])
 
                     # Track scores
                     scope_clip_scores[f"seed_{seed}_step_{step}_std_dev_{std_dev}"] = scope_clip_score
@@ -102,11 +102,6 @@ for image_id in range(1600):
     import json
     with open('vqa_scores_iccv_5stages.json', 'w') as f:
         json.dump(results, f, indent=4)
-
-    if image_id==10:
-        break
-
-
 
 # Step size comparison
 step_size_scores = {}
