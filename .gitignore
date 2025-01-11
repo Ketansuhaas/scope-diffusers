@@ -14,3 +14,4 @@ exp_dump/*
 temp/*
 tifa/.env
 tifa/cache
+t2v/t2v_metrics/cache
