@@ -73,7 +73,7 @@ for image_id in range(1600):
                     normal_clip_score = float(clip_flant5_score(images=[normal_image_path], texts=[text]).cpu().numpy()[0][0])
                     scope_clip_score = float(clip_flant5_score(images=[scope_image_path], texts=[text]).cpu().numpy()[0][0])
 
-                    # Track scores
+                    #  Track scores
                     scope_clip_scores[f"seed_{seed}_step_{step}_std_dev_{std_dev}"] = scope_clip_score
                     if scope_clip_score > best_scope_clip_score:
                         best_scope_clip_score = scope_clip_score

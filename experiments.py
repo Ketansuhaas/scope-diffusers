@@ -66,11 +66,7 @@ if __name__ == "__main__":
 'A magnificent dragon sits on a mountain, under a dramatic sky, gazing fiercely.', 
 'A dragon with iridescent scales sits on a smoky mountain under a dramatic sky, gazing fiercely into the distance.', 
 "A magnificent dragon, adorned with iridescent scales, perches majestically on a craggy, smoke-wreathed mountain, under a dramatic chiaroscuro sky. The scene is imbued with a misty ambiance, highlighting intricate details in the dragon's wings, as it gazes fiercely into the distance.",
-
-# 'A baker pulls a golden loaf from an oven, surrounded by breads on shelves, in a cozy bakery with the smell of fresh baked goods.', 
-# 'A skilled baker pulls a golden loaf of bread from a brick oven, surrounded by artisan breads on wooden shelves, in a cozy bakery filled with the aroma of fresh baked goods.', 
-# 'A skilled baker joyfully pulling a golden, steaming loaf of crusty bread from a vintage brick oven, surrounded by rustic wooden shelves filled with assorted artisan breads, bathed in soft warm light, evoking a cozy, inviting bakery atmosphere, rich with the aroma of freshly baked goods.'
-]
+            ]
             exp_seed = SCoPE_Exp_overall(config_overall, args.exp_name, str(exp_id))
             exp_seed.run()
             exit()
