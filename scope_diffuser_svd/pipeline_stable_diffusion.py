@@ -320,76 +320,44 @@ class SCoPEDiffusionPipeline(StableDiffusionPipeline):
         )
 
         # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        # set prompt stage timings
-        prompts = ['A dog sits in a meadow at sunset, with another dog nearby.', 
-        'A leashed dog sits in a meadow at golden hour, with a playful dog nearby. \
-        Wildflowers and blue sky are present.', 
-        'A dog on a leash sits in a green meadow at golden hour,\
-        while a playful dog runs nearby. There are wildflowers and a blue sky.', 
-        'A calm dog on a leash sitting in a green meadow during golden hour, \
-        with a playful dog nearby. The scene features wildflowers and a blue sky.', \
-        'A photorealistic scene capturing a calm dog on a leash sitting gracefully on a \
-        vibrant green meadow, bathed in soft golden hour light, while a carefree, \
-        playful dog without a leash bounds energetically nearby. \
-        The composition highlights contrasting postures, surrounded \
-            by blooming wildflowers and a serene blue sky.']
-        prompt_embeds, negative_prompt_embeds = self.encode_prompt(
-            prompts[-1],
-            device,
-            num_images_per_prompt,
-            self.do_classifier_free_guidance,
-            negative_prompt=None,
-            prompt_embeds=None,
-            negative_prompt_embeds=None,
-            lora_scale=lora_scale,
-            clip_skip=self.clip_skip,
-        )
-        # e = prompt_embeds[0].to(torch.float32)
-        # # Perform SVD on the tensor
-        # U, S, V = torch.svd(e)
-        # print(U.shape, S.shape, V.shape)
-        # prompt_embeds = torch.matmul(U[1].unsqueeze(0), e) + e
-        # prompt_embeds = prompt_embeds.unsqueeze(0).to(torch.float16)
-        # print(prompt_embeds.shape)
-        # # Convert the singular values to a diagonal matrix (size should be 77 x 77)
-        # S_diag = torch.diag(S)
-        # # Reconstruct the tensor by performing matrix multiplications
-        # prompt_embeds = torch.matmul(U, torch.matmul(S_diag, V.T))\
-        #     .unsqueeze(0).to(torch.float16)
-        # prompt_embeds2, _ = self.encode_prompt(
-        #     prompts[-1],
-        #     device,
-        #     num_images_per_prompt,
-        #     self.do_classifier_free_guidance,
-        #     negative_prompt=None,
-        #     prompt_embeds=None,
-        #     negative_prompt_embeds=None,
-        #     lora_scale=lora_scale,
-        #     clip_skip=self.clip_skip,
-        # )
-        # p = 0.9
-        # prompt_embeds = prompt_embeds*p+prompt_embeds2*(1-p)
-        # prompt_embeds[0][6] = prompt_embeds2[0][6]
-        # print(prompt_embeds.shape)
+        # Define the first and second prompts
+        prompt2 = "a dog jumping on a sofa"
+        prompt1 = "a fluffy dog jumping around playing on a red sofa"
+        prompts = ['A hummingbird in a museum.', 'A hummingbird in a museum, flying quickly in golden light and surrounded by flowers.', 'A hummingbird flies in a museum, its blurred wings in golden light, among flowers and detailed architecture.', 'A hummingbird darts through a museum, its wings a blur in the golden light, surrounded by exotic flowers and ornate architecture.', 'A swift, iridescent hummingbird thief darts through a grand museum, its delicate wings a blur against the soft, golden hour light. Surrounded by vibrant, exotic flowers, the scene features intricate details of the ornate architecture, capturing a playful atmosphere as the little bird expertly sips nectar amidst a mesmerizing backdrop.']
+
+        prompt1 = prompts[-1]
+        prompt2 = prompts[0]
+
+        prompt1 = "a surreal forest at twilight where bioluminescent trees glow in various shades of blue and green. Delicate, transparent creatures with butterfly wings hover through the air, casting iridescent reflections on a stream below. Mist rises from the ground, partially obscuring strange, ancient stone ruins. Floating orbs of light illuminate the scene, and the sky is a gradient of deep purple and pink. A mysterious, cloaked figure with glowing eyes stands near the water’s edge, gazing at the ruins, blending into the otherworldly landscape."
+        prompt2 = "A forest at twilight with glowing trees in blue and green. Transparent creatures with butterfly wings fly through the air, casting reflections on a stream. Mist rises from the ground, partially covering old stone ruins. Floating orbs of light light up the scene, and the sky is purple and pink. A cloaked figure with glowing eyes stands near the water, looking at the ruins, blending into the landscape."
+        
+        # Encode both prompts to get embeddings
+        prompt_embeds1, negative_prompt_embeds = self.encode_prompt(prompt1, device, num_images_per_prompt, self.do_classifier_free_guidance, negative_prompt=None, prompt_embeds=None, negative_prompt_embeds=None, lora_scale=lora_scale, clip_skip=self.clip_skip)
+        prompt_embeds2, _ = self.encode_prompt(prompt2, device, num_images_per_prompt, self.do_classifier_free_guidance, negative_prompt=None, prompt_embeds=None, negative_prompt_embeds=None, lora_scale=lora_scale, clip_skip=self.clip_skip)
+
+        # Perform SVD on both prompt embeddings
+        U1, S1, V1 = torch.svd(prompt_embeds1[0].to(torch.float32))
+        U2, S2, V2 = torch.svd(prompt_embeds2[0].to(torch.float32))
+
+        # Define the reweighting factor alpha
+        alpha = 0.4  # Example reweighting factor, adjust as needed
+
+        # Concatenate the singular values (S1 with S2 after reweighting)
+        S_concat = torch.cat([S1, S2*(alpha)])
+
+        # Concatenate the singular vectors (U1 with U2 and V1 with V2)
+        U_concat = torch.cat([U1, U2], dim=-1)  
+        V_concat = torch.cat([V1, V2], dim=-1)  
+
+        # Reconstruct the tensor by performing matrix multiplications with the combined singular values
+        S_diag = torch.diag(S_concat)  # Create diagonal matrix for combined singular values
+        prompt_embeds = torch.matmul(U_concat, torch.matmul(S_diag, V_concat.T)).unsqueeze(0).to(torch.float16)
+
         # For classifier free guidance, we need to do two forward passes.
         # Here we concatenate the unconditional and text embeddings into a single batch
         # to avoid doing two forward passes
         if self.do_classifier_free_guidance:
             prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
-
-        # prompt_embeddings = torch.stack(prompt_embeddings, dim=0)
-
-        # for token in range(77):
-        #     print("token ",token)
-        #     for pe in range(prompt_embeddings.shape[0]):
-        #         # print(prompt_embeddings[pe][-1][token])
-        #         print(torch.norm(prompt_embeddings[pe][-1][token]))
-        # exit()
-
-
-        # prompt_embeds = self.attention_interpolate_embeddings(
-        #     stdev, prompt_embeddings, stage_times, 0, temperature, method = interpolation_technique
-        # )
 
         # 5. Prepare latent variables
         num_channels_latents = self.unet.config.in_channels
