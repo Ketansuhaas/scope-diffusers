@@ -310,7 +310,8 @@ class SCoPEDiffusionXLPipeline(StableDiffusionXLPipeline):
 
     def __call__(
         self,
-        prompt: Union[str, List[str]] = None,
+        prompt_schedule = None,
+        prompt: Union[str, List[str]] = "This is a placeholder",
         prompt_2: Optional[Union[str, List[str]]] = None,
         height: Optional[int] = None,
         width: Optional[int] = None,
@@ -346,6 +347,7 @@ class SCoPEDiffusionXLPipeline(StableDiffusionXLPipeline):
             Union[Callable[[int, int, Dict], None], PipelineCallback, MultiPipelineCallbacks]
         ] = None,
         callback_on_step_end_tensor_inputs: List[str] = ["latents"],
+        stdev = 3,
         **kwargs,
     ):
         r"""
@@ -558,27 +560,44 @@ class SCoPEDiffusionXLPipeline(StableDiffusionXLPipeline):
         lora_scale = (
             self.cross_attention_kwargs.get("scale", None) if self.cross_attention_kwargs is not None else None
         )
+        
+        # set prompt stage timings
+        stage_times = [st for (st, _) in prompt_schedule]
+        prompt_embeddings = []
+        pooled_prompt_embeddings = []
+        for _, prompt in prompt_schedule:
+            (
+                prompt_embeds,
+                negative_prompt_embeds,
+                pooled_prompt_embeds,
+                negative_pooled_prompt_embeds,
+            ) = self.encode_prompt(
+                prompt=prompt,
+                prompt_2=None,
+                device=device,
+                num_images_per_prompt=num_images_per_prompt,
+                do_classifier_free_guidance=self.do_classifier_free_guidance,
+                negative_prompt=None,
+                negative_prompt_2=None,
+                prompt_embeds=None,
+                negative_prompt_embeds=None,
+                pooled_prompt_embeds=None,
+                negative_pooled_prompt_embeds=None,
+                lora_scale=lora_scale,
+                clip_skip=self.clip_skip,
+            )
 
-        (
-            prompt_embeds,
-            negative_prompt_embeds,
-            pooled_prompt_embeds,
-            negative_pooled_prompt_embeds,
-        ) = self.encode_prompt(
-            prompt=prompt,
-            prompt_2=prompt_2,
-            device=device,
-            num_images_per_prompt=num_images_per_prompt,
-            do_classifier_free_guidance=self.do_classifier_free_guidance,
-            negative_prompt=negative_prompt,
-            negative_prompt_2=negative_prompt_2,
-            prompt_embeds=prompt_embeds,
-            negative_prompt_embeds=negative_prompt_embeds,
-            pooled_prompt_embeds=pooled_prompt_embeds,
-            negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
-            lora_scale=lora_scale,
-            clip_skip=self.clip_skip,
-        )
+            prompt_embeddings.append(prompt_embeds)
+            pooled_prompt_embeddings.append(pooled_prompt_embeds)
+
+        prompt_embeddings = torch.stack(prompt_embeddings, dim=0)                    
+        pooled_prompt_embeddings = torch.stack(pooled_prompt_embeddings,dim=0)
+        pooled_prompt_embeddings = pooled_prompt_embeddings.unsqueeze(2)    
+
+        prompt_embeds = self.attention_interpolate_embeddings(stdev, prompt_embeddings, stage_times, 0)
+
+        pooled_prompt_embeds = self.attention_interpolate_embeddings(stdev, pooled_prompt_embeddings,stage_times,0)
+        pooled_prompt_embeds = pooled_prompt_embeds.squeeze(1)
 
         # 4. Prepare timesteps
         timesteps, num_inference_steps = retrieve_timesteps(
@@ -674,6 +693,21 @@ class SCoPEDiffusionXLPipeline(StableDiffusionXLPipeline):
         self._num_timesteps = len(timesteps)
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
+
+                #---------------------------------------------------------
+                prompt_embeds = self.attention_interpolate_embeddings(stdev,prompt_embeddings, stage_times, i)
+                pooled_prompt_embeds = self.attention_interpolate_embeddings(stdev,pooled_prompt_embeddings,stage_times,i)
+                pooled_prompt_embeds = pooled_prompt_embeds.squeeze(1)
+                #---------------------------------------------------------
+                add_text_embeds = pooled_prompt_embeds
+                if self.do_classifier_free_guidance:
+                    prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds], dim=0)
+                    add_text_embeds = torch.cat([negative_pooled_prompt_embeds, add_text_embeds], dim=0)
+
+                prompt_embeds = prompt_embeds.to(device)
+                add_text_embeds = add_text_embeds.to(device)
+                #---------------------------------------------------------------------------------------
+                
                 if self.interrupt:
                     continue
 

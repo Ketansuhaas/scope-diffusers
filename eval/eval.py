@@ -14,7 +14,7 @@ from config import Config
 import pandas as pd
 from genai_prompts.dataset import GenAIDataset
 from genai_prompts.filter_dataset import filter_dataset
-from genai_prompts.scope_prompt_gen import get_progressive_prompts, get_progressive_prompts_from_scratch
+# from genai_prompts.scope_prompt_gen import get_progressive_prompts, get_progressive_prompts_from_scratch
 import json
 import torch
 import re
@@ -22,32 +22,39 @@ from PIL import Image
 import random
 from prompts.system_prompts.sys_prompts import system_prompts
 import matplotlib.pyplot as plt
-
-def get_scope_image(prompt_schedule, scope_sd_pipe, config):
-    torch.manual_seed(config.SEED)
-    image = scope_sd_pipe(
-            interpolation_technique=config.INTERPOLATION_TECHNIQUE,
-            prompt_schedule=prompt_schedule,
-            num_inference_steps=config.NUM_INFERENCE_STEPS,
-            callback=None,
-            callback_steps=1,
-            temperature=config.TEMPERATURE,
-            stdev = config.STDEV
-    ).images[0]
-
-    return image
+from scope_diffuser_xl import SCoPEDiffusionXLPipeline
+from diffusers import DiffusionPipeline
+# from pipeline_stable_diffusion_xl import StableDiffusionXLPipeline as SCoPEDiffusionXLPipeline
+import torch
 
 
-def get_normal_sd_image(prompt, sd_pipe, config):
-    torch.manual_seed(config.SEED)
-    image = sd_pipe(
-            prompt,
-            num_inference_steps=config.NUM_INFERENCE_STEPS,
-            callback=None,
-            callback_steps=1,
-    ).images[0]
 
-    return image
+
+# def get_scope_image(prompt_schedule, scope_sd_pipe, config):
+#     torch.manual_seed(config.SEED)
+#     image = scope_sd_pipe(
+#             interpolation_technique=config.INTERPOLATION_TECHNIQUE,
+#             prompt_schedule=prompt_schedule,
+#             num_inference_steps=config.NUM_INFERENCE_STEPS,
+#             callback=None,
+#             callback_steps=1,
+#             temperature=config.TEMPERATURE,
+#             stdev = config.STDEV
+#     ).images[0]
+
+#     return image
+
+
+# def get_normal_sd_image(prompt, sd_pipe, config):
+#     torch.manual_seed(config.SEED)
+#     image = sd_pipe(
+#             prompt,
+#             num_inference_steps=config.NUM_INFERENCE_STEPS,
+#             callback=None,
+#             callback_steps=1,
+#     ).images[0]
+
+#     return image
 
 
 
@@ -146,16 +153,16 @@ config = Config()
 #     else:
 #         pass
 
-scope_prompts_path = "/projectnb/vkolagrp/ketanss/scope-diffusers/prompt_dump/1600_prompts_5_stages/1600_prompts_5_stages.json"
-exp_dir = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv_5_stages"
+# scope_prompts_path = "/projectnb/vkolagrp/ketanss/scope-diffusers/prompt_dump/1600_prompts_5_stages/1600_prompts_5_stages.json"
+exp_dir = "/projectnb/vkolagrp/ketanss/scope-diffusers-ketan/exp_dump/iccv_new_sdxl"
 
-with open(scope_prompts_path, 'r') as f:
-    prompts = json.load(f)
-    # print(prompts)
+# with open(scope_prompts_path, 'r') as f:
+#     prompts = json.load(f)
+#     # print(prompts)
     
 
-    # convert to list of dicts
-    prompts = [{k: v} for d in prompts for k, v in d.items()]
+#     # convert to list of dicts
+#     prompts = [{k: v} for d in prompts for k, v in d.items()]
 
 # print(prompts)
 
@@ -166,28 +173,105 @@ scope_sd_pipe = sdp_scope.from_pretrained(config.MODEL_ID, torch_dtype=torch.flo
 normal_sd_pipe = sd_pipe.from_pretrained(config.MODEL_ID, torch_dtype=torch.float16, low_cpu_mem_usage=True)
 
 
+# load both base & refiner
+scope_base = SCoPEDiffusionXLPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", 
+    torch_dtype=torch.float16, variant="fp16", 
+    use_safetensors=True,
+    cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
+)
+
+scope_base.to("cuda")
+
+base = DiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-base-1.0", 
+    torch_dtype=torch.float16, variant="fp16", 
+    use_safetensors=True,
+    cache_dir = '/projectnb/vkolagrp/ketanss/scope-diffusers/sdpcache'
+)
+base.to("cuda")
+
+refiner = DiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-xl-refiner-1.0",
+    text_encoder_2=base.text_encoder_2,
+    vae=base.vae,
+    torch_dtype=torch.float16,
+    use_safetensors=True,
+    variant="fp16",
+)
+refiner.to("cuda")
+
+high_noise_frac = 0.8
+
+def get_scope_image(prompt_schedule, config):
+    torch.manual_seed(config.SEED)
+    # run both experts
+    image = scope_base(
+        prompt_schedule=prompt_schedule,
+        num_inference_steps=config.NUM_INFERENCE_STEPS,
+        denoising_end=high_noise_frac,
+        output_type="latent",
+        stdev = config.STDEV
+    ).images
+
+    image = refiner(
+        prompt=prompt_schedule[-1][1],
+        num_inference_steps=config.NUM_INFERENCE_STEPS,
+        denoising_start=high_noise_frac,
+        image=image,
+    ).images[0]
+
+    return image
+
+
+def get_normal_sd_image(prompt, config):
+    torch.manual_seed(config.SEED)
+    # run both experts
+    image = base(
+        prompt=prompt,
+        num_inference_steps=config.NUM_INFERENCE_STEPS,
+        denoising_end=high_noise_frac,
+        output_type="latent",
+        # stdev = config.STDEV
+    ).images
+
+    image = refiner(
+        prompt=prompt_schedule[-1][1],
+        num_inference_steps=config.NUM_INFERENCE_STEPS,
+        denoising_start=high_noise_frac,
+        image=image,
+    ).images[0]
+
+    return image
+
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 scope_sd_pipe.to(device)
 normal_sd_pipe.to(device)
 
-import ast 
 
+import ast 
+import pandas as pd
+df = pd.read_csv('/projectnb/vkolagrp/ketanss/scope-diffusers-ketan/exp_dump/iccv_cvpr/genai_dataset_preprocessed.csv')
 # prompts = prompts[:300]
 
-for idx, prompt in enumerate(prompts):
-
+for idx, prompt in enumerate(df['Schedule']):
+    if idx < 563:
+        continue
     for seed in range(1):
-        for step_size in [1,2,3,4,5,6,7,8]:
+        for step_size in [1,3,5,7]:#[1,2,3,4,5,6,7,8]:
             for stdev in [3,5]:
                 config.SEED = 42+seed
                 config.STEP_SIZE = step_size
                 config.STDEV = stdev
                 if config.PROVIDE_PROMPTS:
-                    prompt_id = list(prompt.keys())[0]
-                    initial_prompt = list(prompt.values())[0]['initial_prompt']
-                    progressive_prompts = list(prompt.values())[0]['progressive_prompts']
-                    print('progressive')
-                    prompt_schedule_list = ast.literal_eval(progressive_prompts)
+                    prompt_id = idx #list(prompt.keys())[0]
+                    # initial_prompt = list(prompt.values())[0]['initial_prompt']
+                    progressive_prompts = prompt #list(prompt.values())[0]['progressive_prompts']
+                    # print('progressive')
+                    # prompt_schedule_list = ast.literal_eval(progressive_prompts)
+                    prompt_schedule_list = ast.literal_eval(prompt)
+                    initial_prompt = prompt_schedule_list[0]
                     # match = re.search(r'\[([\s\S]*?)\]', progressive_prompts)
                     # prompt_schedule_match = match.group(1)
                     # prompt_schedule_list = [prompt.strip().strip('"') for prompt in prompt_schedule_match.split('",')]
@@ -197,9 +281,9 @@ for idx, prompt in enumerate(prompts):
                 else:
                     print(prompt)
                     prompt_id = idx
-                    initial_prompt = prompt['initial_prompt']
-                    progressive_prompts = prompt['progressive_prompts']
-                    prompt_schedule_list = progressive_prompts
+                    # initial_prompt = prompt['initial_prompt']
+                    progressive_prompts = prompt #prompt['progressive_prompts']
+                    prompt_schedule_list = ast.literal_eval(prompt) #progressive_prompts
 
                 prompt_schedule = []
                 step_size = config.STEP_SIZE
@@ -208,7 +292,7 @@ for idx, prompt in enumerate(prompts):
                     prompt_schedule.append((stage_id*step_size,p))
 
                 final_prompt = prompt_schedule_list[-1]  # Get the final prompt
-
+                initial_prompt = prompt_schedule_list[0]
                 logger.info(f"\nPrompt ID: {prompt_id}")
                 logger.info(f"Initial Prompt: {initial_prompt}")
                 logger.info(f"Progressive Prompts: {progressive_prompts}")
@@ -216,10 +300,10 @@ for idx, prompt in enumerate(prompts):
 
 
                 # running scope
-                scope_image = get_scope_image(prompt_schedule, scope_sd_pipe, config)
+                scope_image = get_scope_image(prompt_schedule, config)
 
                 # running normal sd
-                normal_image = get_normal_sd_image(final_prompt, normal_sd_pipe, config)
+                normal_image = get_normal_sd_image(final_prompt, config)
 
                 # save image inot each index folder for both scope and normal images
                 

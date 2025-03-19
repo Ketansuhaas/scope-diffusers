@@ -11,7 +11,7 @@ class Config:
     INTERPOLATION_TECHNIQUE: str = "nlerp"
     NUM_INFERENCE_STEPS: int = 50   #50 or 200
     TEMPERATURE: float = 1.0 # no need to change
-    MODEL_ID: str = "stabilityai/stable-diffusion-2-1-base"
+    MODEL_ID: str = "stabilityai/stable-diffusion-2-1" #"CompVis/stable-diffusion-v1-4" #"stabilityai/stable-diffusion-1-4-base"
     STEP_SIZE: int = 5   # 1,2,3,4,5,6,7 or 4,8,12
     SEED: int = 42,
     STDEV: int = 3

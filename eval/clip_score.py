@@ -8,7 +8,7 @@ from collections import Counter
 
 # Define base folder path
 base_folder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump"
-experiment_subfolder = "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/iccv_5_stages"
+experiment_subfolder = "iccv_new_sdv15"
 full_path = os.path.join(base_folder, experiment_subfolder)
 
 # Load CLIP model
@@ -26,12 +26,18 @@ STEPS = [1, 2, 3, 4, 5, 6, 7, 8]
 STD_DEV = [3, 5]
 results = []
 
+import json
+# Opening the JSON file for reading
+with open('/projectnb/vkolagrp/ketanss/scope-diffusers/plots_for_paper/clip_scores_iccv_new_sdv15.json', 'r') as f:
+    results = json.load(f)
+
 # Iterate over all subfolders (image IDs)
 for image_id in range(1600):
     print(f"Processing image {image_id}...")
     # if len(results) >= 30:  # Limit to 30 prompts
     #     break
-
+    if image_id not in [142,976]:
+        continue
     best_scope_clip_score = 0
     scope_clip_scores = {}
     best_step = None
@@ -113,7 +119,7 @@ for image_id in range(1600):
         })
     # save results to a json file
     import json
-    with open('clip_scores_iccv_5stages.json', 'w') as f:
+    with open('plots_for_paper/clip_scores_iccv_new_sdv15.json', 'w') as f:
         json.dump(results, f, indent=4)
 
 
