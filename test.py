@@ -45,7 +45,7 @@ def main():
         prompt_embeddings.append(embeds)
     # Stack embeddings: shape becomes (num_stages, batch, seq_len, embed_dim)
     prompt_embeddings = torch.stack(prompt_embeddings, dim=0)
-    interpolator = get_interpolator(prompt_embeddings, stage_times, method="nlerp_og_dynamic_stdev", std_dev=3.0, device=device)
+    interpolator = get_interpolator(prompt_embeddings, None, method="nlerp_og", std_dev=None, device=device)
 
     # Build the callback using our interpolator.
     step_callback = build_step_callback(interpolator)
@@ -59,7 +59,7 @@ def main():
         prompt=final_prompt,
         num_inference_steps=50,
         callback_on_step_end=step_callback,
-        callback_on_step_end_tensor_inputs=["prompt_embeds"]
+        callback_on_step_end_tensor_inputs=["prompt_embeds"],
     )
     
     image = output.images[0]
