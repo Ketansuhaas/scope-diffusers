@@ -9,3 +9,10 @@ def build_step_callback(interpolator):
         callback_kwargs["prompt_embeds"] = interpolator(step)
         return callback_kwargs
     return callback
+
+import itertools
+
+def get_all_hparam_combinations(interpolator_cls):
+    grid = interpolator_cls.hparam_grid()
+    keys, values = zip(*grid.items())
+    return [dict(zip(keys, v)) for v in itertools.product(*values)]

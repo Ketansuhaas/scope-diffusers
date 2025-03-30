@@ -17,3 +17,5 @@ tifa/cache
 t2v/t2v_metrics/cache
 
 temp.py
+
+DEL/*
