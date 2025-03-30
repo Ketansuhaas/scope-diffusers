@@ -64,8 +64,6 @@ def parse_args():
                         help="Root directory where run_scope.py saved images.")
     parser.add_argument("--csv_path", type=str, required=True,
                         help="CSV path with prompt schedules (same as run_scope).")
-    parser.add_argument("--output_json", type=str, default="clip_scores.json",
-                        help="File to which we save the final JSON output.")
     return parser.parse_args()
 
 
@@ -75,21 +73,18 @@ def main():
 
     # Load CSV (same as run_scope.py)
     df = pd.read_csv(args.csv_path)
-    df = df.head(4)  # If run_scope restricts to top 10 for testing, do so here too.
+    df = df.head(4)  # Sync with run_scope.py limit for now
 
-    # Load CLIP (e.g., ViT-L/14). If you want a different model, adapt here.
+    # Load CLIP
     print("Loading CLIP model ...")
     clip_model, preprocess = clip.load("ViT-L/14", device=device)
     clip_model.eval()
 
-    # Determine which interpolator class from interpolation_method
-    interpolator_cls = get_interpolator(interpolation_method.lower())
-
-    # Get all combos from the same method used in run_scope.py
+    # Get interpolator class to get hparam combos
+    interpolator_cls = get_interpolator(args.interpolation_method.lower())
     hparam_combos = get_all_hparam_combinations(interpolator_cls)
 
-    # Reconstruct top-level directory:
-    #   exp_dir/<model_sanitized>/<interpolation_method>/steps_<num_inference_steps>/seed_<seed>/
+    # Construct base dir like in main.py
     model_dir = sanitize_for_path(args.model_name)
     top_level_dir = os.path.join(
         args.exp_dir,
@@ -102,74 +97,55 @@ def main():
 
     results = []
 
-    # Loop over each row in the CSV, matching run_scope.py
     for idx, row in df.iterrows():
         prompt_schedule_list = ast.literal_eval(row["schedule"])
         if not prompt_schedule_list:
             continue
         final_prompt = prompt_schedule_list[-1]
 
-        # We'll track scope scores for all combos:
         scope_clip_scores = {}
         best_scope_clip_score = float("-inf")
         best_suffix = None
         best_path = None
         normal_clip_score = None
 
-        # This row's folder
         row_folder = os.path.join(top_level_dir, f"row_{idx}")
 
-        # For each hparam combo, replicate how run_scope builds subfolder
         for combo in hparam_combos:
-            # run_scope sets combo["seed"] = <CLI seed>, so do the same
-            combo["seed"] = args.seed
-
-            # Pop out interpolation_period (like run_scope does) for final suffix
+            combo["seed"] = args.seed  # Match main.py
             combo_copy = combo.copy()
             if "interpolation_period" not in combo_copy:
                 continue
             interpolation_period = combo_copy.pop("interpolation_period")
 
-            # Suffix for subdir, e.g. "std_dev_5_scale_7_period_15" etc.
-            # We only skip "seed" from the loop. Everything else is appended.
-            suffix_parts = []
-            for k, v in combo.items():
-                if k != "seed":
-                    suffix_parts.append(f"{k}_{v}")
-            # suffix_parts.append(f"period_{interpolation_period}")
+            suffix_parts = [f"{k}_{v}" for k, v in combo.items() if k != "seed"]
             suffix_str = "_".join(suffix_parts)
 
             final_out_dir = os.path.join(row_folder, suffix_str)
-
             baseline_path = os.path.join(final_out_dir, "baseline.png")
             scope_path = os.path.join(final_out_dir, "scope.png")
             schedule_path = os.path.join(final_out_dir, "prompt_schedule.txt")
 
-            # If files aren't there, skip
             if not (os.path.exists(baseline_path) and os.path.exists(scope_path) and os.path.exists(schedule_path)):
                 continue
 
-            # Compute baseline once for this row
             if normal_clip_score is None:
                 normal_clip_score = compute_clip_similarity(
                     clip_model, preprocess, baseline_path, final_prompt, device
                 )
 
-            # Compute scope similarity
             scope_score = compute_clip_similarity(
                 clip_model, preprocess, scope_path, final_prompt, device
             )
             scope_clip_scores[suffix_str] = scope_score
 
-            # Track best scope
             if scope_score > best_scope_clip_score:
                 best_scope_clip_score = scope_score
                 best_suffix = suffix_str
                 best_path = scope_path
 
-        # If we found at least one valid scope image
         if normal_clip_score is not None and best_scope_clip_score > float("-inf"):
-            record = {
+            results.append({
                 "image_id": idx,
                 "normal_clip_score": normal_clip_score,
                 "best_scope_clip_score": best_scope_clip_score,
@@ -177,13 +153,12 @@ def main():
                 "best_path": best_path,
                 "best_suffix": best_suffix,
                 "scope_clip_scores": scope_clip_scores
-            }
-            results.append(record)
-        # else: no combos found or no images -> skip
+            })
 
-    # Write out final JSON
-    print(f"\nProcessed {len(results)} rows with valid images. Saving to {args.output_json}")
-    with open(args.output_json, "w") as f:
+    # Save JSON directly inside top-level directory
+    output_json_path = os.path.join(top_level_dir, "clip_scores.json")
+    print(f"\nProcessed {len(results)} rows. Saving to {output_json_path}")
+    with open(output_json_path, "w") as f:
         json.dump(results, f, indent=4)
     print("Done.")
 
