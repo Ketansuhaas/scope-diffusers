@@ -40,6 +40,7 @@ def sanitize_for_path(name: str) -> str:
 
 
 def run_pipeline(
+    csv_path: str,
     model_name: str,
     num_inference_steps: int,
     seed: int,
@@ -196,10 +197,13 @@ def main():
                         help="Interpolation method (e.g. nlerp_og).")
     parser.add_argument("--exp_dir", type=str, default="exp_dump/eval_output",
                         help="Base directory to store output.")
+    parser.add_argument("--csv_path", type=str, required=True,
+                        help="CSV path with prompt schedules (same as run_scope).")     
 
     args = parser.parse_args()
 
     run_pipeline(
+        csv_path=args.csv_path,
         model_name=args.model_name,
         num_inference_steps=args.num_inference_steps,
         seed=args.seed,
