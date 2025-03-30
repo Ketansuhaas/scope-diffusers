@@ -147,13 +147,13 @@ class StagewisePromptSwitcher(BasePromptInterpolator):
 
 # === Interpolator Factory ===
 
-def get_interpolator(embeddings, interpolation_period, method="nlerp", device="cuda", **kwargs):
+def get_interpolator(method="nlerp"):
     if method == "nlerp_og":
-        return NLerpInterpolatorOG.from_config(embeddings, interpolation_period, device=device, **kwargs)
+        return NLerpInterpolatorOG
     elif method == "stagewise_switcher":
         """
         StagewisePromptSwitcher does not interpolate but switches embeddings at fixed intervals.
         """
-        return StagewisePromptSwitcher.from_config(embeddings, interpolation_period, device=device, **kwargs)
+        return StagewisePromptSwitcher
     else:
         raise ValueError(f"Unknown interpolation method: {method}")
