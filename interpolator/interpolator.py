@@ -104,11 +104,56 @@ class NLerpInterpolatorOG(BasePromptInterpolator):
             device=device
         )
 
+# === Stagewise Prompt Switcher (No interpolation, hard swap at fixed intervals) ===
+
+class StagewisePromptSwitcher(BasePromptInterpolator):
+    def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
+        """
+        A non-interpolating baseline: just swap in the corresponding prompt embedding
+        at evenly spaced steps during the interpolation period.
+
+        Args:
+            embeddings (torch.Tensor): Shape (num_stages, batch, seq_len, embed_dim)
+            interpolation_period (int): Number of total diffusion steps
+        """
+        super().__init__(embeddings, device)
+        self.period = interpolation_period
+        self.num_stages = embeddings.shape[0]
+
+        # Compute step indices at which to switch stages
+        self.stage_boundaries = np.linspace(0, self.period, self.num_stages + 1, dtype=int)
+        self.config.update({"interpolation_period": self.period})
+
+    def interpolate(self, time_i):
+        # Find which stage to use based on time_i
+        for i in range(self.num_stages):
+            if self.stage_boundaries[i] <= time_i < self.stage_boundaries[i + 1]:
+                return self.embeddings[i]
+        return self.embeddings[-1]  # If time_i >= period
+
+    @staticmethod
+    def hparam_grid():
+        return {
+            "interpolation_period": [4, 12, 20, 28],
+        }
+
+    @classmethod
+    def from_config(cls, embeddings, interpolation_period, device="cuda", **kwargs):
+        return cls(
+            embeddings=embeddings,
+            interpolation_period=interpolation_period,
+            device=device
+        )
 
 # === Interpolator Factory ===
 
 def get_interpolator(embeddings, interpolation_period, method="nlerp", device="cuda", **kwargs):
     if method == "nlerp_og":
         return NLerpInterpolatorOG.from_config(embeddings, interpolation_period, device=device, **kwargs)
+    elif method == "stagewise_switcher":
+        """
+        StagewisePromptSwitcher does not interpolate but switches embeddings at fixed intervals.
+        """
+        return StagewisePromptSwitcher.from_config(embeddings, interpolation_period, device=device, **kwargs)
     else:
         raise ValueError(f"Unknown interpolation method: {method}")

@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from diffusers import StableDiffusionPipeline
 
-from interpolator.interpolator import get_interpolator, NLerpInterpolatorOG
+from interpolator.interpolator import get_interpolator, NLerpInterpolatorOG, StagewisePromptSwitcher
 from helpers import build_step_callback, get_all_hparam_combinations
 
 
@@ -74,6 +74,8 @@ def run_pipeline(
     # Choose interpolation class
     if interpolation_method.lower() == "nlerp_og":
         interpolator_cls = NLerpInterpolatorOG
+    elif interpolation_method.lower() == "stagewise_switcher":
+        interpolator_cls = StagewisePromptSwitcher
     else:
         raise ValueError(f"Unknown interpolation method: {interpolation_method}")
 
