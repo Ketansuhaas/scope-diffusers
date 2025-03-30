@@ -25,9 +25,8 @@ conda activate diffusion_features
 MODEL_NAME="stabilityai/stable-diffusion-2-1"
 NUM_INFERENCE_STEPS=50
 SEED=42
-INTERPOLATION_METHOD="nlerp_og"
+INTERPOLATION_METHOD="stagewise_switcher"
 CSV_PATH="/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/genai_dataset_schedules_fixed.csv"
-OUTPUT_JSON="exp_dump/clip_scores.json"
 
 # ------------------------------------------------------------------------------
 # Print config
@@ -38,27 +37,26 @@ echo "NUM_INFERENCE_STEPS  = $NUM_INFERENCE_STEPS"
 echo "SEED                 = $SEED"
 echo "INTERPOLATION_METHOD = $INTERPOLATION_METHOD"
 echo "CSV_PATH             = $CSV_PATH"
-echo "OUTPUT_JSON          = $OUTPUT_JSON"
 echo "============================================"
 echo
 
 # ------------------------------------------------------------------------------
 # 1) Run main.py to generate images
-# ------------------------------------------------------------------------------
-python main.py \
-    --model_name "$MODEL_NAME" \
-    --num_inference_steps "$NUM_INFERENCE_STEPS" \
-    --seed "$SEED" \
-    --interpolation_method "$INTERPOLATION_METHOD" \
-    --csv_path "$CSV_PATH"
+# # ------------------------------------------------------------------------------
+# python main.py \
+#     --model_name "$MODEL_NAME" \
+#     --num_inference_steps "$NUM_INFERENCE_STEPS" \
+#     --seed "$SEED" \
+#     --interpolation_method "$INTERPOLATION_METHOD" \
+#     --csv_path "$CSV_PATH"
 
+conda activate t2v
 # ------------------------------------------------------------------------------
-# 2) Run get_clip_scores.py to score outputs
+# 2) Run get_scores.py to get all scores
 # ------------------------------------------------------------------------------
-python get_clip_scores.py \
+python get_scores.py \
     --model_name "$MODEL_NAME" \
     --num_inference_steps "$NUM_INFERENCE_STEPS" \
     --seed "$SEED" \
     --interpolation_method "$INTERPOLATION_METHOD" \
     --csv_path "$CSV_PATH" \
-    --output_json "$OUTPUT_JSON"
