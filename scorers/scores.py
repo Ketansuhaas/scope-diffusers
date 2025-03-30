@@ -47,4 +47,100 @@ class VQAScorer(BaseScorer):
         return "vqa"
 
     def compute(self, image_path, text):
-        return self.model(images=[image_path], texts=[text])[0]
+        return self.model(images=[image_path], texts=[text])[0].item()
+
+# === VQA-style scorers from t2v_metrics ===
+
+class LlavaScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.VQAScore(model="llava-v1.5-13b")
+
+    def name(self):
+        return "llava"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+class InstructBLIPScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.VQAScore(model="instructblip-flant5-xxl")
+
+    def name(self):
+        return "instructblip"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+# === CLIP-style scorers ===
+
+class PickScoreScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.CLIPScore(model="pickscore-v1")
+
+    def name(self):
+        return "pickscore"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+class HPSv2Scorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.CLIPScore(model="hpsv2")
+
+    def name(self):
+        return "hpsv2"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+class CLIPLarge336Scorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.CLIPScore(model="openai:ViT-L-14-336")
+
+    def name(self):
+        return "clip_336"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+# === ITM-style scorers ===
+
+class BLIPITMScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.ITMScore(model="blip2-itm")
+
+    def name(self):
+        return "blip_itm"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])
+
+
+class ImageRewardScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        import t2v_metrics
+        self.model = t2v_metrics.ITMScore(model="image-reward-v1")
+
+    def name(self):
+        return "image_reward"
+
+    def compute(self, image_path, text):
+        return float(self.model(images=[image_path], texts=[text])[0])

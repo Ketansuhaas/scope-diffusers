@@ -9,7 +9,7 @@ import numpy as np
 
 from interpolator.interpolator import get_interpolator
 from helpers import get_all_hparam_combinations
-from scorers.scores import CLIPScorer, VQAScorer
+from scorers.scores import *
 
 # ================================
 # Utility Functions
@@ -55,7 +55,15 @@ def main():
     print(f"Looking under: {top_level_dir}")
 
     # Initialize all scorers
-    scorers = [CLIPScorer(device=device), VQAScorer(device=device)]
+    scorers = [CLIPScorer(device=device), 
+                VQAScorer(device=device),
+                # LlavaScorer(device=device), 
+                # InstructBLIPScorer(device=device),
+                PickScoreScorer(device=device),
+                HPSv2Scorer(device=device), 
+                CLIPLarge336Scorer(device=device), 
+                BLIPITMScorer(device=device), 
+                ImageRewardScorer(device=device)]
 
     for scorer in scorers:
         results = []
