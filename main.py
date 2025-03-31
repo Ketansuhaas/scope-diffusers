@@ -76,8 +76,8 @@ def run_pipeline(
     # Retrieve possible hyperparam combos (example usage)
     hparam_combos = get_all_hparam_combinations(interpolator_cls)
 
-    # For demonstration, limit to first 10
-    df = df.head(4)
+    # # For demonstration, limit to first 10
+    # df = df.head(4)
 
     # Create top-level output directory for this configuration
     #   exp_dir/<model_name_sanitized>/<interpolation_method>/steps_<num_inference_steps>/seed_<seed>/

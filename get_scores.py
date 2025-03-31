@@ -38,7 +38,7 @@ def main():
     args = parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     df = pd.read_csv(args.csv_path)
-    df = df.head(4)  # Sync with main.py
+    # df = df.head(4)  # Sync with main.py
 
     interpolator_cls = get_interpolator(args.interpolation_method.lower())
     hparam_combos = get_all_hparam_combinations(interpolator_cls)
@@ -59,11 +59,12 @@ def main():
                 VQAScorer(device=device),
                 # LlavaScorer(device=device), 
                 # InstructBLIPScorer(device=device),
-                PickScoreScorer(device=device),
-                HPSv2Scorer(device=device), 
-                CLIPLarge336Scorer(device=device), 
-                BLIPITMScorer(device=device), 
-                ImageRewardScorer(device=device)]
+                # PickScoreScorer(device=device),
+                # HPSv2Scorer(device=device), 
+                # CLIPLarge336Scorer(device=device), 
+                # BLIPITMScorer(device=device), 
+                # ImageRewardScorer(device=device),
+    ]
 
     for scorer in scorers:
         results = []
