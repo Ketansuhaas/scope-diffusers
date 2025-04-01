@@ -36,7 +36,8 @@ def run_pipeline(
     num_inference_steps: int,
     seed: int,
     interpolation_method: str,
-    exp_dir: str = "exp_dump/eval_output"
+    exp_dir: str = "exp_dump/eval_output",
+    hf_cache_dir: str = "./",
 ):
     print(f"\n--- run_pipeline() ---")
     print(f"model_name           = {model_name}")
@@ -51,7 +52,8 @@ def run_pipeline(
 
     pipe = StableDiffusionPipeline.from_pretrained(
         model_name,
-        torch_dtype=torch.float16
+        torch_dtype=torch.float16,
+        cache_dir = hf_cache_dir
     ).to(device)
 
     os.makedirs(exp_dir, exist_ok=True)
@@ -88,14 +90,16 @@ def run_pipeline(
             row_dir = os.path.join(top_level_dir, f"row_{idx}")
             os.makedirs(row_dir, exist_ok=True)
             baseline_image.save(os.path.join(row_dir, "baseline.png"))
+
             with open(os.path.join(row_dir, "prompt_schedule.txt"), "w") as f:
                 f.write(str(prompt_schedule_list))
 
             del baseline_out, baseline_image
-
+            
             for combo in hparam_combos:
                 combo["seed"] = seed
-
+                torch.manual_seed(seed)
+                
                 combo_copy = combo.copy()
                 interpolation_period = combo_copy.pop("interpolation_period")
                 interpolator = interpolator_cls(
@@ -144,12 +148,13 @@ def run_pipeline(
 
 def main():
     parser = argparse.ArgumentParser(description="Run interpolation-based scope diffusion.")
-    parser.add_argument("--model_name", type=str, default="CompVis/stable-diffusion-v1-4")
+    parser.add_argument("--model_name", type=str, default="stabilityai/stable-diffusion-2-1")
     parser.add_argument("--num_inference_steps", type=int, default=50)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--interpolation_method", type=str, default="nlerp_og")
-    parser.add_argument("--exp_dir", type=str, default="exp_dump/eval_output")
+    parser.add_argument("--exp_dir", type=str, default="exp_dump/debug")
     parser.add_argument("--csv_path", type=str, required=True)
+    parser.add_argument("--hf_cache_dir",type=str, default="./")
     args = parser.parse_args()
 
     run_pipeline(
@@ -158,7 +163,8 @@ def main():
         num_inference_steps=args.num_inference_steps,
         seed=args.seed,
         interpolation_method=args.interpolation_method,
-        exp_dir=args.exp_dir
+        exp_dir=args.exp_dir,
+        hf_cache_dir=args.hf_cache_dir
     )
 
 if __name__ == "__main__":
