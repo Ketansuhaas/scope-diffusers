@@ -7,11 +7,11 @@
 #$ -t 1-1
 #$ -pe omp 4
 #$ -l gpus=1
-#$ -l gpu_c=7.0
-#$ -l h_rt=11:00:00
-#$ -N stats_geode
+#$ -l gpu_c=8.0
+#$ -l h_rt=44:00:00
+#$ -N SD2.1_stagewise_switcher
 #$ -j y
-#$ -o /projectnb/ivc-ml/xthomas/THESIS/MS_Thesis/feature_analysis/qsub_runs
+#$ -o /projectnb/ivc-ml/xthomas/cs791/scope-diffusers/qsub_runs
 
 # ------------------------------------------------------------------------------
 # Conda environment
@@ -25,7 +25,7 @@ conda activate diffusion_features
 MODEL_NAME="stabilityai/stable-diffusion-2-1"
 NUM_INFERENCE_STEPS=50
 SEED=42
-INTERPOLATION_METHOD="stagewise_switcher"
+INTERPOLATION_METHOD="nlerp_og"
 CSV_PATH="/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/genai_dataset_schedules_fixed.csv"
 
 # ------------------------------------------------------------------------------
@@ -43,14 +43,14 @@ echo
 # ------------------------------------------------------------------------------
 # 1) Run main.py to generate images
 # # ------------------------------------------------------------------------------
-# python main.py \
-#     --model_name "$MODEL_NAME" \
-#     --num_inference_steps "$NUM_INFERENCE_STEPS" \
-#     --seed "$SEED" \
-#     --interpolation_method "$INTERPOLATION_METHOD" \
-#     --csv_path "$CSV_PATH"
+python main.py \
+    --model_name "$MODEL_NAME" \
+    --num_inference_steps "$NUM_INFERENCE_STEPS" \
+    --seed "$SEED" \
+    --interpolation_method "$INTERPOLATION_METHOD" \
+    --csv_path "$CSV_PATH"
 
-conda activate t2v
+conda activate t2v_new
 # ------------------------------------------------------------------------------
 # 2) Run get_scores.py to get all scores
 # ------------------------------------------------------------------------------
