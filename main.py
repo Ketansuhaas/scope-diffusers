@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.stable_diffusion_xl import StableDiffusionXLPipeline
+from diffusers.pipelines.flux.pipeline_flux import FluxPipeline 
 from diffusers import DiffusionPipeline
 
 from interpolator.interpolator import get_interpolator
@@ -45,6 +46,24 @@ def encode_prompt_schedule(pipe, prompts, device):
             #     negative_pooled_prompt_embeds,
             # ) = self.encode_prompt(
         return torch.stack(prompt_embeddings, dim=0), torch.stack(pooled_prompt_embeddings, dim=0)
+
+    elif "flux" in pipe.__class__.__name__.lower():
+
+        prompt_embeddings = []
+        pooled_prompt_embeddings = []
+        for prompt in prompts:
+            with torch.no_grad():
+                result = pipe.encode_prompt(
+                    prompt,
+                    prompt_2=prompt,
+                    device=device,
+                    num_images_per_prompt=1,
+                )
+                prompt_embeddings.append(result[0])
+                pooled_prompt_embeddings.append(result[1])
+
+        return torch.stack(prompt_embeddings, dim=0), torch.stack(pooled_prompt_embeddings, dim=0)
+
     else:
         prompt_embeddings = []
         for prompt in prompts:
@@ -79,10 +98,11 @@ def run_pipeline(
     print(f"---------------------\n")
 
     df = pd.read_csv(csv_path)
-    # df = df.head(20)
+    # df = df.head(3)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # Choose pipeline based on model_name (if "xl" is in model_name.lower(), use SDXL)
+    refiner = None
     if "xl" in model_name.lower():
         pipe = StableDiffusionXLPipeline.from_pretrained(
             model_name,
@@ -101,6 +121,12 @@ def run_pipeline(
             ).to(device)
         else:
             refiner = None  # No refiner used, just set to None
+    elif "flux" in model_name.lower():
+        pipe = FluxPipeline.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16,
+            cache_dir=hf_cache_dir
+            ).to(device)
     else:
         pipe = StableDiffusionPipeline.from_pretrained(
             model_name,
@@ -158,16 +184,27 @@ def run_pipeline(
                         denoising_start=high_noise_frac,
                     )
                 else:
-                    baseline_out = pipe(
-                        prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
-                        neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
-                        pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
-                        negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                    
+                    if "flux" in pipe.__class__.__name__.lower():
+                        # print(f"Baseline Flux: {prompt_embeddings[-1].shape}, {pooled_prompt_embeddings[-1].shape}")
+                        baseline_out = pipe(
+                        prompt_embeds=prompt_embeddings[-1],
+                        pooled_prompt_embeds=pooled_prompt_embeddings[-1],
                         num_images_per_prompt=1,
                         num_inference_steps=num_inference_steps,
-                        # denoising_end=high_noise_frac,
-                        # output_type="latent",
-                    )
+                        )
+                    else:
+
+                        baseline_out = pipe(
+                            prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
+                            neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
+                            pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
+                            negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                            num_images_per_prompt=1,
+                            num_inference_steps=num_inference_steps,
+                            # denoising_end=high_noise_frac,
+                            # output_type="latent",
+                        )
             else:
                 baseline_out = pipe(
                     prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
@@ -219,48 +256,62 @@ def run_pipeline(
 
             with torch.no_grad():
                 if pooled_prompt_embeddings is not None:
-                    initial_embedding = interpolator(0)
-                    neg_embeds = initial_embedding[0].unsqueeze(0)
-                    pos_embeds = initial_embedding[1].unsqueeze(0)
 
-                    initial_embedding_pooled = pooled_interpolator(0)
-                    neg_pooled_embeds = initial_embedding_pooled.squeeze(0)[0].unsqueeze(0) if initial_embedding_pooled is not None else None
-                    pos_pooled_embeddings = initial_embedding_pooled.squeeze(0)[1].unsqueeze(0) if initial_embedding_pooled is not None else None
-
-                    torch.manual_seed(seed)
-
-                    if refiner is not None:
+                    if "flux" in pipe.__class__.__name__.lower():
+                        initial_embedding = interpolator(0)
+                        initial_embedding_pooled = pooled_interpolator(0)
                         output_interp = pipe(
-                            prompt_embeds=pos_embeds,
-                            neg_prompt_embeds=neg_embeds,
-                            pooled_prompt_embeds=pos_pooled_embeddings,
-                            negative_pooled_prompt_embeds=neg_pooled_embeds,
+                            prompt_embeds=initial_embedding,
+                            pooled_prompt_embeds=initial_embedding_pooled.squeeze(0),
                             num_images_per_prompt=1,
                             num_inference_steps=num_inference_steps,
                             callback_on_step_end=step_callback,
-                            callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
-                            denoising_end=high_noise_frac,
-                            output_type="latent",
-                        )
-                        output_interp = refiner(    
-                            prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
-                            image = output_interp.images,  # The image generated from the interpolation
-                            num_inference_steps=num_inference_steps,
-                            denoising_start=high_noise_frac,
+                            callback_on_step_end_tensor_inputs=["prompt_embeds"],
                         )
                     else:
-                        output_interp = pipe(
-                            prompt_embeds=pos_embeds,
-                            neg_prompt_embeds=neg_embeds,
-                            pooled_prompt_embeds=pos_pooled_embeddings,
-                            negative_pooled_prompt_embeds=neg_pooled_embeds,
-                            num_images_per_prompt=1,
-                            num_inference_steps=num_inference_steps,
-                            callback_on_step_end=step_callback,
-                            callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
-                            # denoising_end=high_noise_frac,
-                            # output_type="latent",
-                        )
+
+                        initial_embedding = interpolator(0)
+                        neg_embeds = initial_embedding[0].unsqueeze(0)
+                        pos_embeds = initial_embedding[1].unsqueeze(0)
+
+                        initial_embedding_pooled = pooled_interpolator(0)
+                        neg_pooled_embeds = initial_embedding_pooled.squeeze(0)[0].unsqueeze(0) if initial_embedding_pooled is not None else None
+                        pos_pooled_embeddings = initial_embedding_pooled.squeeze(0)[1].unsqueeze(0) if initial_embedding_pooled is not None else None
+
+                        torch.manual_seed(seed)
+
+                        if refiner is not None:
+                            output_interp = pipe(
+                                prompt_embeds=pos_embeds,
+                                neg_prompt_embeds=neg_embeds,
+                                pooled_prompt_embeds=pos_pooled_embeddings,
+                                negative_pooled_prompt_embeds=neg_pooled_embeds,
+                                num_images_per_prompt=1,
+                                num_inference_steps=num_inference_steps,
+                                callback_on_step_end=step_callback,
+                                callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                                denoising_end=high_noise_frac,
+                                output_type="latent",
+                            )
+                            output_interp = refiner(    
+                                prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
+                                image = output_interp.images,  # The image generated from the interpolation
+                                num_inference_steps=num_inference_steps,
+                                denoising_start=high_noise_frac,
+                            )
+                        else:
+                            output_interp = pipe(
+                                prompt_embeds=pos_embeds,
+                                neg_prompt_embeds=neg_embeds,
+                                pooled_prompt_embeds=pos_pooled_embeddings,
+                                negative_pooled_prompt_embeds=neg_pooled_embeds,
+                                num_images_per_prompt=1,
+                                num_inference_steps=num_inference_steps,
+                                callback_on_step_end=step_callback,
+                                callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                                # denoising_end=high_noise_frac,
+                                # output_type="latent",
+                            )
 
                 else:
                     initial_embedding = interpolator(0)
@@ -294,7 +345,6 @@ def run_pipeline(
             torch.cuda.empty_cache()
             gc.collect()
 
-        del prompt_embeddings
         torch.cuda.empty_cache()
         gc.collect()
 
