@@ -335,7 +335,7 @@ def run_pipeline(
             os.makedirs(final_out_dir, exist_ok=True)
             scope_image.save(os.path.join(final_out_dir, "scope.png"))
             
-            del scope_image, output_interp, pos_embeds, neg_embeds, step_callback
+            del scope_image, output_interp
             if interpolator is not None:
                 # Clean up interpolator to free memory
                 del interpolator
