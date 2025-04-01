@@ -22,7 +22,7 @@ conda activate diffusion_features
 # ------------------------------------------------------------------------------
 # Config (edit these values only)
 # ------------------------------------------------------------------------------
-MODEL_NAME="stabilityai/stable-diffusion-2-1"
+MODEL_NAME="stabilityai/stable-diffusion-xl-base-1.0"
 NUM_INFERENCE_STEPS=50
 SEED=42
 INTERPOLATION_METHOD="nlerp_og"
@@ -48,7 +48,8 @@ python main.py \
     --num_inference_steps "$NUM_INFERENCE_STEPS" \
     --seed "$SEED" \
     --interpolation_method "$INTERPOLATION_METHOD" \
-    --csv_path "$CSV_PATH"
+    --csv_path "$CSV_PATH" \
+    --use_refiner
 
 conda activate t2v_new
 # ------------------------------------------------------------------------------

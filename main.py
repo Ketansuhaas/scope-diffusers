@@ -140,15 +140,17 @@ def run_pipeline(
 
                 # print(prompt_embeddings[-1][1].unsqueeze(0).shape, prompt_embeddings[-1][0].unsqueeze(0).shape, pooled_prompt_embeddings[-1][0].shape, pooled_prompt_embeddings[-1][1].unsqueeze(0).shape)
                 # exit()
-                baseline_out = pipe(
-                    prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
-                    neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
-                    pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
-                    negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
-                    num_images_per_prompt=1,
-                    num_inference_steps=num_inference_steps
-                )
                 if refiner is not None:
+                    baseline_out = pipe(
+                        prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
+                        neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
+                        pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
+                        negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                        num_images_per_prompt=1,
+                        num_inference_steps=num_inference_steps,
+                        denoising_end=high_noise_frac,
+                        output_type="latent",
+                    )
                     baseline_out = refiner(
                         prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
                         image = baseline_out.images,  # The image generated from the interpolation
@@ -157,6 +159,17 @@ def run_pipeline(
                         original_size=(1024, 1024),
                         crop_coords_top_left=(0, 0),
                         target_size=(1024, 1024),
+                    )
+                else:
+                    baseline_out = pipe(
+                        prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
+                        neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
+                        pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
+                        negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                        num_images_per_prompt=1,
+                        num_inference_steps=num_inference_steps,
+                        # denoising_end=high_noise_frac,
+                        # output_type="latent",
                     )
             else:
                 baseline_out = pipe(
@@ -218,23 +231,38 @@ def run_pipeline(
                     pos_pooled_embeddings = initial_embedding_pooled.squeeze(0)[1].unsqueeze(0) if initial_embedding_pooled is not None else None
 
                     torch.manual_seed(seed)
-                    output_interp = pipe(
-                        prompt_embeds=pos_embeds,
-                        neg_prompt_embeds=neg_embeds,
-                        pooled_prompt_embeds=pos_pooled_embeddings,
-                        negative_pooled_prompt_embeds=neg_pooled_embeds,
-                        num_images_per_prompt=1,
-                        num_inference_steps=num_inference_steps,
-                        callback_on_step_end=step_callback,
-                        callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"]
-                    )
 
                     if refiner is not None:
+                            output_interp = pipe(
+                            prompt_embeds=pos_embeds,
+                            neg_prompt_embeds=neg_embeds,
+                            pooled_prompt_embeds=pos_pooled_embeddings,
+                            negative_pooled_prompt_embeds=neg_pooled_embeds,
+                            num_images_per_prompt=1,
+                            num_inference_steps=num_inference_steps,
+                            callback_on_step_end=step_callback,
+                            callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                            denoising_end=high_noise_frac,
+                            output_type="latent",
+                        )
                         output_interp = refiner(    
                             prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
                             image = output_interp.images,  # The image generated from the interpolation
                             num_inference_steps=num_inference_steps,
                             denoising_start=high_noise_frac,
+                        )
+                    else:
+                        output_interp = pipe(
+                            prompt_embeds=pos_embeds,
+                            neg_prompt_embeds=neg_embeds,
+                            pooled_prompt_embeds=pos_pooled_embeddings,
+                            negative_pooled_prompt_embeds=neg_pooled_embeds,
+                            num_images_per_prompt=1,
+                            num_inference_steps=num_inference_steps,
+                            callback_on_step_end=step_callback,
+                            callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                            # denoising_end=high_noise_frac,
+                            # output_type="latent",
                         )
 
                 else:
