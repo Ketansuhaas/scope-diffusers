@@ -147,22 +147,18 @@ class StagewisePromptSwitcher(BasePromptInterpolator):
 
 # === Stagewise Prompt Switcher Respaced (No interpolation, hard swap at respaced intervals) ===
 
-# UNDER CONSTRUCTION
 class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
     def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
         super().__init__(embeddings, device)
         self.period = interpolation_period
-        self.stdev = kwargs.get("std_dev", 5)  # Pull out only what's relevant
+        self.num_stages = embeddings.shape[0]
 
-        self.config.update({
-            "std_dev": self.stdev,
-            "interpolation_period": self.period
-        })
-
-    def interpolate(self, time_i):
-        if time_i >= self.period:
-            return self.embeddings[-1]
-
+        # Compute step indices at which to switch stages
+        self.stage_boundaries = np.linspace(0, self.period, self.num_stages + 1, dtype=int)
+        self.config.update({"interpolation_period": self.period})
+        self.initialize_spacing()
+    
+    def initialize_spacing(self):
         q = self.embeddings.shape[0] - 1
         distances = np.zeros((77, q))
         for idx in range(self.embeddings.shape[0] - 1):
@@ -172,45 +168,49 @@ class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
                 euclidean_distance = np.linalg.norm(e1[-1, i, :] - e2[-1, i, :])
                 distances[i][idx] = euclidean_distance
 
-        tau = self.stdev * (1 - (time_i / self.period)) + 0.1
-
         times = np.arange(self.embeddings.shape[0], dtype=float)
-        row_sums = distances.sum(axis=1, keepdims=True)
-        distances_normalized = distances / (row_sums + 1e-5)
+        self.row_sums = distances.sum(axis=1, keepdims=True)
+        distances_normalized = distances / (self.row_sums + 1e-5)
         distances = distances_normalized * self.period
         distances = np.cumsum(distances, axis=1)
         zero_column = np.zeros((distances.shape[0], 1))
-        times = np.hstack((zero_column, distances))
+        self.times = np.hstack((zero_column, distances))
 
-        interpolated_embedding = self.embeddings[0].clone().detach()
+    def interpolate(self, time_i):
+        if time_i >= self.period:
+            return self.embeddings[-1]
+
+        final_embedding = self.embeddings[0].clone().detach()
         for i in range(self.embeddings[0].shape[1]):
-            if row_sums[i] == 0:
+            if self.row_sums[i] == 0:
                 continue
+            
+            weights = []
+            for t_id, t in enumerate(self.times[i][:-1]):
+                if time_i>=self.times[i][t_id] and time_i <self.times[i][t_id+1]:
+                    weights.append(1)
+                else:
+                    weights.append(0)
+            weights.append(0)
+     
             weights = torch.tensor(
-                [np.exp(-((t - time_i) / tau) ** 2 / 2) for t in times[i]],
+                weights,
                 device=self.device
             )
-            weights /= weights.sum()
             weights = weights.unsqueeze(1)
 
             token_feature_values = torch.stack([
                 self.embeddings[k, -1, i, :] for k in range(self.embeddings.shape[0])
             ])
             interpolated_value = torch.sum(token_feature_values * weights, dim=0)
-            interpolated_embedding[-1, i, :] = interpolated_value
+            final_embedding[-1, i, :] = interpolated_value
 
-            original_magnitude = torch.norm(self.embeddings[0][-1, i, :])
-            current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
-            if current_magnitude > 0:
-                interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
-
-        return interpolated_embedding.to(self.device)
+        return final_embedding.to(self.device)
 
     @staticmethod
     def hparam_grid():
         return {
-            "interpolation_period": [4, 12, 20, 28],
-            "std_dev": [3, 5],
+            "interpolation_period": [4, 12, 20, 28]
         }
 
     @classmethod
@@ -218,12 +218,8 @@ class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
         return cls(
             embeddings=embeddings,
             interpolation_period=interpolation_period,
-            stdev=kwargs.get("std_dev", 3),
             device=device
         )
-
-
-
 
 
 # === Interpolator Factory ===
@@ -231,10 +227,10 @@ class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
 def get_interpolator(method="nlerp"):
     if method == "nlerp_og":
         return NLerpInterpolatorOG
-    elif method == "stagewise_switcher":
+    elif method == "stagewise_switcher_respaced":
         """
         StagewisePromptSwitcher does not interpolate but switches embeddings at fixed intervals.
         """
-        return StagewisePromptSwitcher
+        return StagewisePromptSwitcherRespaced
     else:
         raise ValueError(f"Unknown interpolation method: {method}")

@@ -156,7 +156,7 @@ def main():
     parser.add_argument("--csv_path", type=str, required=True)
     parser.add_argument("--hf_cache_dir",type=str, default="./")
     args = parser.parse_args()
-
+    
     run_pipeline(
         csv_path=args.csv_path,
         model_name=args.model_name,
