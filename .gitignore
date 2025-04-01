@@ -21,3 +21,7 @@ temp.py
 DEL/*
 
 hf_cache/*
+.locks/*
+models--stabilityai--stable-diffusion-2-1/*
+models--CompVis--stable-diffusion-v1-4/*
+models--stabilityai--stable-diffusion-xl-base-1.0/*

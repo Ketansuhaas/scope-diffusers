@@ -49,11 +49,15 @@ class NLerpInterpolatorOG(BasePromptInterpolator):
             e1 = self.embeddings[idx].detach().cpu().numpy()
             e2 = self.embeddings[idx + 1].detach().cpu().numpy()
             for i in range(e1.shape[1]):
+                # print(e1.shape, e2.shape)
                 euclidean_distance = np.linalg.norm(e1[-1, i, :] - e2[-1, i, :])
                 distances[i][idx] = euclidean_distance
 
         times = np.arange(self.embeddings.shape[0], dtype=float)
         self.row_sums = distances.sum(axis=1, keepdims=True)
+
+        # print(distances.shape, self.row_sums.shape)
+
         distances_normalized = distances / (self.row_sums + 1e-5)
         distances = distances_normalized * self.period
         distances = np.cumsum(distances, axis=1)
@@ -227,6 +231,11 @@ class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
 def get_interpolator(method="nlerp"):
     if method == "nlerp_og":
         return NLerpInterpolatorOG
+    elif method == "stagewise_switcher":
+        """
+        StagewisePromptSwitcher does not interpolate but switches embeddings at fixed intervals.
+        """
+        return StagewisePromptSwitcher
     elif method == "stagewise_switcher_respaced":
         """
         StagewisePromptSwitcher does not interpolate but switches embeddings at fixed intervals.

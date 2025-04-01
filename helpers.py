@@ -10,6 +10,15 @@ def build_step_callback(interpolator):
         return callback_kwargs
     return callback
 
+def build_step_callback_sdxl(interpolator, pooled_interpolator, interpolate_prompt_embeds=True, interpolate_pooled_prompt_embeds=True):
+    def callback(pipeline, step, timestep, callback_kwargs):
+        if interpolate_prompt_embeds:
+            callback_kwargs["prompt_embeds"] = interpolator(step)
+        if interpolate_pooled_prompt_embeds:
+            callback_kwargs["add_text_embeds"] = pooled_interpolator(step).squeeze(0)
+        return callback_kwargs
+    return callback
+
 import itertools
 
 def get_all_hparam_combinations(interpolator_cls):
