@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.stable_diffusion_xl import StableDiffusionXLPipeline
+from diffusers import DiffusionPipeline
 
 from interpolator.interpolator import get_interpolator
 from helpers import build_step_callback, get_all_hparam_combinations, build_step_callback_sdxl
@@ -68,6 +69,7 @@ def run_pipeline(
     interpolation_method: str,
     exp_dir: str = "exp_dump/eval_output",
     hf_cache_dir: str = "./",
+    use_refiner: bool = False
 ):
     print(f"\n--- run_pipeline() ---")
     print(f"model_name           = {model_name}")
@@ -87,6 +89,18 @@ def run_pipeline(
             torch_dtype=torch.float16,
             cache_dir=hf_cache_dir
         ).to(device)
+
+        if use_refiner:
+            refiner = DiffusionPipeline.from_pretrained(
+                "stabilityai/stable-diffusion-xl-refiner-1.0",
+                text_encoder_2=pipe.text_encoder_2,
+                vae=pipe.vae,
+                torch_dtype=torch.float16,
+                use_safetensors=True,
+                variant="fp16",
+            ).to(device)
+        else:
+            refiner = None  # No refiner used, just set to None
     else:
         pipe = StableDiffusionPipeline.from_pretrained(
             model_name,
@@ -111,6 +125,7 @@ def run_pipeline(
 
     interpolator = None
     pooled_interpolator = None
+    high_noise_frac = 0.8
 
     for idx, row in df.iterrows():
         prompt_schedule_list = ast.literal_eval(row["schedule"])
@@ -133,6 +148,16 @@ def run_pipeline(
                     num_images_per_prompt=1,
                     num_inference_steps=num_inference_steps
                 )
+                if refiner is not None:
+                    baseline_out = refiner(
+                        prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
+                        image = baseline_out.images,  # The image generated from the interpolation
+                        num_inference_steps=num_inference_steps,
+                        denoising_start=high_noise_frac,
+                        original_size=(1024, 1024),
+                        crop_coords_top_left=(0, 0),
+                        target_size=(1024, 1024),
+                    )
             else:
                 baseline_out = pipe(
                     prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
@@ -203,6 +228,15 @@ def run_pipeline(
                         callback_on_step_end=step_callback,
                         callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"]
                     )
+
+                    if refiner is not None:
+                        output_interp = refiner(    
+                            prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
+                            image = output_interp.images,  # The image generated from the interpolation
+                            num_inference_steps=num_inference_steps,
+                            denoising_start=high_noise_frac,
+                        )
+
                 else:
                     initial_embedding = interpolator(0)
                     neg_embeds = initial_embedding[0].unsqueeze(0)
@@ -254,6 +288,7 @@ def main():
     parser.add_argument("--exp_dir", type=str, default="exp_dump/debug")
     parser.add_argument("--csv_path", type=str, required=True)
     parser.add_argument("--hf_cache_dir",type=str, default="./")
+    parser.add_argument("--use_refiner", action="store_true", help="Enable SDXL refiner after base generation")
     args = parser.parse_args()
     
     run_pipeline(
@@ -263,7 +298,8 @@ def main():
         seed=args.seed,
         interpolation_method=args.interpolation_method,
         exp_dir=args.exp_dir,
-        hf_cache_dir=args.hf_cache_dir
+        hf_cache_dir=args.hf_cache_dir,
+        use_refiner=args.use_refiner
     )
 
 if __name__ == "__main__":
