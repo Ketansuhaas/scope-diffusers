@@ -233,7 +233,7 @@ def run_pipeline(
                     torch.manual_seed(seed)
 
                     if refiner is not None:
-                            output_interp = pipe(
+                        output_interp = pipe(
                             prompt_embeds=pos_embeds,
                             neg_prompt_embeds=neg_embeds,
                             pooled_prompt_embeds=pos_pooled_embeddings,
