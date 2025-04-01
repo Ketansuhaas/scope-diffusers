@@ -46,7 +46,7 @@ def run_pipeline(
     print(f"---------------------\n")
 
     df = pd.read_csv(csv_path)
-    df = df.head(4)
+    # df = df.head(20)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     pipe = StableDiffusionPipeline.from_pretrained(
@@ -72,11 +72,11 @@ def run_pipeline(
         prompt_schedule_list = ast.literal_eval(row["schedule"])
 
         try:
-            torch.manual_seed(seed)
             prompt_embeddings = encode_prompt_schedule(pipe, prompt_schedule_list, device)
 
             # Generate baseline only once per row
             with torch.no_grad():
+                torch.manual_seed(seed)
                 baseline_out = pipe(
                     prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
                     neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),
@@ -95,7 +95,6 @@ def run_pipeline(
 
             for combo in hparam_combos:
                 combo["seed"] = seed
-                torch.manual_seed(seed)
 
                 combo_copy = combo.copy()
                 interpolation_period = combo_copy.pop("interpolation_period")
@@ -112,6 +111,7 @@ def run_pipeline(
                     neg_embeds = initial_embedding[0].unsqueeze(0)
                     pos_embeds = initial_embedding[1].unsqueeze(0)
 
+                    torch.manual_seed(seed)
                     output_interp = pipe(
                         prompt_embeds=pos_embeds,
                         neg_prompt_embeds=neg_embeds,

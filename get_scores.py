@@ -4,20 +4,14 @@ import os
 import json
 import torch
 import pandas as pd
-from PIL import Image
-import numpy as np
 
 from interpolator.interpolator import get_interpolator
 from helpers import get_all_hparam_combinations
 from scorers.scores import *
 
-# ================================
-# Utility Functions
-# ================================
 
 def sanitize_for_path(name: str) -> str:
     return name.replace("/", "_").replace(" ", "_")
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Compute modular scores for baseline vs scope outputs.")
@@ -29,16 +23,12 @@ def parse_args():
     parser.add_argument("--csv_path", type=str, required=True)
     return parser.parse_args()
 
-
-# ================================
-# Main
-# ================================
-
 def main():
     args = parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     df = pd.read_csv(args.csv_path)
-    # df = df.head(4)  # Sync with main.py
+
+    # df = df.head(20)
 
     interpolator_cls = get_interpolator(args.interpolation_method.lower())
     hparam_combos = get_all_hparam_combinations(interpolator_cls)
@@ -54,16 +44,10 @@ def main():
 
     print(f"Looking under: {top_level_dir}")
 
-    # Initialize all scorers
-    scorers = [CLIPScorer(device=device), 
-                VQAScorer(device=device),
-                # LlavaScorer(device=device), 
-                # InstructBLIPScorer(device=device),
-                # PickScoreScorer(device=device),
-                # HPSv2Scorer(device=device), 
-                # CLIPLarge336Scorer(device=device), 
-                # BLIPITMScorer(device=device), 
-                # ImageRewardScorer(device=device),
+    scorers = [
+        CLIPScorer(device=device),
+        VQAScorer(device=device),
+        # Add more scorers here if needed
     ]
 
     for scorer in scorers:
@@ -83,27 +67,23 @@ def main():
             baseline_score = None
 
             row_folder = os.path.join(top_level_dir, f"row_{idx}")
+            baseline_path = os.path.join(row_folder, "baseline.png")
+
+            if not os.path.exists(baseline_path):
+                continue
+
+            baseline_score = scorer.compute(baseline_path, final_prompt)
 
             for combo in hparam_combos:
                 combo["seed"] = args.seed
-                combo_copy = combo.copy()
-                if "interpolation_period" not in combo_copy:
-                    continue
-                interpolation_period = combo_copy.pop("interpolation_period")
-
                 suffix_parts = [f"{k}_{v}" for k, v in combo.items() if k != "seed"]
                 suffix_str = "_".join(suffix_parts)
 
                 final_out_dir = os.path.join(row_folder, suffix_str)
-                baseline_path = os.path.join(final_out_dir, "baseline.png")
                 scope_path = os.path.join(final_out_dir, "scope.png")
-                schedule_path = os.path.join(final_out_dir, "prompt_schedule.txt")
 
-                if not (os.path.exists(baseline_path) and os.path.exists(scope_path)):
+                if not os.path.exists(scope_path):
                     continue
-
-                if baseline_score is None:
-                    baseline_score = scorer.compute(baseline_path, final_prompt)
 
                 score = scorer.compute(scope_path, final_prompt)
                 scope_scores[suffix_str] = score
@@ -128,7 +108,6 @@ def main():
         print(f"Saving {scorer.name()} scores to {output_json_path}")
         with open(output_json_path, "w") as f:
             json.dump(results, f, indent=4)
-
 
 if __name__ == "__main__":
     main()
