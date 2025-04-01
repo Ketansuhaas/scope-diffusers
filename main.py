@@ -156,9 +156,6 @@ def run_pipeline(
                         image = baseline_out.images,  # The image generated from the interpolation
                         num_inference_steps=num_inference_steps,
                         denoising_start=high_noise_frac,
-                        original_size=(1024, 1024),
-                        crop_coords_top_left=(0, 0),
-                        target_size=(1024, 1024),
                     )
                 else:
                     baseline_out = pipe(
