@@ -15,7 +15,7 @@ from diffusers.pipelines.flux.pipeline_flux import FluxPipeline
 from diffusers import DiffusionPipeline
 
 from interpolator.interpolator import get_interpolator
-from helpers import build_step_callback, get_all_hparam_combinations, build_step_callback_sdxl
+from helpers import build_step_callback, get_all_hparam_combinations, build_step_callback_sdxl, build_step_callback_flux
 
 def encode_prompt_schedule(pipe, prompts, device):
     if "xl" in pipe.__class__.__name__.lower():
@@ -245,6 +245,8 @@ def run_pipeline(
                     **combo_copy
                 )
                 step_callback = build_step_callback_sdxl(interpolator, pooled_interpolator, True, True)
+                if "flux" in pipe.__class__.__name__.lower():
+                    step_callback = build_step_callback_flux(interpolator, pooled_interpolator)
             else:
                 interpolator = interpolator_cls(
                     embeddings=prompt_embeddings,
@@ -262,11 +264,11 @@ def run_pipeline(
                         initial_embedding_pooled = pooled_interpolator(0)
                         output_interp = pipe(
                             prompt_embeds=initial_embedding,
-                            pooled_prompt_embeds=initial_embedding_pooled.squeeze(0),
+                            pooled_prompt_embeds=initial_embedding_pooled.squeeze(0), # explicitly set in callback
                             num_images_per_prompt=1,
                             num_inference_steps=num_inference_steps,
-                            callback_on_step_end=step_callback,
-                            callback_on_step_end_tensor_inputs=["prompt_embeds"],
+                            callback_on_step_end=build_step_callback_flux(interpolator, pooled_interpolator),
+                            callback_on_step_end_tensor_inputs=["prompt_embeds"]
                         )
                     else:
 
