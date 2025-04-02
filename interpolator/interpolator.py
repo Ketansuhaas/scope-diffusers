@@ -43,11 +43,14 @@ class NLerpInterpolatorOG(BasePromptInterpolator):
         self.initialize_spacing()
     
     def initialize_spacing(self):
+
         q = self.embeddings.shape[0] - 1
         distances = np.zeros((77, q))
+
         for idx in range(self.embeddings.shape[0] - 1):
             e1 = self.embeddings[idx].detach().cpu().numpy()
             e2 = self.embeddings[idx + 1].detach().cpu().numpy()
+
             for i in range(e1.shape[1]):
                 # print(e1.shape, e2.shape)
                 euclidean_distance = np.linalg.norm(e1[-1, i, :] - e2[-1, i, :])
@@ -269,7 +272,6 @@ class NLerpInterpolatorCosineRespacingNoDecay(BasePromptInterpolator):
             stdev=kwargs.get("std_dev", 3),
             device=device
         )
-
 
 
 # === NLerpInterpolator for flux===
@@ -551,17 +553,14 @@ class StagewisePromptSwitcherRespaced(BasePromptInterpolator):
     #     return B_projected.unsqueeze(0)
 
 
-
-# Under construction
+# === Consecutive SLERP with cosine respacing ===
 
 class SLerpInterpolator(BasePromptInterpolator):
     def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
         super().__init__(embeddings, device)
         self.period = interpolation_period
-        self.stdev = kwargs.get("std_dev", 5)  # Pull out only what's relevant
 
         self.config.update({
-            "std_dev": self.stdev,
             "interpolation_period": self.period
         })
         self.initialize_spacing()
@@ -574,8 +573,10 @@ class SLerpInterpolator(BasePromptInterpolator):
             e2 = self.embeddings[idx + 1].detach().cpu().numpy()
             for i in range(e1.shape[1]):
                 # print(e1.shape, e2.shape)
-                euclidean_distance = np.linalg.norm(e1[-1, i, :] - e2[-1, i, :])
-                distances[i][idx] = euclidean_distance
+                token_emb1 = e1[-1, i, :]
+                token_emb2 = e2[-1, i, :]
+                cosine_distance = 1 - np.dot(token_emb1, token_emb2) / (np.linalg.norm(token_emb1) * np.linalg.norm(token_emb2) + 1e-8)
+                distances[i][idx] = cosine_distance
 
         times = np.arange(self.embeddings.shape[0], dtype=float)
         self.row_sums = distances.sum(axis=1, keepdims=True)
@@ -588,50 +589,71 @@ class SLerpInterpolator(BasePromptInterpolator):
         zero_column = np.zeros((distances.shape[0], 1))
         self.times = np.hstack((zero_column, distances))
     
+    @staticmethod
     def slerp(embedding1, embedding2, val):
-        embedding1 = embedding1[0]
-        embedding2 = embedding2[0]
-        low_norm = embedding1 / torch.norm(embedding1, dim=1, keepdim=True)
-        high_norm = embedding2 / torch.norm(embedding2, dim=1, keepdim=True)
-        dot = (low_norm * high_norm).sum(1)
-        omega = torch.acos(dot)
-        so = torch.sin(omega)
-        faktor1 = (torch.sin((1.0 - val) * omega) / so).unsqueeze(1).unsqueeze(0)
+        """
+        Usage: Interpolation.slerp(torch.rand(768), torch.rand(768), torch.rand(1))
+        """
+        original_norm = torch.norm(embedding1)  # Keep the original norm
+        # print("Original Norms:", torch.norm(embedding1), torch.norm(embedding2))
+
+        # Normalize embeddings
+        low_norm = torch.nn.functional.normalize(embedding1, dim=0, p=2)  
+        high_norm = torch.nn.functional.normalize(embedding2, dim=0, p=2)  
+        # print("Normalized Norms:", torch.norm(low_norm), torch.norm(high_norm))
+
+        # Correct dot product calculation
+        dot = torch.dot(low_norm, high_norm)  # Corrected for 1D tensors
+        dot = torch.clamp(dot, -1.0, 1.0)  # Clamp to avoid NaNs
+        omega = torch.acos(dot)  # Angle between vectors
+        so = torch.sin(omega) + 1e-10  # Add epsilon to prevent division by zero
+
+        if dot.item() == 1.0:
+            return embedding2
+        
+        # print("dot: ", dot.item(), "omega: ", omega, "sin(omega): ", so)
+
+        # Compute interpolation factors
+        faktor1 = (torch.sin((1.0 - val) * omega) / so)
         mask = torch.isnan(faktor1)
         mean = torch.mean(faktor1[~mask])
         faktor1[mask] = mean
-        faktor2 = (torch.sin(val * omega) / so).unsqueeze(1).unsqueeze(0)
+        faktor2 = (torch.sin(val * omega) / so)
         mask = torch.isnan(faktor2)
         mean = torch.mean(faktor2[~mask])
         faktor2[mask] = mean
-        res = faktor1 * embedding1 + faktor2 * embedding2
+
+        # print(faktor1, faktor2)
+        # Perform SLERP interpolation
+        res = faktor1 * embedding1 + faktor2 * embedding2  
+
+        # Restore original norm
+        res = res / torch.norm(res) * original_norm  
+        
         return res
+
 
     def interpolate(self, time_i):
         if time_i >= self.period:
             return self.embeddings[-1]
-        tau = self.stdev * (1 - (time_i / self.period)) + 0.1
+        
         interpolated_embedding = self.embeddings[0].clone().detach()
-        for i in range(self.embeddings[0].shape[1]):
+        # print("time_i: ", time_i)
+        for i in range(self.embeddings[0].shape[1]): # for each token
             if self.row_sums[i] == 0:
                 continue
-            weights = torch.tensor(
-                [np.exp(-((t - time_i) / tau) ** 2 / 2) for t in self.times[i]],
-                device=self.device
-            )
-            weights /= weights.sum()
-            weights = weights.unsqueeze(1)
+            # print("token ", i)
+            for t_id, t in enumerate(self.times[i][:-1]):
+                if time_i>=self.times[i][t_id] and time_i <self.times[i][t_id+1]:
+                    break
 
-            token_feature_values = torch.stack([
-                self.embeddings[k, -1, i, :] for k in range(self.embeddings.shape[0])
-            ])
-            interpolated_value = torch.sum(token_feature_values * weights, dim=0)
-            interpolated_embedding[-1, i, :] = interpolated_value
-
-            original_magnitude = torch.norm(self.embeddings[0][-1, i, :])
-            current_magnitude = torch.norm(interpolated_embedding[-1, i, :])
-            if current_magnitude > 0:
-                interpolated_embedding[-1, i, :] *= (original_magnitude / current_magnitude)
+            alpha = (time_i - self.times[i][t_id]) / (self.times[i][t_id+1] - self.times[i][t_id])
+            token_emb1 = self.embeddings[t_id, -1, i, :]
+            token_emb2 = self.embeddings[t_id + 1, -1, i, :]
+            # print(alpha, time_i, self.times[i][t_id], self.times[i][t_id+1])
+            # print(torch.norm(token_emb1), torch.norm(token_emb2))
+            interpolated_emb = self.slerp(token_emb1, token_emb2, alpha)
+            interpolated_embedding[-1, i, :] = interpolated_emb
 
         return interpolated_embedding.to(self.device)
 
@@ -639,7 +661,6 @@ class SLerpInterpolator(BasePromptInterpolator):
     def hparam_grid():
         return {
             "interpolation_period": [4, 12, 20, 28],
-            "std_dev": [3, 5],
         }
 
     @classmethod
@@ -647,17 +668,8 @@ class SLerpInterpolator(BasePromptInterpolator):
         return cls(
             embeddings=embeddings,
             interpolation_period=interpolation_period,
-            stdev=kwargs.get("std_dev", 3),
             device=device
         )
-
-
-
-
-
-
-
-
 
 # === Interpolator Factory ===
 
@@ -668,6 +680,8 @@ def get_interpolator(method="nlerp"):
         return NLerpInterpolatorOGNoStdDecay
     elif method == "nlerp_cosine_respacing_no_std_decay":
         return NLerpInterpolatorCosineRespacingNoDecay
+    elif method == "slerp":
+        return SLerpInterpolator
     elif method == "nlerp_og_flux":
         return NLerpInterpolatorOG_Flux
     elif method == "stagewise_switcher":
