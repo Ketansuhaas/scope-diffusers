@@ -591,47 +591,32 @@ class SLerpInterpolator(BasePromptInterpolator):
         self.times = np.hstack((zero_column, distances))
     
     @staticmethod
-    def slerp(embedding1, embedding2, val):
+    def slerp(vec1, vec2, t, eps=1e-7):
         """
-        Usage: Interpolation.slerp(torch.rand(768), torch.rand(768), torch.rand(1))
+        Args:
+            vec1, vec2: Input vectors (shape: [d])
+            t: Interpolation factor (0-1 scalar tensor)
         """
-        original_norm = torch.norm(embedding1)  # Keep the original norm
-        # print("Original Norms:", torch.norm(embedding1), torch.norm(embedding2))
-
-        # Normalize embeddings
-        low_norm = torch.nn.functional.normalize(embedding1, dim=0, p=2)  
-        high_norm = torch.nn.functional.normalize(embedding2, dim=0, p=2)  
-        # print("Normalized Norms:", torch.norm(low_norm), torch.norm(high_norm))
-
-        # Correct dot product calculation
-        dot = torch.dot(low_norm, high_norm)  # Corrected for 1D tensors
-        dot = torch.clamp(dot, -1.0, 1.0)  # Clamp to avoid NaNs
-        omega = torch.acos(dot)  # Angle between vectors
-        so = torch.sin(omega) + 1e-10  # Add epsilon to prevent division by zero
-
-        if dot.item() == 1.0:
-            return embedding2
+        # Normalize inputs
+        vec1_norm = torch.nn.functional.normalize(vec1, dim=0)
+        vec2_norm = torch.nn.functional.normalize(vec2, dim=0)
         
-        # print("dot: ", dot.item(), "omega: ", omega, "sin(omega): ", so)
-
+        # Compute angle between vectors
+        dot = torch.dot(vec1_norm, vec2_norm).clamp(-1+eps, 1-eps)
+        angle = torch.acos(dot)
+        
+        # Handle colinear cases
+        if torch.isclose(angle, torch.tensor(0.0,dtype=torch.float16), atol=1e-4):
+            return (1 - t) * vec1 + t * vec2  # Linear interpolation
+            
         # Compute interpolation factors
-        faktor1 = (torch.sin((1.0 - val) * omega) / so)
-        mask = torch.isnan(faktor1)
-        mean = torch.mean(faktor1[~mask])
-        faktor1[mask] = mean
-        faktor2 = (torch.sin(val * omega) / so)
-        mask = torch.isnan(faktor2)
-        mean = torch.mean(faktor2[~mask])
-        faktor2[mask] = mean
-
-        # print(faktor1, faktor2)
-        # Perform SLERP interpolation
-        res = faktor1 * embedding1 + faktor2 * embedding2  
-
-        # Restore original norm
-        res = res / torch.norm(res) * original_norm  
+        sin_angle = torch.sin(angle) + eps
+        factor1 = torch.sin((1-t)*angle) / sin_angle
+        factor2 = torch.sin(t*angle) / sin_angle
         
-        return res
+        # Interpolate and scale to original magnitude
+        interp = factor1 * vec1 + factor2 * vec2
+        return interp / torch.norm(interp) * torch.norm(vec1)  # Preserve vec1's norm
 
 
     def interpolate(self, time_i):
@@ -784,6 +769,89 @@ class FinalPromptSingularValueDecay(BasePromptInterpolator):
 
 
 
+# === Consecutive SLERP with cosine respacing ===
+
+class Spherical_De_Casteljau_Interpolator(BasePromptInterpolator):
+    def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
+        super().__init__(embeddings, device)
+        self.period = interpolation_period
+
+        self.config.update({
+            "interpolation_period": self.period
+        })
+
+    @staticmethod
+    def slerp(vec1, vec2, t, eps=1e-7):
+        """
+        Args:
+            vec1, vec2: Input vectors (shape: [d])
+            t: Interpolation factor (0-1 scalar tensor)
+        """
+        # Normalize inputs
+        vec1_norm = torch.nn.functional.normalize(vec1, dim=0)
+        vec2_norm = torch.nn.functional.normalize(vec2, dim=0)
+        
+        # Compute angle between vectors
+        dot = torch.dot(vec1_norm, vec2_norm).clamp(-1+eps, 1-eps)
+        angle = torch.acos(dot)
+        
+        # Handle colinear cases
+        if torch.isclose(angle, torch.tensor(0.0,dtype=torch.float16), atol=1e-4):
+            return (1 - t) * vec1 + t * vec2  # Linear interpolation
+            
+        # Compute interpolation factors
+        sin_angle = torch.sin(angle) + eps
+        factor1 = torch.sin((1-t)*angle) / sin_angle
+        factor2 = torch.sin(t*angle) / sin_angle
+        
+        # Interpolate and scale to original magnitude
+        interp = factor1 * vec1 + factor2 * vec2
+        return interp / torch.norm(interp) * torch.norm(vec1)  # Preserve vec1's norm
+
+    @staticmethod
+    def de_casteljau(controls, t):
+        points = controls.copy()
+        n = len(controls)
+        for k in range(1, n):
+            new_points = []
+            for i in range(n - k):
+                # SLERP between consecutive points
+                new_pt = Spherical_De_Casteljau_Interpolator.slerp(points[i], points[i+1], t)
+                new_points.append(new_pt)
+            points = new_points
+        return points[0]
+    
+    def interpolate(self, time_i):
+        if time_i >= self.period:
+            return self.embeddings[-1]
+        
+        interpolated_embedding = self.embeddings[0].clone().detach()
+
+        alpha = time_i/self.period
+
+        for ti in range(self.embeddings[0].shape[1]): # for each token
+            tokens_to_interpolate = []
+            for pi in range(self.embeddings.shape[0]):
+                tokens_to_interpolate.append(self.embeddings[pi, -1, ti, :])
+            interpolated_emb = self.de_casteljau(tokens_to_interpolate, alpha)
+            interpolated_embedding[-1, ti, :] = interpolated_emb
+        return interpolated_embedding.to(self.device)
+
+    @staticmethod
+    def hparam_grid():
+        return {
+            "interpolation_period": [4, 8, 12, 16, 20, 24, 28, 32],
+        }
+
+    @classmethod
+    def from_config(cls, embeddings, interpolation_period, device="cuda", **kwargs):
+        return cls(
+            embeddings=embeddings,
+            interpolation_period=interpolation_period,
+            device=device
+        )
+
+
 # === Interpolator Factory ===
 
 def get_interpolator(method="nlerp"):
@@ -799,6 +867,8 @@ def get_interpolator(method="nlerp"):
         return FinalPromptSingularValueDecay
     elif method == "slerp":
         return SLerpInterpolator
+    elif method == "spherical_de_casteljau":
+        return Spherical_De_Casteljau_Interpolator
     elif method == "nlerp_og_flux":
         return NLerpInterpolatorOG_Flux
     elif method == "stagewise_switcher":
