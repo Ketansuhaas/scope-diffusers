@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import math
+from sklearn.decomposition import PCA
 
 # === Base Interpolator Classes ===
 
@@ -671,6 +672,118 @@ class SLerpInterpolator(BasePromptInterpolator):
             device=device
         )
 
+
+# === NLerpInterpolator (Euclidean + No tau decay) ===
+class Interpolate_2Prompts_PCATransformed(BasePromptInterpolator):
+    def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
+        super().__init__(embeddings, device)
+        self.period = interpolation_period
+
+        self.config.update({
+            "interpolation_period": self.period
+        })
+
+        # Perform PCA transformation on the embeddings
+        self.embeddings[0] = self.pca_transform(embeddings[-1][-1], embeddings[0][-1])
+
+    @staticmethod
+    def pca_transform(final_prompt_emb, short_prompt_emb):
+
+        # Convert to numpy for PCA (ensure tensors are on CPU)
+        matrix1 = final_prompt_emb.cpu().detach().numpy()
+        matrix2 = short_prompt_emb.cpu().detach().numpy()
+
+        # Perform PCA on matrix1
+        pca1 = PCA(n_components=matrix1.shape[0])
+        pca1.fit(matrix1)
+
+        # Transform matrix2 into the subspace of matrix1
+        matrix2_transformed = pca1.transform(matrix2)
+
+        # Reconstruct matrix2 in the subspace of matrix1
+        matrix2_reconstructed = pca1.inverse_transform(matrix2_transformed)
+
+        # Convert back to PyTorch tensor with correct dtype and device
+        tensor2_reconstructed = torch.from_numpy(matrix2_reconstructed).to(final_prompt_emb.dtype)
+        
+        # Ensure batch dimension is retained
+        tensor2_reconstructed = tensor2_reconstructed.unsqueeze(0).to(short_prompt_emb.device)
+
+        return tensor2_reconstructed
+
+    def interpolate(self, time_i):
+
+        if time_i >= self.period:
+            return self.embeddings[-1]
+
+        alpha = time_i/self.period
+
+        interpolated_embedding = self.embeddings[0]*alpha + self.embeddings[-1]*(1-alpha)
+
+        return interpolated_embedding.to(self.device)
+
+    @staticmethod
+    def hparam_grid():
+        return {
+            "interpolation_period": [4, 12, 20, 28],
+        }
+
+    @classmethod
+    def from_config(cls, embeddings, interpolation_period, device="cuda", **kwargs):
+        return cls(
+            embeddings=embeddings,
+            interpolation_period=interpolation_period,
+            device=device
+        )
+
+
+
+class FinalPromptSingularValueDecay(BasePromptInterpolator):
+    def __init__(self, embeddings, interpolation_period=1, device="cuda", **kwargs):
+        super().__init__(embeddings, device)
+        self.period = interpolation_period
+
+        self.config.update({
+            "interpolation_period": self.period
+        })
+
+    def interpolate(self, time_i):
+
+        if time_i >= self.period:
+            return self.embeddings[-1]
+
+        interpolated_embedding = self.embeddings[-1].clone().detach()
+
+        # Perform svd on embeddings[-1][-1]
+        u, s, v = torch.svd(self.embeddings[-1][-1].to(torch.float32))
+
+        alpha_t = (self.period - time_i) / self.period
+        s_weights = torch.exp(-torch.arange(0, s.shape[0], device=self.embeddings.device)*alpha_t/s.shape[0])
+        s = s*s_weights
+
+        reconstructed_embedding = torch.matmul(u, torch.matmul(torch.diag(s), v.t()))
+        reconstructed_embedding = reconstructed_embedding.to(torch.float16)
+        
+        interpolated_embedding[-1] = reconstructed_embedding.to(self.embeddings.device)
+
+        return interpolated_embedding
+
+    @staticmethod
+    def hparam_grid():
+        return {
+            "interpolation_period": [15, 20, 25, 30, 35, 40, 45],
+        }
+
+    @classmethod
+    def from_config(cls, embeddings, interpolation_period, device="cuda", **kwargs):
+        return cls(
+            embeddings=embeddings,
+            interpolation_period=interpolation_period,
+            device=device
+        )
+
+
+
 # === Interpolator Factory ===
 
 def get_interpolator(method="nlerp"):
@@ -680,6 +793,10 @@ def get_interpolator(method="nlerp"):
         return NLerpInterpolatorOGNoStdDecay
     elif method == "nlerp_cosine_respacing_no_std_decay":
         return NLerpInterpolatorCosineRespacingNoDecay
+    elif method == "2prompts_pca":
+        return Interpolate_2Prompts_PCATransformed
+    elif method == "final_prompt_svd":
+        return FinalPromptSingularValueDecay
     elif method == "slerp":
         return SLerpInterpolator
     elif method == "nlerp_og_flux":
