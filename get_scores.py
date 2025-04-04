@@ -47,7 +47,7 @@ def main():
     scorers = [
         CLIPScorer(device=device),
         VQAScorer(device=device),
-        HPSv2Scorer(device=device),
+        # HPSv2Scorer(device=device),
         # Add more scorers here if needed
     ]
 

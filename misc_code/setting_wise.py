@@ -3,7 +3,7 @@ from collections import defaultdict
 import numpy as np
 
 # Step 1: Load your updated VQA comparison JSON
-with open("/projectnb/ivc-ml/xthomas/cs791/scope-diffusers/exp_dump/debug/stabilityai_stable-diffusion-2-1/nlerp_og/steps_50/seed_42/vqa_scores.json", "r") as f:
+with open("/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/sdc/stabilityai_stable-diffusion-2-1/spherical_de_casteljau/steps_50/seed_42/vqa_scores.json", "r") as f:
     vqa_data = json.load(f)
 
 # Step 2: Aggregate scores per setting

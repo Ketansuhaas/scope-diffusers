@@ -25,3 +25,7 @@ hf_cache/*
 models--stabilityai--stable-diffusion-2-1/*
 models--CompVis--stable-diffusion-v1-4/*
 models--stabilityai--stable-diffusion-xl-base-1.0/*
+
+run.sh
+scorers/
+qsub_runs/

@@ -40,8 +40,8 @@ class CLIPScorer(BaseScorer):
 class VQAScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.VQAScore(model="clip-flant5-xxl")
+        from scorers.t2v_metrics.t2v_metrics import VQAScore 
+        self.model = VQAScore(model="clip-flant5-xxl")
 
     def name(self):
         return "vqa"
@@ -49,16 +49,12 @@ class VQAScorer(BaseScorer):
     def compute(self, image_path, text):
         return self.model(images=[image_path], texts=[text])[0].item()
 
-# === VQA-style scorers from t2v_metrics ===
+# === VQA-style scorers from scorers.t2v_metrics ===
 
 class LlavaScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.VQAScore(model="llava-v1.5-13b")
-
-    def name(self):
-        return "llava"
+        from scorers.t2v_metrics.t2v_metrics import VQAScore
 
     def compute(self, image_path, text):
         return float(self.model(images=[image_path], texts=[text])[0])
@@ -67,8 +63,8 @@ class LlavaScorer(BaseScorer):
 class InstructBLIPScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.VQAScore(model="instructblip-flant5-xxl")
+        from scorers.t2v_metrics.t2v_metrics import VQAScore
+        self.model = VQAScore(model="instructblip-flant5-xxl")
 
     def name(self):
         return "instructblip"
@@ -82,8 +78,8 @@ class InstructBLIPScorer(BaseScorer):
 class PickScoreScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.CLIPScore(model="pickscore-v1")
+        from scorers.t2v_metrics.t2v_metrics import CLIPScore
+        self.model = CLIPScore(model="pickscore-v1")
 
     def name(self):
         return "pickscore"
@@ -95,8 +91,8 @@ class PickScoreScorer(BaseScorer):
 class HPSv2Scorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.CLIPScore(model="hpsv2")
+        from scorers.t2v_metrics.t2v_metrics import CLIPScore
+        self.model = CLIPScore(model="hpsv2")
 
     def name(self):
         return "hpsv2"
@@ -108,8 +104,8 @@ class HPSv2Scorer(BaseScorer):
 class CLIPLarge336Scorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.CLIPScore(model="openai:ViT-L-14-336")
+        from scorers.t2v_metrics.t2v_metrics import CLIPScore
+        self.model = CLIPScore(model="openai:ViT-L-14-336")
 
     def name(self):
         return "clip_336"
@@ -123,8 +119,8 @@ class CLIPLarge336Scorer(BaseScorer):
 class BLIPITMScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.ITMScore(model="blip2-itm")
+        from scorers.t2v_metrics.t2v_metrics import ITMScore
+        self.model = ITMScore(model="blip2-itm")
 
     def name(self):
         return "blip_itm"
@@ -136,8 +132,8 @@ class BLIPITMScorer(BaseScorer):
 class ImageRewardScorer(BaseScorer):
     def __init__(self, device="cuda"):
         super().__init__(device)
-        import t2v_metrics
-        self.model = t2v_metrics.ITMScore(model="image-reward-v1")
+        from scorers.t2v_metrics.t2v_metrics import ITMScore
+        self.model = ITMScore(model="image-reward-v1")
 
     def name(self):
         return "image_reward"
