@@ -1,4 +1,7 @@
 import clip
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
 
 class BaseScorer:
     def __init__(self, device="cuda"):
@@ -48,6 +51,70 @@ class VQAScorer(BaseScorer):
 
     def compute(self, image_path, text):
         return self.model(images=[image_path], texts=[text])[0].item()
+
+class VQACompositeScorer(BaseScorer):
+    def __init__(self, device="cuda"):
+        super().__init__(device)
+        from scorers.t2v_metrics.t2v_metrics import VQAScore
+
+        self.model = VQAScore(model="clip-flant5-xxl")
+        self.SYSTEM_PROMPT = """Given an image description, break it down into multiple sub-descriptions, each focusing on a different concept type (object, human, animal, food, activity, attribute, counting, color, material, spatial, location, shape, other). 
+Return a list of these sub-descriptions separated by newlines without spaces.
+
+Example:
+Description: A serene yoga studio, 'Peace & Harmony' inscribed on the wall, mats laid out in neat rows on the wooden floor, gentle sunlight filtering through large windows, potted plants in the corners, light-colored walls enhancing the calm atmosphere, a soft breeze slightly moving the sheer curtains.
+
+Generated sub-descriptions:
+Yoga mats laid out in neat rows on the floor\nLarge windows allowing sunlight to filter in\nPotted plants placed in the corners of the room\nSheer curtains hanging by the windows\nYoga practice implied by the studio setting and mats\nThe atmosphere of the studio is serene and calm\nWalls are light-colored, enhancing the peaceful feeling\nCurtains are sheer and move slightly in the breeze\nMats are arranged in multiple rows\nWalls are light-colored\nThe floor is made of wood\nMats are laid out in neat rows across the floor\nPlants are positioned in the corners of the room\nSunlight enters through the large window\nInterior of a yoga studio named 'Peace & Harmony'\n'Peace & Harmony' is inscribed on the wall
+"""     
+        load_dotenv()
+        env = os.environ
+        self.client = OpenAI(api_key=env.get("OPENAI_API_KEY"))
+
+    def name(self):
+        return "vqa_composite"
+
+    def get_subdescriptions(self, final_prompt):
+        
+        try:
+            messages = [
+                    {"role": "system", "content": self.SYSTEM_PROMPT},
+                    {"role": "user", "content": f"Description: {final_prompt}\n\nGenerated sub-descriptions:\n"}
+                ]
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=messages
+            )
+        
+            response_text = response.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"API Error: {e}")
+            return None
+        
+        try:
+            generated_subdescriptions = response_text.split('\n')
+            # Clean up the sub-descriptions by stripping whitespace and removing empty strings
+            generated_subdescriptions = [desc.strip() for desc in generated_subdescriptions if desc.strip()]
+            # Ensure the list is not empty
+            if not generated_subdescriptions:
+                print("VQAComposite Scorer: No valid sub-descriptions generated. Returning original final prompt.")
+                return [final_prompt]
+        except Exception as e:
+            print(f"Error parsing generated sub-descriptions: {e}")
+            return None
+        
+        return generated_subdescriptions
+
+    def compute(self, image_path, text):
+
+        texts = self.get_subdescriptions(text)
+        scores = []
+        for t in texts:
+            score = self.model(images=[image_path], texts=[t])[0].item()
+            scores.append(score)
+        score = sum(scores) / len(scores)
+        return score
 
 # === VQA-style scorers from scorers.t2v_metrics ===
 
