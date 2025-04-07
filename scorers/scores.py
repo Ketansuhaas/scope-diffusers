@@ -106,9 +106,11 @@ Yoga mats laid out in neat rows on the floor\nLarge windows allowing sunlight to
         
         return generated_subdescriptions
 
-    def compute(self, image_path, text):
+    def compute(self, image_path, texts):
 
-        texts = self.get_subdescriptions(text)
+        if isinstance(texts, str): 
+            texts = self.get_subdescriptions(texts)
+
         scores = []
         for t in texts:
             score = self.model(images=[image_path], texts=[t])[0].item()

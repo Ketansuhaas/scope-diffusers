@@ -47,6 +47,7 @@ def main():
     scorers = [
         CLIPScorer(device=device),
         VQAScorer(device=device),
+        VQACompositeScorer(device=device)
         # HPSv2Scorer(device=device),
         # Add more scorers here if needed
     ]
@@ -72,8 +73,12 @@ def main():
 
             if not os.path.exists(baseline_path):
                 continue
-
-            baseline_score = scorer.compute(baseline_path, final_prompt)
+            
+            if scorer.name == "vqa_composite":
+                subdescriptions = ast.literal_eval(row["subdescriptions"])
+                baseline_score = scorer.compute(baseline_path, subdescriptions)
+            else:
+                baseline_score = scorer.compute(baseline_path, final_prompt)
 
             for combo in hparam_combos:
                 combo["seed"] = args.seed
@@ -86,9 +91,13 @@ def main():
                 if not os.path.exists(scope_path):
                     continue
 
-                score = scorer.compute(scope_path, final_prompt)
-                scope_scores[suffix_str] = score
+                if scorer.name == "vqa_composite":
+                    subdescriptions = ast.literal_eval(row["subdescriptions"])
+                    score = scorer.compute(scope_path, subdescriptions)
+                else:
+                    score = scorer.compute(scope_path, final_prompt)
 
+                scope_scores[suffix_str] = score
                 if score > best_score:
                     best_score = score
                     best_path = scope_path
