@@ -15,7 +15,7 @@ from diffusers.pipelines.flux.pipeline_flux import FluxPipeline
 from diffusers import DiffusionPipeline
 
 from interpolator.interpolator import get_interpolator
-from helpers import build_step_callback, get_all_hparam_combinations#, build_step_callback_sdxl, build_step_callback_flux
+from helpers import build_step_callback, get_all_hparam_combinations, build_step_callback_sdxl, build_step_callback_flux
 
 def encode_prompt_schedule(pipe, prompts, device):
     if "xl" in pipe.__class__.__name__.lower():
@@ -76,6 +76,7 @@ def encode_prompt_schedule(pipe, prompts, device):
                 )
             prompt_embeddings.append(embeds)
         return torch.stack(prompt_embeddings, dim=0), None
+
 
 def sanitize_for_path(name: str) -> str:
     return name.replace("/", "_").replace(" ", "_")
