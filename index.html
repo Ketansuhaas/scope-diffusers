@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>Progressive Prompt Detailing for Improved Alignment in Text-to-Image Generative Models  </title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+<body>
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              Progressive Prompt Detailing for Improved Alignment in Text-to-Image Generative Models
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                <a href="https://ketansuhaas.github.io/mypage/" target="_blank">Ketan Suhaas Saichandran*</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a href="https://xavierohan.github.io" target="_blank">Xavier Thomas*</a><sup>1</sup>,</span>
+                <span class="author-block">
+                <a href="https://toshi2k2.github.io" target="_blank">Prakhar Kaushik</a><sup>2</sup>,</span>
+              <span class="author-block">
+                <a href="https://deeptigp.github.io" target="_blank">Deepti Ghadiyaram</a><sup>1,3</sup>
+              </span>
+            </div>
+  
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Boston University, <sup>2</sup>Johns Hopkins University</span>, <sup>2</sup>Runway</span>
+            </div>
+  
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- Arxiv PDF link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2503.17794" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+  
+                <!-- Github link -->
+                <span class="link-block">
+                  <a href="https://github.com/Ketansuhaas/scope-diffusers" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+  
+                <!-- ArXiv abstract Link -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2503.17794" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<!-- Teaser image -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body has-text-centered">
+      <img src="static/images/sdxl.png" alt="Teaser image" style="max-width: 100%; height: auto;" />
+      <h2 class="subtitle has-text-centered">
+        SCoPE (ours) vs SDXL for long, detailed prompts. Note how SCoPE (right) captures details mentioned in the prompt better compared to baseline SDXL.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser image -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Text-to-image generative models often struggle with long prompts detailing complex scenes, diverse objects with distinct visual characteristics, and spatial relationships. In this work, we propose <b>SCoPE</b> (<b>S</b>cheduled interpolation of <b>Co</b>arse-to-fine <b>P</b>rompt <b>E</b>mbeddings), a training-free method to improve text-to-image alignment by progressively refining the input prompt in a coarse-to-fine-grained manner. Given a detailed input prompt, we first decompose it into multiple sub-prompts which evolve from describing broad scene layout to highly intricate details. During inference, we interpolate between these sub-prompts and thus progressively introduce finer-grained details into the generated image. Our training-free plug-and-play approach significantly enhances prompt alignment, achieving an average improvement of more than <b>+8</b> in Visual Question Answering (VQA) scores over the Stable Diffusion baselines on <b>83%</b> of the prompts from the GenAI-Bench dataset.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+        <div class="content has-text-justified">
+          
+          <h3 class="title is-4">Scheduled Interpolation of Coarse-to-Fine Prompts</h3>
+
+          <p>
+            SCoPE improves prompt-image alignment by dynamically breaking down the input prompt into a sequence of sub-prompts, evolving from a broad scene description to increasingly fine-grained details.
+          </p>
+
+          <figure class="mb-5">
+            <img src="static/images/arch.jpg" alt="Prompt decomposition" style="max-width: 100%; height: auto;" />
+            <figcaption class="is-size-6 has-text-grey mt-2">
+              SCoPE decomposes the input prompt into progressively detailed sub-prompts and interpolates between their embeddings across timesteps, gradually introducing semantic details into the generation.
+            </figcaption>
+          </figure>
+
+          <p>
+            During inference, SCoPE interpolates between these sub-prompts throughout the denoising process, allowing the model to first establish the global structure and then refine finer details. A Gaussian-based weighting mechanism controls how influence smoothly shifts across timesteps.
+          </p>
+
+          <div style="background: #f9f9f9; border-radius: 12px; padding: 20px; margin-top: 2rem; margin-bottom: 2rem;">
+            <h4 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">SCoPE in a Nutshell</h4>
+            <ul style="list-style: none; padding-left: 0; margin: 0;">
+              <li style="margin-bottom: 0.5rem;">➔ Decomposes prompts into coarse-to-fine sub-prompts</li>
+              <li style="margin-bottom: 0.5rem;">➔ Interpolates between sub-prompts during denoising</li>
+              <li style="margin-bottom: 0.5rem;">➔ Uses a Gaussian schedule to modulate influence over time</li>
+              <li>➔ Training-free, lightweight, and improves text-image alignment</li>
+            </ul>
+          </div>
+
+          <h4 class="title is-5">Sub-prompt Generation</h4>
+          <p>
+            Starting from the original prompt, SCoPE generates a sequence of sub-prompts using GPT-4o, each describing the same scene with increasing levels of detail. We obtain embeddings for each sub-prompt using a frozen text encoder.
+          </p>
+
+          <h4 class="title is-5">Interpolation Schedule</h4>
+          <p>
+            Each sub-prompt is assigned a timestep that determines when it should maximally influence the denoising process. Early sub-prompts guide broad structure, while later ones refine finer semantic details. The final detailed prompt takes over fully after a predefined interpolation period.
+          </p>
+
+          <h4 class="title is-5">Gaussian Weighting</h4>
+          <p>
+            To smoothly transition between sub-prompts, SCoPE applies a Gaussian weighting at each timestep, centered around the assigned timestep of each sub-prompt. The standard deviation \( \sigma \) controls the sharpness of this transition — smaller values produce sharper switches, while larger values enable a gradual blend.
+          </p>
+
+          <p>
+            The final text-conditioning at each timestep is computed as a weighted combination of all sub-prompts, allowing the model to progressively refine the image from global structure to intricate detail.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- End Method section -->
+
+<section class="section-">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 mb-6">Results</h2>
+        <div class="content has-text-justified">
+          
+        
+          <div class="has-text-centered mb-6">
+            <p class="title is-5 has-text-weight-semibold mb-2">
+              SCoPE against baseline models
+            </p>
+            <img src="static/images/results.png" alt="Class NMI scores" style="width: 80%; height: auto; margin: 0 auto;" />
+            <ul class="has-text-left mt-4" style="display: inline-block;">
+              <li>Comparison of mean VQA Scores and CLIP Scores between SCoPE and baseline models. Win% indicates the percentage of prompts where SCoPE-generated images outperform the baseline. We observe that SCoPE consistently improves over the baselines, regardless of the model.</li>
+            </ul>
+          </div>
+
+          <div class="has-text-centered mb-6">
+            <p class="title is-5 has-text-weight-semibold mb-2">
+              SCoPE for different tags from the GenAI-Bench dataset
+            </p>
+            <img src="static/images/tags.png" alt="Class NMI scores" style="width: 100%; height: auto; margin: 0 auto;" />
+            <ul class="has-text-left mt-4" style="display: inline-block;">
+              <li>
+                The first five tags (Attribute, Scene, Action Relation, Part Relation, Counting Comparison) are categorized as “Basic,” while the remaining tags (Differentiation, Negation, Universal) fall under the “Advanced” category. We observe that SCoPE consistently outperforms the baseline Stable Diffusion-2.1 across both basic and advanced prompt categories.
+              </li>
+            </ul>
+          </div>
+
+          <div class="has-text-centered">
+            <p class="title is-5 has-text-weight-semibold mb-2">
+              More Visuals (SD-2.1)
+            </p>
+            <img src="static/images/sd21.jpg" alt="Class NMI scores" style="width: 100%; height: auto; margin: 0 auto;" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!-- End video carousel -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@misc{saichandran2025progressivepromptdetailingimproved,
+        title={Progressive Prompt Detailing for Improved Alignment in Text-to-Image Generative Models}, 
+        author={Ketan Suhaas Saichandran and Xavier Thomas and Prakhar Kaushik and Deepti Ghadiyaram},
+        year={2025},
+        eprint={2503.17794},
+        archivePrefix={arXiv},
+        primaryClass={cs.CV},
+        url={https://arxiv.org/abs/2503.17794}, 
+  }</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
