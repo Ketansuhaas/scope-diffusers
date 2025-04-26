@@ -27,8 +27,12 @@ STD_DEV = [3, 5]
 results = []
 
 import json
+
 # Opening the JSON file for reading
-with open('/projectnb/vkolagrp/ketanss/scope-diffusers/plots_for_paper/clip_scores_iccv_new_sdv15.json', 'r') as f:
+with open(
+    "/projectnb/vkolagrp/ketanss/scope-diffusers/plots_for_paper/clip_scores_iccv_new_sdv15.json",
+    "r",
+) as f:
     results = json.load(f)
 
 # Iterate over all subfolders (image IDs)
@@ -36,7 +40,7 @@ for image_id in range(1600):
     print(f"Processing image {image_id}...")
     # if len(results) >= 30:  # Limit to 30 prompts
     #     break
-    if image_id not in [142,976]:
+    if image_id not in [142, 976]:
         continue
     best_scope_clip_score = 0
     scope_clip_scores = {}
@@ -48,14 +52,20 @@ for image_id in range(1600):
     for seed in SEEDS:
         for step in STEPS:
             for std_dev in STD_DEV:
-                
-                image_folder = os.path.join(full_path, f"{image_id}/seed_{seed}/step_size_{step}_{std_dev}")
+
+                image_folder = os.path.join(
+                    full_path, f"{image_id}/seed_{seed}/step_size_{step}_{std_dev}"
+                )
 
                 # Validate folder contents
                 prompt_schedule_path = os.path.join(image_folder, "prompt_schedule.txt")
                 normal_image_path = os.path.join(image_folder, "normal_image.png")
                 scope_image_path = os.path.join(image_folder, "scope_image.png")
-                if not (os.path.exists(prompt_schedule_path) and os.path.exists(normal_image_path) and os.path.exists(scope_image_path)):
+                if not (
+                    os.path.exists(prompt_schedule_path)
+                    and os.path.exists(normal_image_path)
+                    and os.path.exists(scope_image_path)
+                ):
                     continue
 
                 # Read and validate prompt schedule
@@ -63,7 +73,10 @@ for image_id in range(1600):
                     with open(prompt_schedule_path, "r") as file:
                         content = file.read().strip()
                     prompt_schedule = ast.literal_eval(content)
-                    if not isinstance(prompt_schedule, list) or len(prompt_schedule) == 0:
+                    if (
+                        not isinstance(prompt_schedule, list)
+                        or len(prompt_schedule) == 0
+                    ):
                         raise ValueError("Invalid prompt schedule.")
                 except Exception as e:
                     print(f"Skipping {prompt_schedule_path} due to error: {e}")
@@ -73,9 +86,17 @@ for image_id in range(1600):
 
                 # Load and preprocess images
                 try:
-                    normal_image = preprocess(Image.open(normal_image_path)).unsqueeze(0).to(device)
-                    scope_image = preprocess(Image.open(scope_image_path)).unsqueeze(0).to(device)
-                    text = clip.tokenize([last_prompt], context_length=77, truncate=True).to(device)
+                    normal_image = (
+                        preprocess(Image.open(normal_image_path))
+                        .unsqueeze(0)
+                        .to(device)
+                    )
+                    scope_image = (
+                        preprocess(Image.open(scope_image_path)).unsqueeze(0).to(device)
+                    )
+                    text = clip.tokenize(
+                        [last_prompt], context_length=77, truncate=True
+                    ).to(device)
 
                     # Compute CLIP scores
                     with torch.no_grad():
@@ -84,22 +105,31 @@ for image_id in range(1600):
                         text_features = model.encode_text(text)
 
                         # Normalize features
-                        normal_image_features /= normal_image_features.norm(dim=-1, keepdim=True)
-                        scope_image_features /= scope_image_features.norm(dim=-1, keepdim=True)
+                        normal_image_features /= normal_image_features.norm(
+                            dim=-1, keepdim=True
+                        )
+                        scope_image_features /= scope_image_features.norm(
+                            dim=-1, keepdim=True
+                        )
                         text_features /= text_features.norm(dim=-1, keepdim=True)
 
                         # Compute cosine similarity
-                        normal_clip_score = (normal_image_features @ text_features.T).item()
-                        scope_clip_score = (scope_image_features @ text_features.T).item()
+                        normal_clip_score = (
+                            normal_image_features @ text_features.T
+                        ).item()
+                        scope_clip_score = (
+                            scope_image_features @ text_features.T
+                        ).item()
 
                     # Track scores
-                    scope_clip_scores[f"seed_{seed}_step_{step}_std_dev_{std_dev}"] = scope_clip_score
+                    scope_clip_scores[f"seed_{seed}_step_{step}_std_dev_{std_dev}"] = (
+                        scope_clip_score
+                    )
                     if scope_clip_score > best_scope_clip_score:
                         best_scope_clip_score = scope_clip_score
                         best_step = step
                         best_path = scope_image_path
                         best_std_dev = std_dev
-
 
                 except Exception as e:
                     print(f"Error processing images for {image_folder}: {e}")
@@ -107,21 +137,23 @@ for image_id in range(1600):
 
     # Append results for valid image IDs
     if best_step is not None:
-        results.append({ 
-            "image_id": image_id,
-            "normal_clip_score": normal_clip_score,
-            "best_scope_clip_score": best_scope_clip_score,
-            "difference": best_scope_clip_score - normal_clip_score,
-            "best_path": best_path,
-            "scope_clip_scores": scope_clip_scores,
-            "best_step": best_step,
-            "best_std_dev": best_std_dev
-        })
+        results.append(
+            {
+                "image_id": image_id,
+                "normal_clip_score": normal_clip_score,
+                "best_scope_clip_score": best_scope_clip_score,
+                "difference": best_scope_clip_score - normal_clip_score,
+                "best_path": best_path,
+                "scope_clip_scores": scope_clip_scores,
+                "best_step": best_step,
+                "best_std_dev": best_std_dev,
+            }
+        )
     # save results to a json file
     import json
-    with open('plots_for_paper/clip_scores_iccv_new_sdv15.json', 'w') as f:
-        json.dump(results, f, indent=4)
 
+    with open("plots_for_paper/clip_scores_iccv_new_sdv15.json", "w") as f:
+        json.dump(results, f, indent=4)
 
 
 # Step size comparison
@@ -148,7 +180,9 @@ for step, count in sorted(best_step_counter.items()):
         print(f"Step {step}: {count} (Max Occurrences)")
     else:
         print(f"Step {step}: {count}")
-print(f"Most common best step: {most_common_best_step} with {max_occurrences} occurrences")
+print(
+    f"Most common best step: {most_common_best_step} with {max_occurrences} occurrences"
+)
 
 # exit()
 
@@ -159,13 +193,15 @@ for result in results:
     # print(f"Image ID: {result['image_id']}")
     # print(f"  CLIP Score for 'normal_image.png': {result['normal_clip_score']}")
     # print(f"  CLIP Score for 'scope_image.png': {result['best_scope_clip_score']}")
-    normal_scores.append(result['normal_clip_score'])
-    scope_scores.append(result['best_scope_clip_score'])
+    normal_scores.append(result["normal_clip_score"])
+    scope_scores.append(result["best_scope_clip_score"])
 
 import numpy as np
-print(f"average CLIP Score (SCoPE, based on best step_size): {np.mean(np.array(scope_scores))}")
-print(f"average CLIP Score (Normal): {np.mean(np.array(normal_scores))}")
 
+print(
+    f"average CLIP Score (SCoPE, based on best step_size): {np.mean(np.array(scope_scores))}"
+)
+print(f"average CLIP Score (Normal): {np.mean(np.array(normal_scores))}")
 
 
 # Compute statistics
@@ -173,8 +209,10 @@ print(f"average CLIP Score (Normal): {np.mean(np.array(normal_scores))}")
 if results:
     better_scope = []
     for result in results:
-        if result['best_scope_clip_score'] > result['normal_clip_score']:
-            better_scope.append(result['best_scope_clip_score'] - result['normal_clip_score'])
+        if result["best_scope_clip_score"] > result["normal_clip_score"]:
+            better_scope.append(
+                result["best_scope_clip_score"] - result["normal_clip_score"]
+            )
 
     total_images = len(results)
     num_better_scope = len(better_scope)
@@ -185,9 +223,15 @@ if results:
 
     # Output the comparison
     print(f"\n--- Performance Comparison ---")
-    print(f"Scope images perform better for {num_better_scope} out of {total_images} images ({(num_better_scope / total_images) * 100:.2f}%).")
-    print(f"Normal images perform better for {num_better_normal} out of {total_images} images ({(num_better_normal / total_images) * 100:.2f}%).")
-    print(f"Average improvement of scope images over normal images: {avg_improvement:.4f}")
+    print(
+        f"Scope images perform better for {num_better_scope} out of {total_images} images ({(num_better_scope / total_images) * 100:.2f}%)."
+    )
+    print(
+        f"Normal images perform better for {num_better_normal} out of {total_images} images ({(num_better_normal / total_images) * 100:.2f}%)."
+    )
+    print(
+        f"Average improvement of scope images over normal images: {avg_improvement:.4f}"
+    )
 else:
     print("No results to compare performance.")
 
@@ -212,7 +256,6 @@ else:
 # print("Step: Percentage of cases where SCoPE outperformed Normal:")
 # for step, accuracy in sorted(step_wise_accuracy_percentage.items()):
 #     print(f"Step {step}: {accuracy:.2f}%")
-
 
 
 # # Find top 5 images where scope_image improves the most
@@ -243,4 +286,3 @@ else:
 #         print(f"  Scope Image Path: {result['scope_image_path']}")
 # else:
 #     print("\nNo images where scope_image performed better.")
-

@@ -11,11 +11,17 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.stable_diffusion_xl import StableDiffusionXLPipeline
-from diffusers.pipelines.flux.pipeline_flux import FluxPipeline 
+from diffusers.pipelines.flux.pipeline_flux import FluxPipeline
 from diffusers import DiffusionPipeline
 
 from interpolator.interpolator import get_interpolator
-from helpers import build_step_callback, get_all_hparam_combinations, build_step_callback_sdxl, build_step_callback_flux
+from helpers import (
+    build_step_callback,
+    get_all_hparam_combinations,
+    build_step_callback_sdxl,
+    build_step_callback_flux,
+)
+
 
 def encode_prompt_schedule(pipe, prompts, device):
     if "xl" in pipe.__class__.__name__.lower():
@@ -27,11 +33,13 @@ def encode_prompt_schedule(pipe, prompts, device):
                     prompt,
                     device=device,
                     num_images_per_prompt=1,
-                    do_classifier_free_guidance=True
+                    do_classifier_free_guidance=True,
                 )
                 # Stack positive and negative embeddings together for interpolation later
                 # print(result[1].shape, result[0].shape)  # (2, 77, 2048) (2, 77, 1024)
-                text_embed = torch.cat([result[1], result[0]], dim=0)  # (2, 77, 2048)  (2, 77, 1024) (2, 77, 1024)
+                text_embed = torch.cat(
+                    [result[1], result[0]], dim=0
+                )  # (2, 77, 2048)  (2, 77, 1024) (2, 77, 1024)
                 prompt_embeddings.append(text_embed)
 
                 if result[2] is not None and result[3] is not None:
@@ -45,7 +53,9 @@ def encode_prompt_schedule(pipe, prompts, device):
             #     pooled_prompt_embeds,
             #     negative_pooled_prompt_embeds,
             # ) = self.encode_prompt(
-        return torch.stack(prompt_embeddings, dim=0), torch.stack(pooled_prompt_embeddings, dim=0)
+        return torch.stack(prompt_embeddings, dim=0), torch.stack(
+            pooled_prompt_embeddings, dim=0
+        )
 
     elif "flux" in pipe.__class__.__name__.lower():
 
@@ -62,7 +72,9 @@ def encode_prompt_schedule(pipe, prompts, device):
                 prompt_embeddings.append(result[0])
                 pooled_prompt_embeddings.append(result[1])
 
-        return torch.stack(prompt_embeddings, dim=0), torch.stack(pooled_prompt_embeddings, dim=0)
+        return torch.stack(prompt_embeddings, dim=0), torch.stack(
+            pooled_prompt_embeddings, dim=0
+        )
 
     else:
         prompt_embeddings = []
@@ -72,7 +84,7 @@ def encode_prompt_schedule(pipe, prompts, device):
                     prompt,
                     device=device,
                     num_images_per_prompt=1,
-                    do_classifier_free_guidance=True
+                    do_classifier_free_guidance=True,
                 )
             prompt_embeddings.append(embeds)
         return torch.stack(prompt_embeddings, dim=0), None
@@ -80,6 +92,7 @@ def encode_prompt_schedule(pipe, prompts, device):
 
 def sanitize_for_path(name: str) -> str:
     return name.replace("/", "_").replace(" ", "_")
+
 
 def run_pipeline(
     csv_path: str,
@@ -89,7 +102,7 @@ def run_pipeline(
     interpolation_method: str,
     exp_dir: str = "exp_dump/eval_output",
     hf_cache_dir: str = "./",
-    use_refiner: bool = False
+    use_refiner: bool = False,
 ):
     print(f"\n--- run_pipeline() ---")
     print(f"model_name           = {model_name}")
@@ -106,9 +119,7 @@ def run_pipeline(
     refiner = None
     if "xl" in model_name.lower():
         pipe = StableDiffusionXLPipeline.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16,
-            cache_dir=hf_cache_dir
+            model_name, torch_dtype=torch.float16, cache_dir=hf_cache_dir
         ).to(device)
 
         if use_refiner:
@@ -124,18 +135,13 @@ def run_pipeline(
             refiner = None  # No refiner used, just set to None
     elif "flux" in model_name.lower():
         pipe = FluxPipeline.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16,
-            cache_dir=hf_cache_dir
-            ).to(device)
+            model_name, torch_dtype=torch.float16, cache_dir=hf_cache_dir
+        ).to(device)
     else:
         pipe = StableDiffusionPipeline.from_pretrained(
-            model_name,
-            torch_dtype=torch.float16,
-            cache_dir=hf_cache_dir
+            model_name, torch_dtype=torch.float16, cache_dir=hf_cache_dir
         ).to(device)
 
-    
     os.makedirs(exp_dir, exist_ok=True)
     interpolator_cls = get_interpolator(interpolation_method.lower())
     hparam_combos = get_all_hparam_combinations(interpolator_cls)
@@ -146,7 +152,7 @@ def run_pipeline(
         model_dir,
         interpolation_method,
         f"steps_{num_inference_steps}",
-        f"seed_{seed}"
+        f"seed_{seed}",
     )
     os.makedirs(top_level_dir, exist_ok=True)
 
@@ -158,7 +164,9 @@ def run_pipeline(
         prompt_schedule_list = ast.literal_eval(row["schedule"])
 
         # try:
-        prompt_embeddings, pooled_prompt_embeddings = encode_prompt_schedule(pipe, prompt_schedule_list, device)
+        prompt_embeddings, pooled_prompt_embeddings = encode_prompt_schedule(
+            pipe, prompt_schedule_list, device
+        )
 
         # Generate baseline only once per row
         with torch.no_grad():
@@ -170,37 +178,51 @@ def run_pipeline(
                 if refiner is not None:
                     baseline_out = pipe(
                         prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
-                        neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
-                        pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
-                        negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                        neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(
+                            0
+                        ),  # adjust if necessary
+                        pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(
+                            0
+                        ),
+                        negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][
+                            1
+                        ].unsqueeze(0),
                         num_images_per_prompt=1,
                         num_inference_steps=num_inference_steps,
                         denoising_end=high_noise_frac,
                         output_type="latent",
                     )
                     baseline_out = refiner(
-                        prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
-                        image = baseline_out.images,  # The image generated from the interpolation
+                        prompt=prompt_schedule_list[
+                            -1
+                        ],  # Use the last prompt in the schedule for refinement
+                        image=baseline_out.images,  # The image generated from the interpolation
                         num_inference_steps=num_inference_steps,
                         denoising_start=high_noise_frac,
                     )
                 else:
-                    
+
                     if "flux" in pipe.__class__.__name__.lower():
                         # print(f"Baseline Flux: {prompt_embeddings[-1].shape}, {pooled_prompt_embeddings[-1].shape}")
                         baseline_out = pipe(
-                        prompt_embeds=prompt_embeddings[-1],
-                        pooled_prompt_embeds=pooled_prompt_embeddings[-1],
-                        num_images_per_prompt=1,
-                        num_inference_steps=num_inference_steps,
+                            prompt_embeds=prompt_embeddings[-1],
+                            pooled_prompt_embeds=pooled_prompt_embeddings[-1],
+                            num_images_per_prompt=1,
+                            num_inference_steps=num_inference_steps,
                         )
                     else:
 
                         baseline_out = pipe(
                             prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
-                            neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),  # adjust if necessary
-                            pooled_prompt_embeds=pooled_prompt_embeddings[-1][0].unsqueeze(0),
-                            negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][1].unsqueeze(0),
+                            neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(
+                                0
+                            ),  # adjust if necessary
+                            pooled_prompt_embeds=pooled_prompt_embeddings[-1][
+                                0
+                            ].unsqueeze(0),
+                            negative_pooled_prompt_embeds=pooled_prompt_embeddings[-1][
+                                1
+                            ].unsqueeze(0),
                             num_images_per_prompt=1,
                             num_inference_steps=num_inference_steps,
                             # denoising_end=high_noise_frac,
@@ -211,7 +233,7 @@ def run_pipeline(
                     prompt_embeds=prompt_embeddings[-1][1].unsqueeze(0),
                     neg_prompt_embeds=prompt_embeddings[-1][0].unsqueeze(0),
                     num_images_per_prompt=1,
-                    num_inference_steps=num_inference_steps
+                    num_inference_steps=num_inference_steps,
                 )
         baseline_image = baseline_out.images[0]
 
@@ -223,11 +245,11 @@ def run_pipeline(
             f.write(str(prompt_schedule_list))
 
         del baseline_out, baseline_image
-        
+
         for combo in hparam_combos:
             combo["seed"] = seed
             torch.manual_seed(seed)
-            
+
             combo_copy = combo.copy()
             interpolation_period = combo_copy.pop("interpolation_period")
 
@@ -237,23 +259,27 @@ def run_pipeline(
                     embeddings=prompt_embeddings,
                     interpolation_period=interpolation_period,
                     device=device,
-                    **combo_copy
+                    **combo_copy,
                 )
                 pooled_interpolator = interpolator_cls(
                     embeddings=pooled_prompt_embeddings.unsqueeze(1),
                     interpolation_period=interpolation_period,
                     device=device,
-                    **combo_copy
+                    **combo_copy,
                 )
-                step_callback = build_step_callback_sdxl(interpolator, pooled_interpolator, True, True)
+                step_callback = build_step_callback_sdxl(
+                    interpolator, pooled_interpolator, True, True
+                )
                 if "flux" in pipe.__class__.__name__.lower():
-                    step_callback = build_step_callback_flux(interpolator, pooled_interpolator)
+                    step_callback = build_step_callback_flux(
+                        interpolator, pooled_interpolator
+                    )
             else:
                 interpolator = interpolator_cls(
                     embeddings=prompt_embeddings,
                     interpolation_period=interpolation_period,
                     device=device,
-                    **combo_copy
+                    **combo_copy,
                 )
                 step_callback = build_step_callback(interpolator)
 
@@ -265,11 +291,15 @@ def run_pipeline(
                         initial_embedding_pooled = pooled_interpolator(0)
                         output_interp = pipe(
                             prompt_embeds=initial_embedding,
-                            pooled_prompt_embeds=initial_embedding_pooled.squeeze(0), # explicitly set in callback
+                            pooled_prompt_embeds=initial_embedding_pooled.squeeze(
+                                0
+                            ),  # explicitly set in callback
                             num_images_per_prompt=1,
                             num_inference_steps=num_inference_steps,
-                            callback_on_step_end=build_step_callback_flux(interpolator, pooled_interpolator),
-                            callback_on_step_end_tensor_inputs=["prompt_embeds"]
+                            callback_on_step_end=build_step_callback_flux(
+                                interpolator, pooled_interpolator
+                            ),
+                            callback_on_step_end_tensor_inputs=["prompt_embeds"],
                         )
                     else:
 
@@ -278,8 +308,16 @@ def run_pipeline(
                         pos_embeds = initial_embedding[1].unsqueeze(0)
 
                         initial_embedding_pooled = pooled_interpolator(0)
-                        neg_pooled_embeds = initial_embedding_pooled.squeeze(0)[0].unsqueeze(0) if initial_embedding_pooled is not None else None
-                        pos_pooled_embeddings = initial_embedding_pooled.squeeze(0)[1].unsqueeze(0) if initial_embedding_pooled is not None else None
+                        neg_pooled_embeds = (
+                            initial_embedding_pooled.squeeze(0)[0].unsqueeze(0)
+                            if initial_embedding_pooled is not None
+                            else None
+                        )
+                        pos_pooled_embeddings = (
+                            initial_embedding_pooled.squeeze(0)[1].unsqueeze(0)
+                            if initial_embedding_pooled is not None
+                            else None
+                        )
 
                         torch.manual_seed(seed)
 
@@ -292,13 +330,18 @@ def run_pipeline(
                                 num_images_per_prompt=1,
                                 num_inference_steps=num_inference_steps,
                                 callback_on_step_end=step_callback,
-                                callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                                callback_on_step_end_tensor_inputs=[
+                                    "prompt_embeds",
+                                    "add_text_embeds",
+                                ],
                                 denoising_end=high_noise_frac,
                                 output_type="latent",
                             )
-                            output_interp = refiner(    
-                                prompt = prompt_schedule_list[-1],  # Use the last prompt in the schedule for refinement
-                                image = output_interp.images,  # The image generated from the interpolation
+                            output_interp = refiner(
+                                prompt=prompt_schedule_list[
+                                    -1
+                                ],  # Use the last prompt in the schedule for refinement
+                                image=output_interp.images,  # The image generated from the interpolation
                                 num_inference_steps=num_inference_steps,
                                 denoising_start=high_noise_frac,
                             )
@@ -311,7 +354,10 @@ def run_pipeline(
                                 num_images_per_prompt=1,
                                 num_inference_steps=num_inference_steps,
                                 callback_on_step_end=step_callback,
-                                callback_on_step_end_tensor_inputs=["prompt_embeds", "add_text_embeds"],
+                                callback_on_step_end_tensor_inputs=[
+                                    "prompt_embeds",
+                                    "add_text_embeds",
+                                ],
                                 # denoising_end=high_noise_frac,
                                 # output_type="latent",
                             )
@@ -328,7 +374,7 @@ def run_pipeline(
                         num_images_per_prompt=1,
                         num_inference_steps=num_inference_steps,
                         callback_on_step_end=step_callback,
-                        callback_on_step_end_tensor_inputs=["prompt_embeds"]
+                        callback_on_step_end_tensor_inputs=["prompt_embeds"],
                     )
             scope_image = output_interp.images[0]
 
@@ -337,7 +383,7 @@ def run_pipeline(
             final_out_dir = os.path.join(row_dir, suffix_str)
             os.makedirs(final_out_dir, exist_ok=True)
             scope_image.save(os.path.join(final_out_dir, "scope.png"))
-            
+
             del scope_image, output_interp
             if interpolator is not None:
                 # Clean up interpolator to free memory
@@ -357,18 +403,27 @@ def run_pipeline(
         #     gc.collect()
         #     continue
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Run interpolation-based scope diffusion.")
-    parser.add_argument("--model_name", type=str, default="stabilityai/stable-diffusion-2-1")
+    parser = argparse.ArgumentParser(
+        description="Run interpolation-based scope diffusion."
+    )
+    parser.add_argument(
+        "--model_name", type=str, default="stabilityai/stable-diffusion-2-1"
+    )
     parser.add_argument("--num_inference_steps", type=int, default=50)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--interpolation_method", type=str, default="nlerp_og")
     parser.add_argument("--exp_dir", type=str, default="exp_dump/debug")
     parser.add_argument("--csv_path", type=str, required=True)
-    parser.add_argument("--hf_cache_dir",type=str, default="./")
-    parser.add_argument("--use_refiner", action="store_true", help="Enable SDXL refiner after base generation")
+    parser.add_argument("--hf_cache_dir", type=str, default="./")
+    parser.add_argument(
+        "--use_refiner",
+        action="store_true",
+        help="Enable SDXL refiner after base generation",
+    )
     args = parser.parse_args()
-    
+
     run_pipeline(
         csv_path=args.csv_path,
         model_name=args.model_name,
@@ -377,8 +432,9 @@ def main():
         interpolation_method=args.interpolation_method,
         exp_dir=args.exp_dir,
         hf_cache_dir=args.hf_cache_dir,
-        use_refiner=args.use_refiner
+        use_refiner=args.use_refiner,
     )
+
 
 if __name__ == "__main__":
     main()

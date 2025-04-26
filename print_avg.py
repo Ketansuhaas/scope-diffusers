@@ -3,8 +3,9 @@ import argparse
 import re
 from collections import defaultdict
 
+
 def compute_avg_scores(json_path):
-    with open(json_path, 'r') as f:
+    with open(json_path, "r") as f:
         data = json.load(f)
 
     metric_totals = defaultdict(float)
@@ -23,6 +24,7 @@ def compute_avg_scores(json_path):
     for metric_key in sorted(metric_totals.keys()):
         avg = metric_totals[metric_key] / metric_counts[metric_key]
         print(f"{metric_key}: {avg:.6f}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

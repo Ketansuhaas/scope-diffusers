@@ -5,7 +5,10 @@ from datasets import load_dataset
 from tqdm import tqdm
 
 # Step 1: Load your updated VQA comparison JSON
-with open("/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/sdc/stabilityai_stable-diffusion-2-1/spherical_de_casteljau/steps_50/seed_42/vqa_scores.json", "r") as f:
+with open(
+    "/projectnb/vkolagrp/ketanss/scope-diffusers/exp_dump/sdc/stabilityai_stable-diffusion-2-1/spherical_de_casteljau/steps_50/seed_42/vqa_scores.json",
+    "r",
+) as f:
     vqa_data = json.load(f)
 
 # Step 2: Map scores by image_id
@@ -35,8 +38,12 @@ for example in tqdm(dataset, desc="Processing dataset"):
 # Step 5: Compute averages
 tag_avg_scores = {}
 for tag in sorted(set(tag_normal_scores.keys()).union(tag_scope_scores.keys())):
-    normal_avg = np.mean(tag_normal_scores[tag]) if tag in tag_normal_scores else float('nan')
-    scope_avg = np.mean(tag_scope_scores[tag]) if tag in tag_scope_scores else float('nan')
+    normal_avg = (
+        np.mean(tag_normal_scores[tag]) if tag in tag_normal_scores else float("nan")
+    )
+    scope_avg = (
+        np.mean(tag_scope_scores[tag]) if tag in tag_scope_scores else float("nan")
+    )
     tag_avg_scores[tag] = (normal_avg, scope_avg)
 
 # Step 6: Print comparison
