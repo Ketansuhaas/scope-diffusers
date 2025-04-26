@@ -1,5 +1,12 @@
 # SCoPE: Scheduled Interpolation of Coarse-to-Fine Prompt Embeddings
 
+Ketan Suhaas Saichandran*, Xavier Thomas*, Prakhar Kaushik, Deepti Ghadiyaram  
+(*Equal Contribution)
+
+[📄 Paper (arXiv)](https://arxiv.org/abs/2503.17794)
+
+---
+
 This repository contains the code for **SCoPE**, a training-free method to improve prompt-image alignment in text-to-image diffusion models by progressively interpolating between coarse-to-fine prompt embeddings during the denoising process.
 
 SCoPE can be easily applied on top of existing diffusion pipelines without any retraining.
