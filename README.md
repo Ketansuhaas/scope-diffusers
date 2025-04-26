@@ -1,3 +1,14 @@
+# SCoPE: Scheduled Interpolation of Coarse-to-Fine Prompt Embeddings
+
+This repository contains the code for **SCoPE**, a training-free method to improve prompt-image alignment in text-to-image diffusion models by progressively interpolating between coarse-to-fine prompt embeddings during the denoising process.
+
+SCoPE can be easily applied on top of existing diffusion pipelines without any retraining.
+
+View `run.sh` for an example to run our pipeline
+
+---
+
+
 ### 🔧 Setting up `t2v_metrics` for VQA Scoring
 
 To use the VQA scoring model (`clip-flant5-xxl`), follow these steps to install `t2v_metrics` in a dedicated conda environment.
