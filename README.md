@@ -1,4 +1,4 @@
-# SCoPE: Scheduled Interpolation of Coarse-to-Fine Prompt Embeddings
+# Progressive Prompt Detailing for Improved Alignment in Text-to-Image Generative Models (SCoPE)
 
 Ketan Suhaas Saichandran*, Xavier Thomas*, Prakhar Kaushik, Deepti Ghadiyaram  
 (*Equal Contribution)
